@@ -7,6 +7,12 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 | Num | Detector ID | Category | Source | Description| Severity | Confidence | Reviewed | Linter |
 | ------ | ------ | ------ | ------| ------| ------ | ------ | ------ | ------ |
 | 1 | integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Integer-overflow-or-underflow) | High | ? | Working vulnerability Agus | None |
+| 10 | set_contract_storage | ? | Tiki | [Contract storage](https://github.com/CoinFabrik/web3-grant/tree/main/set_contract_storage)  | ? | ? | Tiki | None |
+
+## Detectors Under Review
+
+| Num | Detector ID | Category | Source | Description| Severity | Confidence | Reviewed | Linter |
+| ------ | ------ | ------ | ------| ------| ------ | ------ | ------ | ------ |
 | 2 | precision-loss | Arithmetic |  Analysis Categories Wiki |  [Order of multiplications and divisions are important to ensure numerical precision.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Precision-Loss) | High | ? | False | None |
 | 3 | incorrect-shift | Assembly Usage |  Analysis Categories Wiki |  [Arithmetic shift is performed with an incorrect or unexpected value.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Incorrect-shift) | High | ? | False | None |
 | 4 | priviledged-roles | Authorization |  Analysis Categories Wiki |  [A vulnerability can arise if the roles and permissions are not properly defined or implemented, which can lead to unauthorized access to privileged functions and data.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Priviledged-roles) | ? | ? | False | None |\
