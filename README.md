@@ -7,7 +7,7 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 | Num | Detector ID | Category | Source | Description| Severity | Confidence | Reviewed | Linter |
 | ------ | ------ | ------ | ------| ------| ------ | ------ | ------ | ------ |
 | 1 | integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/integer-overflow-or-underflow/integer-overflow-or-underflow.md) | High | ? | Working vulnerability Agus | None |
-| 10 | set_contract_storage | ? | Tiki | [Insufficient access control on set_contract_storage() function.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/set-contract-storage/set-contract-storage.md)  | High | ? | Tiki | None |
+| 10 | set-contract-storage | Authorization | Tiki | [Insufficient access control on set_contract_storage() function.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/set-contract-storage/set-contract-storage.md)  | High | ? | Tiki | None |
 
 ## Detectors Under Review
 
