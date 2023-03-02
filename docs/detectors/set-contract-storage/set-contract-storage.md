@@ -786,5 +786,8 @@ See this [tutorial](https://drive.google.com/file/d/1jXZNBy_TmJbPhDYSzZSSMGmm9-N
 
 Set access control and proper authorization validation for the `set_contract_storage()` function.
 
+## References
+* https://use.ink/datastructures/storage-layout
+
 
 
