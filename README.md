@@ -38,7 +38,9 @@ We have two sources for candidate for examples to be detected (detectors):
 
 1. The [list of audits of Substrate Polkadot projects by auditing companies](https://docs.google.com/spreadsheets/d/1xQ-RTui38vTAXKIbBOLZmbUEvHjTGrbdRvbG12c7n-8/edit#gid=0). In order to get candidates we look at the audit's findings and the associated github repo.
 
-2. The [Analysis Categories Wiki](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses). In order to get candidates we search the wiki for examples in solidity and try to generate the candidate in ink! using ChatGPT with the following prompt below. If the type of vulnerability is possible, a new line is added to the Detectors list. If the type of vulnerability is not possible, a new line is added to the Discarded Detectors list.
+2. Deployed [ink! projects](https://docs.google.com/spreadsheets/d/19fVqHwQwfhWUBfHppiEnr9yJ9Ep-qr_czGSSkTvKn5E/edit?usp=share_link).
+
+3. The [Analysis Categories Wiki](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses). In order to get candidates we search the wiki for examples in solidity and try to generate the candidate in ink! using ChatGPT with the following prompt below. If the type of vulnerability is possible, a new line is added to the Detectors list. If the type of vulnerability is not possible, a new line is added to the Discarded Detectors list.
 
 Chat GPT Prompt:
 
