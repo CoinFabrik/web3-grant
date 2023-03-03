@@ -50,7 +50,7 @@ mod vault {
         }
 
         #[ink(message)]
-        pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector: u32) {
+        pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector: u32) -> Balance {
             ink::env::debug_println!("call_with_value function called from {:?}",self.env().caller());
             let caller_addr = self.env().caller();
             let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
@@ -61,12 +61,20 @@ mod vault {
                     .exec_input(
                         ink::env::call::ExecutionInput::new(Selector::new(selector.to_be_bytes()))
                     )
+                    .call_flags(
+                        ink::env::CallFlags::default()
+                            .set_allow_reentry(true)
+                    )
                     .returns::<()>()
                     .params();
                 self.env().invoke_contract(&call)
                     .unwrap_or_else(|err| panic!("Err {:?}",err))
                     .unwrap_or_else(|err| panic!("LangErr {:?}",err));
                 self.balances.insert(caller_addr, &(caller_balance - amount));
+
+                return caller_balance - amount;
+            } else {
+                return caller_balance
             }
         }
     }
