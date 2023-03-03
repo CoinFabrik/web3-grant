@@ -8,7 +8,11 @@
 
 ## Description
 
-The user should not have control over the key because it implies writing any value of a mapping, lazy, or the main struct of the contract located in position 0 of the storage. 
+Funciones con keys como variables sin el approado control de acceso o sanitizacion del input pueden habilitar al usuario a realizar cambios en posiciones abritarias de memoria. 
+En este ejemplo vemos como se puede explotar esta vulnerabilidad para cambiar el allowance de un usuario en un ERC20.
+
+
+[poner abajo en remediation] The user should not have control over the key because it implies writing any value of a mapping, lazy, or the main struct of the contract located in position 0 of the storage. 
 
 ## Exploit Scenario
 
@@ -773,7 +777,7 @@ user:example$ cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2um
 ```
 
 Breaking down the used key `[255,0,0,0,212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125,142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72]`, we notice that:
-* `[255,0,0,0]` stands for the allowances mapping.
+* `[255,0,0,0]` stands for allowances mapping.
 * `[212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125]` corresponds, byte by byte, to Alice's address `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY`.
 * `[142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72]` corresponds, bytye by byte, to Bob's address `5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty`.
 
