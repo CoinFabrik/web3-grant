@@ -8,11 +8,8 @@
 
 ## Description
 
-Funciones con keys como variables sin el approado control de acceso o sanitizacion del input pueden habilitar al usuario a realizar cambios en posiciones abritarias de memoria. 
-En este ejemplo vemos como se puede explotar esta vulnerabilidad para cambiar el allowance de un usuario en un ERC20.
-
-
-[poner abajo en remediation] The user should not have control over the key because it implies writing any value of a mapping, lazy, or the main struct of the contract located in position 0 of the storage. 
+Functions using keys as variables without proper access control or input sanitation can allow users to perform changes in arbitrary memory locations.
+In this example, we see how this vulnerability can be exploited to change a user's allowance in an ERC20 contract.
 
 ## Exploit Scenario
 
@@ -788,6 +785,7 @@ See this [tutorial](https://drive.google.com/file/d/1jXZNBy_TmJbPhDYSzZSSMGmm9-N
 
 ## Recommendation
 
+Abitrary users should not have control over keys because it implies writing any value of a mapping, lazy variable, or the main struct of the contract located in position 0 of the storage. 
 Set access control and proper authorization validation for the `set_contract_storage()` function.
 
 ## References
