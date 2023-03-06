@@ -5,9 +5,9 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 ## Detectors
 
 | Num | Detector ID | Category | Source | Description| Severity | Reviewed |
-| ------ | ------ | ------ | ------| ------| ------ | ------ | ------ |
-| 1 | integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | An arithmetic operation overflows or underflows the available memory allocated to the variable. | High | Working vulnerability Agus | None |
-| 10 | set-contract-storage | Authorization | Tiki | Insufficient access control on set_contract_storage() function. | High | Tiki | None |
+| ------ | ------ | ------ | ------| ------| ------ | ------ |
+| 1 | integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | An arithmetic operation overflows or underflows the available memory allocated to the variable. | High | Working vulnerability Agus |
+| 10 | set-contract-storage | Authorization | Tiki | Insufficient access control on set_contract_storage() function. | High | Tiki |
 
 ## Detectors Under Review
 
