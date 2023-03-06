@@ -4,24 +4,25 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 
 ## Detectors
 
-| Num | Detector ID | Category | Source | Description| Severity | Confidence | Reviewed | Linter |
-| ------ | ------ | ------ | ------| ------| ------ | ------ | ------ | ------ |
-| 1 | integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/integer-overflow-or-underflow/integer-overflow-or-underflow.md) | High | ? | Working vulnerability Agus | None |
-| 10 | set-contract-storage | Authorization | Tiki | [Insufficient access control on set_contract_storage() function.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/set-contract-storage/set-contract-storage.md)  | High | ? | Tiki | None |
+| Num | Detector ID | Category | Source | Description| Severity | Reviewed |
+| ------ | ------ | ------ | ------| ------| ------ | ------ | ------ |
+| 1 | integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | An arithmetic operation overflows or underflows the available memory allocated to the variable. | High | Working vulnerability Agus | None |
+| 10 | set-contract-storage | Authorization | Tiki | Insufficient access control on set_contract_storage() function. | High | Tiki | None |
 
 ## Detectors Under Review
 
-| Num | Detector ID | Category | Source | Description| Severity | Confidence | Reviewed | Linter |
-| ------ | ------ | ------ | ------| ------| ------ | ------ | ------ | ------ |
-| 11 | reentrancy | Reentrancy |  Analysis Categories Wiki & Deployed ink! projects |  [Consistency of contract state under recursive calls.](https://github.com/CoinFabrik/web3-grant/tree/main/docs/candidates/potential/reentrancy) | High | ? | Tiki | None |
-| 2 | precision-loss | Arithmetic |  Analysis Categories Wiki |  [Order of multiplications and divisions are important to ensure numerical precision.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Precision-Loss) | High | ? | False | None |
-| 3 | incorrect-shift | Assembly Usage |  Analysis Categories Wiki |  [Arithmetic shift is performed with an incorrect or unexpected value.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Incorrect-shift) | High | ? | False | None |
-| 4 | priviledged-roles | Authorization |  Analysis Categories Wiki |  [A vulnerability can arise if the roles and permissions are not properly defined or implemented, which can lead to unauthorized access to privileged functions and data.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Priviledged-roles) | ? | ? | False | None |\
-| 5 | timeout | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) |  ? | ? | ? | False | None |\
-| 6 | pending-queries | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) |  ? | ? | ? | False | None |\
-| 7 | response-handling | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) | ? | ? | ? | False | None |\
-| 8 | threshold-not-enforced | Validations and error handling |  [Audit-7](https://raw.githubusercontent.com/parallel-finance/auditing-report/main/Halborn_Parallel_fi_Loans_Pallet_Substrate_Pallet_Security_Audit_Report_Final.pdf) | ? | ? | ? | False | None |
-| 9 | missing-zero-check | Validations and error handling |  [Audit-7](https://raw.githubusercontent.com/parallel-finance/auditing-report/main/Halborn_Parallel_fi_Loans_Pallet_Substrate_Pallet_Security_Audit_Report_Final.pdf) | ? | ? | ? | False | None |
+| Num | Detector ID | Category | Source | Description| Severity | Reviewed |
+| ------ | ------ | ------ | ------| ------| ------ | ------ |
+| 11 | reentrancy | Reentrancy |  Analysis Categories Wiki & Deployed ink! projects |  [Consistency of contract state under recursive calls.](https://github.com/CoinFabrik/web3-grant/tree/main/docs/candidates/potential/reentrancy) | High | Tiki |
+| 2 | precision-loss | Arithmetic |  Analysis Categories Wiki |  [Order of multiplications and divisions are important to ensure numerical precision.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Precision-Loss) | High | False |
+| 3 | incorrect-shift | Assembly Usage |  Analysis Categories Wiki |  [Arithmetic shift is performed with an incorrect or unexpected value.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Incorrect-shift) | High | False |
+| 4 | priviledged-roles | Authorization |  Analysis Categories Wiki |  [A vulnerability can arise if the roles and permissions are not properly defined or implemented, which can lead to unauthorized access to privileged functions and data.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Priviledged-roles) | ? | False |
+| 5 | timeout | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) |  ? | ? | False |
+| 6 | pending-queries | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) |  ? | ? | False |
+| 7 | response-handling | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) | ? | ? | False |
+| 8 | threshold-not-enforced | Validations and error handling |  [Audit-7](https://raw.githubusercontent.com/parallel-finance/auditing-report/main/Halborn_Parallel_fi_Loans_Pallet_Substrate_Pallet_Security_Audit_Report_Final.pdf) | ? | ? | False |
+| 9 | missing-zero-check | Validations and error handling |  [Audit-7](https://raw.githubusercontent.com/parallel-finance/auditing-report/main/Halborn_Parallel_fi_Loans_Pallet_Substrate_Pallet_Security_Audit_Report_Final.pdf) | ? | ? | False |
+
 
 ## Discarded Detectors
 
