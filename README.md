@@ -20,6 +20,7 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 | time-manipulation     | Block attributes | Analysis Categories Wiki                        | [Using block attributes in order to determine time can lead to manipulation by miners.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/Block-attributes/Time-manipulation)                                        | ?        | FALSE    | 2-Under Review Coinfabrik |
 
 We prioritize analysis on issues that appear on [deployed projects](https://docs.google.com/spreadsheets/d/19fVqHwQwfhWUBfHppiEnr9yJ9Ep-qr_czGSSkTvKn5E/edit?usp=share_link) as potential vulnerabilities by chatGPT.
+
 Take a look at [this](https://docs.google.com/spreadsheets/d/1mCE1KIXSngQP8VsY7fo4UqH_QL_7VKQ0JSUvhGuY4Rs/edit#gid=0) table for other detector candidates.
 
 ## Methodology
