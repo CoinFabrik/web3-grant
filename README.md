@@ -11,7 +11,7 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 
 ## Detectors Under Review by Coinfabrik
 
-| Detector ID | Category | Source | Description | Severity | Reviewed | Status | 
+| Detector ID | Category | Source | Description | Severity | Reviewing | Status | 
 |----------------------|------------------|--------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|----------|----------|---------------------------|
 | reentrancy            | Reentrancy       | Analysis Categories Wiki & Deployed ink! projects | [Consistency of contract state under recursive calls.](https://github.com/CoinFabrik/web3-grant/tree/main/docs/candidates/potential/reentrancy)                                                                         | High     | Tiki, Turi | 3-Documenting             |
 | unexpected-revert     | DoS              | Analysis Categories Wiki                        | [Unexpected revert occurs when the access to a function is blocked by forcing it to revert.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/DoS/Unexpected-revert)                                    | ?        | FALSE    | 2-Under Review Coinfabrik |
@@ -29,7 +29,7 @@ We have two sources for candidate for examples to be detected (detectors):
 
 2. Deployed [ink! projects](https://docs.google.com/spreadsheets/d/19fVqHwQwfhWUBfHppiEnr9yJ9Ep-qr_czGSSkTvKn5E/edit?usp=share_link).
 
-3. The [Analysis Categories Wiki](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses). In order to get candidates we search the wiki for examples in solidity and try to generate the candidate in ink! using ChatGPT with the following prompt below. If the type of vulnerability is possible, a new line is added to the Detectors list. If the type of vulnerability is not possible, a new line is added to the Discarded Detectors list.
+3. The [Analysis Categories Wiki](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses). In order to get candidates we search the wiki for examples in solidity and try to generate the candidate in ink! using ChatGPT with the following prompt below. If the type of vulnerability is possible, a new line is added to the Detectors list. If the type of vulnerability is not possible, a new line is added to the [candidates table](https://docs.google.com/spreadsheets/d/1mCE1KIXSngQP8VsY7fo4UqH_QL_7VKQ0JSUvhGuY4Rs/edit#gid=0).
 
 Chat GPT Prompt:
 
@@ -43,11 +43,11 @@ If this type of vulnerability is not possible, explain why it is not possible in
 ## References
 
 Similar Tools from other Blockchains:
-- [Slither](https://github.com/crytic/slither): Static analyzer for solidity.\
-- [Rustle](https://github.com/blocksecteam/rustle): Static analyzer for Near.\
+- [Slither](https://github.com/crytic/slither): Static analyzer for solidity.
+- [Rustle](https://github.com/blocksecteam/rustle): Static analyzer for Near.
 
 Candidate tools to fork/work with:\
-- [Dylint](https://github.com/trailofbits/dylint): Rust linting tool, dynamic set of lints. Based on Clippy, it can replicate Clippy.\
+- [Dylint](https://github.com/trailofbits/dylint): Rust linting tool, dynamic set of lints. Based on Clippy, it can replicate Clippy.
 - [Clippy](https://github.com/rust-lang/rust-clippy): Rust linting tool, static set of lints.
 
 
