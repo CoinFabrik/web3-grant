@@ -48,7 +48,7 @@ Similar Tools from other Blockchains:
 - [Slither](https://github.com/crytic/slither): Static analyzer for solidity.
 - [Rustle](https://github.com/blocksecteam/rustle): Static analyzer for Near.
 
-Candidate tools to fork/work with:\
+Candidate tools to fork/work with:
 - [Dylint](https://github.com/trailofbits/dylint): Rust linting tool, dynamic set of lints. Based on Clippy, it can replicate Clippy.
 - [Clippy](https://github.com/rust-lang/rust-clippy): Rust linting tool, static set of lints.
 
