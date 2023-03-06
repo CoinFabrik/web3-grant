@@ -14,7 +14,7 @@ External calls, therefore, could open the opportunity for a malicious contract t
 
 ## Exploit Scenario
 
-Working on this ....
+In order to perform this exploit we work through an example consisting of two contracts: a Vault contract and an Exploit contract.
 
 See this [preliminary tutorial](https://drive.google.com/file/d/1xdd3sECx0_qwVmwTpqs2zHNdKjghAae3/view?usp=share_link) to see where we are currently stuck.
 
