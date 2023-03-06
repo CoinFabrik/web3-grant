@@ -4,35 +4,22 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 
 ## Detectors
 
-| Num | Detector ID | Category | Source | Description| Severity | Reviewed |
-| ------ | ------ | ------ | ------| ------| ------ | ------ |
-| 1 | integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/integer-overflow-or-underflow/integer-overflow-or-underflow.md) | High | Working vulnerability Agus |
-| 10 | set-contract-storage | Authorization | Tiki | [Insufficient access control on set_contract_storage() function.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/set-contract-storage/set-contract-storage.md) | High | Tiki |
+| Detector ID | Category | Source | Description| Severity | Reviewed |
+| ------ | ------ | ------| ------| ------ | ------ |
+| integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/integer-overflow-or-underflow/integer-overflow-or-underflow.md) | High | Agus |
+| set-contract-storage | Authorization | Tiki | [Insufficient access control on set_contract_storage() function.](https://github.com/CoinFabrik/web3-grant/blob/main/docs/detectors/set-contract-storage/set-contract-storage.md) | High | Tiki |
 
-## Detectors Under Review
+## Detectors Under Review by Coinfabrik
 
-| Num | Detector ID | Category | Source | Description| Severity | Reviewed |
-| ------ | ------ | ------ | ------| ------| ------ | ------ |
-| 11 | reentrancy | Reentrancy |  Analysis Categories Wiki & Deployed ink! projects |  [Consistency of contract state under recursive calls.](https://github.com/CoinFabrik/web3-grant/tree/main/docs/candidates/potential/reentrancy) | High | Tiki |
-| 2 | precision-loss | Arithmetic |  Analysis Categories Wiki |  [Order of multiplications and divisions are important to ensure numerical precision.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Precision-Loss) | High | False |
-| 3 | incorrect-shift | Assembly Usage |  Analysis Categories Wiki |  [Arithmetic shift is performed with an incorrect or unexpected value.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Incorrect-shift) | High | False |
-| 4 | priviledged-roles | Authorization |  Analysis Categories Wiki |  [A vulnerability can arise if the roles and permissions are not properly defined or implemented, which can lead to unauthorized access to privileged functions and data.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Detectors/Priviledged-roles) | ? | False |
-| 5 | timeout | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) |  ? | ? | False |
-| 6 | pending-queries | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) |  ? | ? | False |
-| 7 | response-handling | Validations and error handling |  [Audit-4](https://blog.quarkslab.com/resources/2022-02-27-xcmv2-audit/21-12-908-REP.pdf) | ? | ? | False |
-| 8 | threshold-not-enforced | Validations and error handling |  [Audit-7](https://raw.githubusercontent.com/parallel-finance/auditing-report/main/Halborn_Parallel_fi_Loans_Pallet_Substrate_Pallet_Security_Audit_Report_Final.pdf) | ? | ? | False |
-| 9 | missing-zero-check | Validations and error handling |  [Audit-7](https://raw.githubusercontent.com/parallel-finance/auditing-report/main/Halborn_Parallel_fi_Loans_Pallet_Substrate_Pallet_Security_Audit_Report_Final.pdf) | ? | ? | False |
+| Detector ID | Category | Source | Description | Severity | Reviewed | Status | 
+|----------------------|------------------|--------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|----------|----------|---------------------------|
+| reentrancy            | Reentrancy       | [Analysis Categories Wiki & Deployed ink! projects | Consistency of contract state under recursive calls.](https://github.com/CoinFabrik/web3-grant/tree/main/docs/candidates/potential/reentrancy)                                                                         | High     | Tiki, Turi | 3-Documenting             |
+| unexpected-revert     | DoS              | Analysis Categories Wiki                        | [Unexpected revert occurs when the access to a function is blocked by forcing it to revert.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/DoS/Unexpected-revert)                                    | ?        | FALSE    | 2-Under Review Coinfabrik |
+| block-gas-limit       | DoS              | Analysis Categories Wiki                        | [Block Gas Limit happens when an attacker floods the execution of a function with so much data that it hits the gas limit of the block, causing the transaction to revert.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/DoS/Block-gas-limit) | ?        | FALSE    | 2-Under Review Coinfabrik |
+| weak-randomness       | Block attributes | Analysis Categories Wiki                        | [Insecure source of randomness through block attributes.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/Block-attributes/Use-of-insufficiently-random-values)                                                                         | ?        | FALSE    | 2-Under Review Coinfabrik |
+| time-manipulation     | Block attributes | Analysis Categories Wiki                        | [Using block attributes in order to determine time can lead to manipulation by miners.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/Block-attributes/Time-manipulation)                                        | ?        | FALSE    | 2-Under Review Coinfabrik |
 
-
-## Discarded Detectors
-
-These candidates did not make it to the Detectors list because they were not relevant to substrate.
-
-| Detector ID | Category | Source | Description| Reviewed |
-| ------ | ------ | ------ | ------ | ------ |
-| right-to-left-override-character | Assembly Usage |  Analysis Categories Wiki |  [An attacker can manipulate the logic of the contract by using a right-to-left-override character](banana) | False |
-| tx.origin-vs-msg.sender | Authorization |  Analysis Categories Wiki |  [A contract using tx.origin to validate a user's identity is potentially insecure, since any call by an intermediate contract that the user interacts with would have the same value of tx.origin.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Discarded-Detectors/Tx.origin-vs-msg.sender) | False |
-| delegatecall | Authorization |  Analysis Categories Wiki | [Delegatecall allows a contract to call another contract's function while preserving context.](https://gitlab.com/coinfabrik-private/web3-grant/scout/-/wikis/Scout/Discarded-Detectors/Delegatecall) | False |
+Take a look at [this](https://docs.google.com/spreadsheets/d/1mCE1KIXSngQP8VsY7fo4UqH_QL_7VKQ0JSUvhGuY4Rs/edit#gid=0) table for other detector candidates.
 
 ## Methodology
 
