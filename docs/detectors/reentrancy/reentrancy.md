@@ -199,16 +199,15 @@ mod exploit {
 }
 
 ```
-
-
 ### Deployment
 
 Vault and Exploit files can be found under the directories ./example/exploit and ./example/vault. The whole exploit example can be run automatically using the `deploy.sh` file.
 
-
 ### Tutorial
 
-See this preliminary [tutorialV1](https://drive.google.com/file/d/1xdd3sECx0_qwVmwTpqs2zHNdKjghAae3/view?usp=share_link) (in Spanish) showing this exploit in action.
+See this [tutorial](https://drive.google.com/file/d/1ekyXG7Mc9FLk916eHFc2W7xXlfZbpA0_/view?usp=share_link) (in Spanish) showing this exploit in action.
+
+In this preliminary [tutorialV1](https://drive.google.com/file/d/1xdd3sECx0_qwVmwTpqs2zHNdKjghAae3/view?usp=share_link) (in Spanish) we explain a bit more in depth the different functions.
 
 ## Recommendation
 
