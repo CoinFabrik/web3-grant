@@ -1,0 +1,8 @@
+rules:
+- id: untitled_rule
+  languages:
+      - rust
+  pattern: env::set_contract_storage(...)
+  message: Semgrep found a match
+  severity: WARNING
+
