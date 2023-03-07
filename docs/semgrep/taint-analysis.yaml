@@ -1,0 +1,12 @@
+rules:
+- id: taint-analysis
+  languages:
+      - rust
+  mode: taint
+  pattern-sources:
+    - pattern: read_data(...)
+  pattern-sinks:
+    - pattern: eval_data(...)
+  message:  I found you!
+  severity: WARNING
+
