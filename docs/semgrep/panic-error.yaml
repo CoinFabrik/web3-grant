@@ -1,0 +1,8 @@
+rules:
+- id: panic-error
+  languages:
+      - rust
+  pattern: panic!(...)
+  message: Semgrep found a match
+  severity: WARNING
+
