@@ -12,7 +12,6 @@ pub struct Input {
     pub valueForSub: u8,
 }
 
-
 fuzz_target!(|input: Input| {
     let mut contract = integer_overflow_underflow::IntegerOverflowUnderflow::new(input.valueForNew);
     contract.add(input.valueForAdd);
