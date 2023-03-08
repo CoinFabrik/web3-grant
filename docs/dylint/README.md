@@ -4,21 +4,24 @@ Dylint is a Rust linting tool, similar to Clippy. But whereas Clippy runs a pred
 
 ## Installation
 
-`$ cargo install cargo-dylint dylint-link`
-
+```sh
+$ cargo install cargo-dylint dylint-link`
+```
 ## Usage
 
 Add the following in the Cargo.toml project to analyse:
+
+```sh
 [workspace.metadata.dylint]
-
-`libraries = [
+libraries = [
     { path = "/PATH/TO/LINTER/" },
-]`
-
+]
+```
 and then run in the project folder
 
+```sh
 `$ cargo dylint --all --workspace` 
-
+```
 
 ## References
 
