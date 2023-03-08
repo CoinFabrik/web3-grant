@@ -12,7 +12,7 @@ $ cargo install cargo-dylint dylint-link`
 ```
 
 ## Usage
-1) Create your linter. For instance [set_contract_storage]https://github.com/CoinFabrik/web3-grant/tree/dylint/docs/dylint/set_contract_storage
+1) Create your linter. For instance [set_contract_storage](https://github.com/CoinFabrik/web3-grant/tree/dylint/docs/dylint/set_contract_storage)
 
 2) Go to the project you want to analyze and the following annotation in the Cargo.toml:
 
