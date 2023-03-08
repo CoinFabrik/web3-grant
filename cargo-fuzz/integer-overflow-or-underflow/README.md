@@ -10,15 +10,19 @@ is [libFuzzer](https://rust-fuzz.github.io/book/cargo-fuzz.html)
 LibFuzzer needs LLVM sanitizer support, so this only works on x86-64 Linux, x86-64 macOS and Apple-Silicon (aarch64) macOS for now. Requires a C++ compiler with C++11 support. Rust provides multiple compilers. This project requires the nightly compiler since it uses the -Z compiler flag to provide address sanitization. Assuming you used rustup to install Rust, you can check your default compiler with:
 
 
-`$ rustup default
-stable-x86_64-unknown-linux-gnu (default) # Not the compiler we want.`
+```
+$ rustup default
+stable-x86_64-unknown-linux-gnu (default) # Not the compiler we want.
+```
 
 To change to the nightly compiler:
 
 
-`$ rustup install nightly
+```
+$ rustup install nightly
 $ rustup default nightly
-nightly-x86_64-unknown-linux-gnu (default) # The correct compiler.`
+nightly-x86_64-unknown-linux-gnu (default) # The correct compiler.
+```
 
 ## Installing
 
