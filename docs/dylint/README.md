@@ -1,15 +1,20 @@
-# Dylint
+# Dylint based detectors
 
-Dylint is a Rust linting tool, similar to Clippy. But whereas Clippy runs a predetermined, static set of lints, Dylint runs lints from user-specified, dynamic libraries. Thus, Dylint allows developers to maintain their own personal lint collections.
+We present a set of detectors that relie on the dylint tool.   
+dylint is a Rust linting tool, similar to Clippy but instead  of running a statically predetermined set of lints, dylint runs lints from user-specified, dynamic libraries. 
+
+dylint is easier to extend and reduce the compile/run cicle,  allowing developers to maintain their own personal lint collections.
 
 ## Installation
 
 ```sh
 $ cargo install cargo-dylint dylint-link`
 ```
-## Usage
 
-Add the following in the Cargo.toml project to analyse:
+## Usage
+1) Create your linter. For instance [set_contract_storage]https://github.com/CoinFabrik/web3-grant/tree/dylint/docs/dylint/set_contract_storage
+
+2) Go to the project you want to analyze and the following annotation in the Cargo.toml:
 
 ```sh
 [workspace.metadata.dylint]
