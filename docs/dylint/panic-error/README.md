@@ -1,4 +1,4 @@
-# Panic_Errir
+# Panic_Error
 
 ### What it does
 The panic! macro is used to stop execution when a condition is not met.
@@ -23,6 +23,13 @@ pub fn add(&mut self, value: u32)   {
 
 // example code that does not raise a warning
 ```rust
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+pub enum Error {
+  /// An overflow was produced while adding
+  OverflowError,
+}
+
 pub fn add(&mut self, value: u32) -> Result<(), Error>  {
     match self.value.checked_add(value) {
         Some(v) => self.value = v,
