@@ -2,7 +2,7 @@
 
 [Cargo-Fuzz](https://github.com/rust-fuzz/cargo-fuzz) is a tool to invoke a fuzzer. 
 Currently, the only fuzzer it supports 
-is [libFuzzer](https://rust-fuzz.github.io/book/cargo-fuzz.html) 
+is [libFuzzer](https://llvm.org/docs/LibFuzzer.html) 
 (through the [libfuzzer-sys](https://github.com/rust-fuzz/libfuzzer-sys) crate), but it could be extended to support other fuzzers in the future.
 
 ## Requirements
