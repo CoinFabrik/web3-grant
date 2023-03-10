@@ -7,11 +7,11 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 
 | Detector ID | Category | Source | Description| Severity | Reviewed |
 | ------ | ------ | ------| ------| ------ | ------ |
-| integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](docs/detectors/integer-overflow-or-underflow/integer-overflow-or-underflow.md) | High | Agus |
-| set-contract-storage | Authorization | Tiki | [Insufficient access control on set_contract_storage() function.](docs/detectors/set-contract-storage/set-contract-storage.md) | High | Tiki, Turi |
-| reentrancy            | Reentrancy       | Analysis Categories Wiki & Deployed ink! projects | [Consistency of contract state under recursive calls.](docs/detectors/reentrancy/reentrancy.md)                                                                         | High     | Tiki, Turi |
-| panic-error            | Validations and error handling       | Analysis Categories Wiki & Deployed ink! projects | [Code panics on error instead of using descriptive enum](docs/detectors/panic-error/panic-error.md)                                                                         | Informational     | Agus |
-| unused-return-enum            | Validations and error handling       | Analysis Categories Wiki & Deployed ink! projects | [Return enum from a function is not completely used](docs/detectors/unused-return-enum/unused-return-enum.md) | Low     | Agus |
+| integer-overflow-or-underflow | Arithmetic | Analysis Categories Wiki | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](docs/detectors/integer-README.md) | High | Agus |
+| set-contract-storage | Authorization | Tiki | [Insufficient access control on set_contract_storage() function.](docs/detectors/set-contract-storage/README.md) | High | Tiki, Turi |
+| reentrancy            | Reentrancy       | Analysis Categories Wiki & Deployed ink! projects | [Consistency of contract state under recursive calls.](docs/detectors/reentrancy/README.md)                                                                         | High     | Tiki, Turi |
+| panic-error            | Validations and error handling       | Analysis Categories Wiki & Deployed ink! projects | [Code panics on error instead of using descriptive enum](docs/detectors/panic-error/README.md)                                                                         | Informational     | Agus |
+| unused-return-enum            | Validations and error handling       | Analysis Categories Wiki & Deployed ink! projects | [Return enum from a function is not completely used](docs/detectors/unused-return-enum/README.md) | Low     | Agus |
 | dos-unbounded-operation | Validations and error handling | Analysis Categories Wiki & Deployed ink! projects | [Return enum from a function is not completely used](docs/detectors/dos-unbounded-operation/README.md) | Low | Agus |
 
 ## References
