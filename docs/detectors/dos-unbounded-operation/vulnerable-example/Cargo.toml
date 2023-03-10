@@ -15,6 +15,7 @@ std = [
     "scale-info/std",
 ]
 ink-as-dependency = []
+e2e-tests = []
 
 [dependencies]
 ink = { version = "4.0", default-features = false }
