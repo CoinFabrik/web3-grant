@@ -73,12 +73,6 @@ impl EarlyLintPass for PanicError {
         }
     }
 
-    fn check_item_post(&mut self, _cx: &EarlyContext, item: &Item) {
-        if let Some(node_id) = self.stack.pop() {
-            assert_eq!(node_id, item.id);
-        }
-    }
-
     fn check_expr(&mut self, cx: &EarlyContext, expr: &Expr) {
         if_chain! {
             if !self.in_test_item();
@@ -93,7 +87,6 @@ impl EarlyLintPass for PanicError {
                 .as_slice();
             if let TokenKind::Literal(lit) = token.kind;
             if lit.kind == LitKind::Str;
-
             then {
                 span_lint_and_help(
                     cx,
@@ -106,25 +99,6 @@ impl EarlyLintPass for PanicError {
             }
         }
     }
-}
-
-impl PanicError {
-    fn in_test_item(&self) -> bool {
-        !self.stack.is_empty()
-    }
-}
-
-fn capitalize_err_msg(s: &str) -> String {
-    s.split_whitespace()
-        .map(|word| {
-            let mut chars = word.chars();
-            match chars.next() {
-                None => String::new(),
-                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
-            }
-        })
-        .collect::<Vec<String>>()
-        .join(" ")
 }
 
 fn is_test_item(item: &Item) -> bool {
@@ -146,4 +120,23 @@ fn is_test_item(item: &Item) -> bool {
             }
         }
     })
+}
+
+impl PanicError {
+    fn in_test_item(&self) -> bool {
+        !self.stack.is_empty()
+    }
+}
+
+fn capitalize_err_msg(s: &str) -> String {
+    s.split_whitespace()
+        .map(|word| {
+            let mut chars = word.chars();
+            match chars.next() {
+                None => String::new(),
+                Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+            }
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
 }
