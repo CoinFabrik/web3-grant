@@ -83,7 +83,7 @@ mod dos_unbounded_operation {
 
 An example can be found under the directory [vulnerable-example](./vulnerable-example). The exploit can be tested by running the end-to-end test called `pay_out_runs_out_of_gas`.
 
-## Recommendation
+## Remediation
 
 The main recommendation is to change the form of payments to favor pull over push. This way, the contract does not need to iterate over a vector of payees, and thus it does not need to consume all the gas in a block. The payee could instead call a function that will transfer the value to the payee's address.
 
