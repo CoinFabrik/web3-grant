@@ -788,6 +788,8 @@ See this [tutorial](https://drive.google.com/file/d/1jXZNBy_TmJbPhDYSzZSSMGmm9-N
 Abitrary users should not have control over keys because it implies writing any value of a mapping, lazy variable, or the main struct of the contract located in position 0 of the storage. 
 Set access control and proper authorization validation for the `set_contract_storage()` function.
 
+[Include remediated example]
+
 ## References
 * https://use.ink/datastructures/storage-layout
 

@@ -1,20 +1,3 @@
-# Vulnerability Name
-
-## Configuration
-
-- Detector ID: `detector-name`
-- Analysis Category: `Analysis Category`
-- Severity: `Severity`
-
-## Description
-
-Some description of the vulnerability.
-
-## Exploit Scenario
-
-An exploit scenario with code snippets describing the vulnerability.
-
-```rust
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[ink::contract]
@@ -46,21 +29,23 @@ mod template {
             self.value
         }
     }
-```
 
-### Deployment
+    #[cfg(test)]
+    mod tests {
+        use super::*;
 
-[Optional] Observations about deployment.
+        #[ink::test]
+        fn constructor_works() {
+            let template = Template::new(false);
+            assert_eq!(template.get(), false);
+        }
 
-### Tutorial
-
-[Optional] Reference to video tutorial deploying, running and explaining the exploit.
-
-## Remediation
-
-Explanation with code snippets on how to remediate the vulnerability.
-
-## References
-
-- Url to some useful reference to this type of vulnereability
-- Another url to some reference
+        #[ink::test]
+        fn flips_correctly() {
+            let mut template = Template::new(false);
+            assert_eq!(template.get(), false);
+            template.flip();
+            assert_eq!(template.get(), true);
+        }
+    }
+}
