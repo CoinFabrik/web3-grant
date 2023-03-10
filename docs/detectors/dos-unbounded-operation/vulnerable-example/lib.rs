@@ -130,7 +130,7 @@ mod dos_unbounded_operation {
 
         #[ink_e2e::test]
         #[should_panic(expected = "pay_out failed: CallDryRun")]
-        async fn pay_out_overflows(mut client: ink_e2e::Client<C, E>) {
+        async fn pay_out_runs_out_of_gas(mut client: ink_e2e::Client<C, E>) {
             // Arrange
             let constructor = ForLoopDosRef::new();
             let contract_acc_id = client
