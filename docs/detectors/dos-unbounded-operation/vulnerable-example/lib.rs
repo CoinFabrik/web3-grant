@@ -99,7 +99,7 @@ mod dos_unbounded_operation {
             // Arrange
             let constructor = DosUnboundedOperationRef::new();
             let contract_acc_id = client
-                .instantiate("for-loop-dos", &ink_e2e::alice(), constructor, 0, None)
+                .instantiate("dos-unbounded-operation", &ink_e2e::alice(), constructor, 0, None)
                 .await
                 .expect("instantiate failed")
                 .account_id;
@@ -134,7 +134,7 @@ mod dos_unbounded_operation {
             // Arrange
             let constructor = DosUnboundedOperationRef::new();
             let contract_acc_id = client
-                .instantiate("for-loop-dos", &ink_e2e::alice(), constructor, 0, None)
+                .instantiate("dos-unbounded-operation", &ink_e2e::alice(), constructor, 0, None)
                 .await
                 .expect("instantiate failed")
                 .account_id;
