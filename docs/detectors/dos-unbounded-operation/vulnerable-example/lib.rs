@@ -99,7 +99,13 @@ mod dos_unbounded_operation {
             // Arrange
             let constructor = DosUnboundedOperationRef::new();
             let contract_acc_id = client
-                .instantiate("dos-unbounded-operation", &ink_e2e::alice(), constructor, 0, None)
+                .instantiate(
+                    "dos-unbounded-operation",
+                    &ink_e2e::alice(),
+                    constructor,
+                    0,
+                    None,
+                )
                 .await
                 .expect("instantiate failed")
                 .account_id;
@@ -121,8 +127,12 @@ mod dos_unbounded_operation {
                 .expect("get_payee failed");
 
             let payee = get_payee_res.return_value().expect("payee not found");
-            // let alice_account_id: AccountId = ink_e2e::alice().account_id().to_owned(); //FIXME
-            // assert_eq!(payee.address, alice_account_id);
+            let alice_account_id: ink::primitives::AccountId =
+                ink_e2e::alice::<ink_e2e::PolkadotConfig>()
+                    .account_id()
+                    .0
+                    .into();
+            assert_eq!(payee.address, alice_account_id);
             assert_eq!(payee.value, 1000);
 
             Ok(())
@@ -134,7 +144,13 @@ mod dos_unbounded_operation {
             // Arrange
             let constructor = DosUnboundedOperationRef::new();
             let contract_acc_id = client
-                .instantiate("dos-unbounded-operation", &ink_e2e::alice(), constructor, 0, None)
+                .instantiate(
+                    "dos-unbounded-operation",
+                    &ink_e2e::alice(),
+                    constructor,
+                    0,
+                    None,
+                )
                 .await
                 .expect("instantiate failed")
                 .account_id;
