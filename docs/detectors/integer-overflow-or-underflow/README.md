@@ -121,7 +121,7 @@ error: could not compile `integer-overflow` due to 2 previous errors
 See this [tutorial](https://drive.google.com/file/d/1B9SCFUok8Rxo6enIuz-f83fHPpS4jY1H/view?usp=share_link) (in Spanish) showing this exploit in action.
 
 
-## Recommendation
+## Remediation
 
 The code should then be changed to explicitly use checked, overflowing or saturating arithmetics, e.g.:
 
