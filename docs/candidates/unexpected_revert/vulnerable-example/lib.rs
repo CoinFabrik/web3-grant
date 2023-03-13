@@ -17,7 +17,7 @@ mod unexpected_revert {
         vote_timestamp_end: u64
     }
 
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+    #[derive(Debug, PartialEq, Eq, Clone, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Errors {
         CandidateAlreadyAdded,
@@ -90,6 +90,20 @@ mod unexpected_revert {
         }
 
         #[ink(message)]
+        pub fn get_total_candidates(&self) -> u64 {
+            self.candidates.len() as u64
+        }
+
+        #[ink(message)]
+        pub fn get_candidate(&self, index: u64) -> Result<AccountId,Errors> {
+            if (index as usize) < self.candidates.len() {
+                Ok(self.candidates[index as usize])
+            } else {
+                Err(Errors::CandidateDoesntExist)
+            }
+        }
+
+        #[ink(message)]
         pub fn account_has_voted(&self, account: AccountId) -> bool {
             self.already_voted.get(account).unwrap_or(false)
         }
@@ -126,4 +140,45 @@ mod unexpected_revert {
         }
     }
 
+    #[cfg(all(test, feature = "e2e-tests"))]
+    mod e2e_tests {
+        use super::*;
+        use ink_e2e::build_message;
+        use std::time::SystemTime;
+        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+
+        #[ink_e2e::test]
+        #[should_panic(expected = "add_candidate failed: CallDryRun")]
+        async fn insert_512_candidates(mut client: ink_e2e::Client<C, E>) {
+            let now: u64 = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+                Ok(n) => (n.as_secs()+10*60)*1000,
+                Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+            };
+            let constructor = UnexpectedRevertRef::new(now);
+            let contract_acc_id = client
+                .instantiate("unexpected-revert", &ink_e2e::alice(), constructor, 0, None)
+                .await
+                .expect("instantiate failed")
+                .account_id;
+
+            for i in 0u32..512 {
+                let mut zero_vec = vec![0u8;28];
+                zero_vec.extend(i.to_be_bytes().iter().cloned());
+                let arr: [u8; 32] = match zero_vec.as_slice().try_into(){
+                    Ok(arr) => arr,
+                    Err(_) => panic!(),
+                };
+                let addr = AccountId::from(arr);
+                
+                let add_candidate = build_message::<UnexpectedRevertRef>(contract_acc_id.clone())
+                    .call(|contract| {
+                        contract.add_candidate(addr)
+                    });
+                client
+                    .call(&ink_e2e::bob(), add_candidate.clone(), 0, None)
+                    .await
+                    .expect("add_candidate failed");
+            }
+        }
+    }
 }
