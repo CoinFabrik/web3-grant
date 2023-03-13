@@ -1,5 +1,5 @@
 [package]
-name = "template"
+name = "dos-unbounded-operation"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2021"
@@ -15,6 +15,7 @@ std = [
     "scale-info/std",
 ]
 ink-as-dependency = []
+e2e-tests = []
 
 [dependencies]
 ink = { version = "4.0", default-features = false }
@@ -23,10 +24,3 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 
 [dev-dependencies]
 ink_e2e = { version = "4.0" }
-
-
-[profile.dev]
-overflow-checks = false
-
-[profile.release]
-overflow-checks = false

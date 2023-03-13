@@ -783,10 +783,26 @@ Breaking down the used key `[255,0,0,0,212,53,147,199,21,253,211,28,97,20,26,189
 
 See this [tutorial](https://drive.google.com/file/d/1jXZNBy_TmJbPhDYSzZSSMGmm9-NGVGzE/view?usp=share_link) (in Spanish) showing this exploit in action. Tutorial starts at min 10:30.
 
-## Recommendation
+## Remediation
 
 Abitrary users should not have control over keys because it implies writing any value of a mapping, lazy variable, or the main struct of the contract located in position 0 of the storage. 
-Set access control and proper authorization validation for the `set_contract_storage()` function.
+Set access control and proper authorization validation for the `set_contract_storage()` function. 
+
+In this case, ensure only the owner (or desired account) can call `misused_set_contract_storage()`.
+
+```rust
+        #[ink(message)]
+        fn misused_set_contract_storage(&mut self, user_input_key: [u8; 68], user_input_data: u128) -> Result<()> {
+            if self.env().caller() == self.owner {
+                env::set_contract_storage(&user_input_key, &user_input_data);
+                Ok(())
+            } else {
+                Err(Error::UserNotOwner)
+            }
+        }
+    }
+```
+
 
 [Include remediated example]
 
