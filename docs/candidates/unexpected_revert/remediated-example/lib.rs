@@ -141,12 +141,42 @@ mod unexpected_revert {
         }
     }
 
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use std::time::SystemTime;
+
+        #[ink::test]
+        fn insert_512_candidates() {
+            let now: u64 = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
+                Ok(n) => (n.as_secs()+10*60)*1000,
+                Err(_) => panic!("SystemTime before UNIX EPOCH!"),
+            };
+            let mut contract = UnexpectedRevert::new(now);
+
+            let mut candidate: Result<(), Errors> = Err(Errors::VoteEnded);
+            for i in 0u32..512 {
+                let mut zero_vec = vec![0u8;28];
+                zero_vec.extend(i.to_be_bytes().iter().cloned());
+                let arr: [u8; 32] = match zero_vec.as_slice().try_into(){
+                    Ok(arr) => arr,
+                    Err(_) => panic!(),
+                };
+                let addr = AccountId::from(arr);
+                candidate = contract.add_candidate(addr);
+                assert_eq!(contract.get_total_candidates(), (i+1) as u64);
+            }
+            
+            assert_eq!(contract.get_total_candidates(), 512u64);   
+            assert_eq!(candidate.is_ok(), true);   
+        }
+    }
+
     #[cfg(all(test, feature = "e2e-tests"))]
     mod e2e_tests {
         use super::*;
         use ink_e2e::build_message;
         use std::time::SystemTime;
-        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
         #[ink_e2e::test]
         async fn insert_512_candidates(mut client: ink_e2e::Client<C, E>) {
