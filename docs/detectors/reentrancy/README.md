@@ -201,7 +201,7 @@ mod exploit {
 ```
 ### Deployment
 
-Vault and Exploit files can be found under the directories ./example/exploit and ./example/vault. The whole exploit example can be run automatically using the `deploy.sh` file.
+Vault and Exploit files can be found under the directories ./vulnerable-example/exploit and ./vulnerable-example/vault. The whole exploit example can be run automatically using the `deploy.sh` file.
 
 ### Tutorial
 
@@ -211,9 +211,66 @@ In this preliminary [tutorialV1](https://drive.google.com/file/d/1xdd3sECx0_qwVm
 
 ## Recommendation
 
-Reentrancy can be addressed with the Check-Effect-Interaction pattern, a best practice that indicates that external calls should be the last thing to be executed in a function.
+In general, risks associated to reentrancy can be addressed with the Check-Effect-Interaction pattern, a best practice that indicates that external calls should be the last thing to be executed in a function. In this example, this can be done by inserting the balance before transfering the value (see ./remediated-example/remediated-example-1).
 
-In our example, this means to set the balance of the message sender before transfering them the tokens. Another approach is to use a [reentrancy guard](https://github.com/Supercolony-net/openbrush-contracts/tree/main/contracts/src/security/reentrancy_guard) like the one offered by [OpenBrush](https://github.com/Supercolony-net/openbrush-contracts).
+```rust
+        pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector: u32) -> Balance {
+            ink::env::debug_println!("call_with_value function called from {:?}",self.env().caller());
+            let caller_addr = self.env().caller();
+            let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
+            if amount <= caller_balance {
+                self.balances.insert(caller_addr, &(caller_balance - amount));
+                let call = build_call::<ink::env::DefaultEnvironment>()
+                    .call(address)
+                    .transferred_value(amount)
+                    .exec_input(
+                        ink::env::call::ExecutionInput::new(Selector::new(selector.to_be_bytes()))
+                    )
+                    .call_flags(
+                        ink::env::CallFlags::default()
+                            .set_allow_reentry(true)
+                    )
+                    .returns::<()>()
+                    .params();
+                self.env().invoke_contract(&call)
+                    .unwrap_or_else(|err| panic!("Err {:?}",err))
+                    .unwrap_or_else(|err| panic!("LangErr {:?}",err));
+
+                return caller_balance - amount;
+            } else {
+                return caller_balance
+            }
+        }
+```
+
+Alternatively, if reentrancy by an external contract is not needed, the `set_allow_reentry(true)` should be removed altogether (see ./remediated-example/remediated-example-2). This is equivalent in Substrate to using a [reentrancy guard](https://github.com/Supercolony-net/openbrush-contracts/tree/main/contracts/src/security/reentrancy_guard) like the one offered by [OpenBrush](https://github.com/Supercolony-net/openbrush-contracts).
+
+```rust
+        #[ink(message)]
+        pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector: u32) -> Balance {
+            ink::env::debug_println!("call_with_value function called from {:?}",self.env().caller());
+            let caller_addr = self.env().caller();
+            let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
+            if amount <= caller_balance {
+                let call = build_call::<ink::env::DefaultEnvironment>()
+                    .call(address)
+                    .transferred_value(amount)
+                    .exec_input(
+                        ink::env::call::ExecutionInput::new(Selector::new(selector.to_be_bytes()))
+                    )
+                    .returns::<()>()
+                    .params();
+                self.env().invoke_contract(&call)
+                    .unwrap_or_else(|err| panic!("Err {:?}",err))
+                    .unwrap_or_else(|err| panic!("LangErr {:?}",err));
+                self.balances.insert(caller_addr, &(caller_balance - amount));
+
+                return caller_balance - amount;
+            } else {
+                return caller_balance
+            }
+        }
+```
 
 ## References
 * https://use.ink/datastructures/storage-layout

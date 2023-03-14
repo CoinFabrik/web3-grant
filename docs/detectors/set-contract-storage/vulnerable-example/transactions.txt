@@ -1,0 +1,6 @@
+cargo contract build
+cargo contract upload --suri //Alice ./target/ink/my_contract.contract
+cargo contract instantiate --args 1000000 --suri //Alice
+cargo contract call --contract 5GWuqo5kh7dNjjxTcp1Mz4AGCunE7Rdxvbu7aTcLBDsYBZnB --message BaseErc20::allowance --args 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty --suri //Alice --dry-run
+cargo contract call --contract 5GWuqo5kh7dNjjxTcp1Mz4AGCunE7Rdxvbu7aTcLBDsYBZnB --message MisusedSetContractStorage::misused_set_contract_storage --args [255,0,0,0,212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125,142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72] 1000 --suri //Bob
+cargo contract call --contract 5GWuqo5kh7dNjjxTcp1Mz4AGCunE7Rdxvbu7aTcLBDsYBZnB --message BaseErc20::allowance --args 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty --suri //Alice --dry-run

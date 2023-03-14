@@ -50,7 +50,7 @@ Let's take a closer look at the `add` function. This function takes a value as a
 
 The usage of `panic!` in this example, is not recommended because it will stop the execution of the caller contract. If the method was called by the user, then he will receive `ContractTrapped` as the only error message.
 
-## Recommendation
+## Remediation
 
 The recommended approach is the following:
 

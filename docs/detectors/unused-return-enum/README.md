@@ -1,4 +1,4 @@
-# Reentrancy
+# Unused return enum
 
 ## Configuration
 
@@ -70,7 +70,7 @@ The function first calculates the absolute difference between the two values and
 
 The function then returns an error enum variant `TradingPairErrors::Overflow`. However, the function never returns a `Result` enum variant `Ok`, thus always failing.
 
-## Recommendation
+## Remediation
 
 This function could be easily fixed by returning a `Result` enum variant `Ok` when the percentage difference is calculated successfully. By providing a check in the linter that ensures that all the variants of the `Result` enum are used, this bug could have been avoided.
 
