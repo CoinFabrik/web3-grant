@@ -1,0 +1,65 @@
+[package]
+name = "my_contract-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+my_contract = { path = "..", features = ["arbitrary"] }
+arbitrary = "1.0.1"
+ink = { version = "4.0.1", default-features = false }
+ink_prelude = "4.0.1"
+ink_env = "4.0.1"
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+
+
+[[bin]]
+name = "fuzz_new_works"
+path = "fuzz_targets/fuzz_new_works.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_total_supply_works"
+path = "fuzz_targets/fuzz_total_supply_works.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_balance_of_works"
+path = "fuzz_targets/fuzz_balance_of_works.rs"
+test = false
+doc = false
+
+
+[[bin]]
+name = "fuzz_transfer_works"
+path = "fuzz_targets/fuzz_transfer_works.rs"
+test = false
+doc = false
+
+
+[[bin]]
+name = "fuzz_transfer_from_works"
+path = "fuzz_targets/fuzz_transfer_from_works.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_allowance_must_not_change_on_failed_transfer"
+path = "fuzz_targets/fuzz_allowance_must_not_change_on_failed_transfer.rs"
+test = false
+doc = false
