@@ -12,7 +12,9 @@ use my_contract::erc20::Transfer;
 
 #[derive(Clone, Debug, Arbitrary)]
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
-pub struct Input {}
+pub struct Input {
+    value_for_new: i32
+}
 
 type AccountId = <<Erc20 as ::ink::env::ContractEnv>::Env as ::ink::env::Environment>::AccountId;
 type Balance = <<Erc20 as ::ink::env::ContractEnv>::Env as ::ink::env::Environment>::Balance;
@@ -205,7 +207,7 @@ pub mod tests {
                                     &emitted_events[0],
                                     None,
                                     Some(AccountId::from([0x01; 32])),
-                                    100,
+                                    initial_supply,
                                 );
                             }
                         };
