@@ -1,5 +1,5 @@
 [package]
-name = "panic-error"
+name = "unexpected-revert"
 version = "0.1.0"
 authors = ["[your_name] <[your_email]>"]
 edition = "2021"

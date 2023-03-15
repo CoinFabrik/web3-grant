@@ -139,7 +139,6 @@ mod dos_unbounded_operation {
         }
 
         #[ink_e2e::test]
-        #[should_panic(expected = "pay_out failed: CallDryRun")]
         async fn pay_out_runs_out_of_gas(mut client: ink_e2e::Client<C, E>) {
             // Arrange
             let constructor = DosUnboundedOperationRef::new();
@@ -167,12 +166,10 @@ mod dos_unbounded_operation {
             // Act
             let pay_out = build_message::<DosUnboundedOperationRef>(contract_acc_id.clone())
                 .call(|contract| contract.pay_out());
-            client
-                .call(&ink_e2e::alice(), pay_out, 0, None)
-                .await
-                .expect("pay_out failed");
+            let pay_out_result = client.call(&ink_e2e::alice(), pay_out, 0, None).await;
 
-            // Assert - done by #[should_panic]
+            // Assert
+            assert!(pay_out_result.is_err());
         }
     }
 }
