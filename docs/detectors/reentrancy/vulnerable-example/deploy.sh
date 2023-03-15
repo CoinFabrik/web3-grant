@@ -12,14 +12,14 @@ build_vault() {
 
 deploy_vault() {
     cd vault
-    cargo contract upload --suri //Alice >&2
-    cargo contract instantiate --suri //Alice --skip-confirm | tee /dev/stderr | tail -1 | awk '{print $2}'
+    cargo contract upload --suri //Alice -x >&2
+    cargo contract instantiate --suri //Alice --skip-confirm -x | tee /dev/stderr | tail -1 | awk '{print $2}'
 }
 
 deploy_exploit() {
     cd exploit
-    cargo contract upload --suri //Bob >&2
-    cargo contract instantiate --args 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty $1 1000000 8000000000 --suri //Bob --skip-confirm | tee /dev/stderr | tail -1 | awk '{print $2}'
+    cargo contract upload --suri //Bob -x >&2
+    cargo contract instantiate --args 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty $1 1000000 4 --suri //Bob --skip-confirm -x | tee /dev/stderr | tail -1 | awk '{print $2}'
 }
 
 build_exploit &
