@@ -24,5 +24,5 @@ e2e-tests = []
 
 [workspace.metadata.dylint]
 libraries = [
-    { path = "../../../dylint/set_contract_storage/" },
+    { path = "../../../dylint/smart_contracts_linters/*" },
 ]

@@ -21,3 +21,8 @@ default = ["std"]
 std = ["ink/std", "scale/std", "scale-info/std"]
 ink-as-dependency = []
 e2e-tests = []
+
+[workspace.metadata.dylint]
+libraries = [
+    { path = "../../../dylint/smart_contracts_linters/*" },
+]
