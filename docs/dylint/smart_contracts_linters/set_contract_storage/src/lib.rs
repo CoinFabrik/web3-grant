@@ -2,12 +2,17 @@
 #![warn(unused_extern_crates)]
 
 extern crate rustc_hir;
+extern crate rustc_span;
 
 use clippy_utils::diagnostics::span_lint_and_help;
 use if_chain::if_chain;
+use rustc_hir::intravisit::Visitor;
+use rustc_hir::intravisit::{walk_expr, FnKind};
 use rustc_hir::QPath;
+use rustc_hir::{Body, FnDecl, HirId};
 use rustc_hir::{Expr, ExprKind};
 use rustc_lint::{LateContext, LateLintPass};
+use rustc_span::Span;
 
 dylint_linting::declare_late_lint! {
     /// ### What it does
@@ -19,11 +24,11 @@ dylint_linting::declare_late_lint! {
     ///
     /// ### Example
     /// ```rust
-    /// // example code where a warning is issued
+    /// // example code where left warning is issued
     /// ```
     /// Use instead:
     /// ```rust
-    /// // example code that does not raise a warning
+    /// // example code that does not raise left warning
     /// ```
     pub SET_STORAGE_WARN,
     Warn,
@@ -31,22 +36,85 @@ dylint_linting::declare_late_lint! {
 }
 
 impl<'tcx> LateLintPass<'tcx> for SetStorageWarn {
-    fn check_expr(&mut self, cx: &LateContext<'tcx>, expr: &Expr<'_>) {
-        if_chain! {
-            if let ExprKind::Call(callee, _) = expr.kind;
-            if let ExprKind::Path(method_path) = &callee.kind;
-            if let QPath::Resolved(None, ref path) = *method_path;
-            if path.segments.len() == 2 && path.segments[0].ident.name.as_str() == "env" && path.segments[1].ident.name.as_str() == "set_contract_storage";
-            then {
-                span_lint_and_help(
-                    cx,
-                    SET_STORAGE_WARN,
-                    expr.span,
-                    "Abitrary users should not have control over keys because it implies writing any value of a mapping, lazy variable, or the main struct of the contract located in position 0 of the storage",
-                    None,
-                    &format!("Set access control and proper authorization validation for the set_contract_storage() function"),
-                );
+    fn check_fn(
+        &mut self,
+        cx: &LateContext<'tcx>,
+        _: FnKind<'tcx>,
+        _: &'tcx FnDecl<'_>,
+        body: &'tcx Body<'_>,
+        _: Span,
+        _: HirId,
+    ) {
+        struct SetContractStorage {
+            span: Option<Span>,
+            unprotected: bool,
+            in_conditional: bool,
+            has_caller_in_if: bool,
+            has_owner_in_if: bool,
+            has_set_contract: bool,
+        }
+
+        impl<'tcx> Visitor<'tcx> for SetContractStorage {
+            fn visit_expr(&mut self, expr: &'tcx Expr<'_>) {
+                if self.in_conditional {
+                    if let ExprKind::Binary(_, left, right) = &expr.kind {
+                        // TODO: falta chequear al reves
+                        // TODO: se puede agregar si la operación que se realiza es "Eq"
+                        if let ExprKind::Field(_, ident) = right.kind {
+                                self.has_owner_in_if = ident.as_str().contains("owner");
+                        }
+                        if let ExprKind::MethodCall(func, ..) = &left.kind {
+                            let function_name = func.ident.name.to_string();
+                            if self.in_conditional {
+                                self.has_caller_in_if = function_name.contains("caller");
+                            }
+                        }
+                    }
+                }
+                if let ExprKind::If(..) = &expr.kind {
+                    self.in_conditional = true;
+                    walk_expr(self, expr);
+                    self.in_conditional = false;
+                } else if let ExprKind::Call(callee, _) = expr.kind {
+                    if_chain! {
+                        if let ExprKind::Path(method_path) = &callee.kind;
+                        if let QPath::Resolved(None, ref path) = *method_path;
+                        if path.segments.len() == 2 && path.segments[0].ident.name.as_str() == "env" && path.segments[1].ident.name.as_str() == "set_contract_storage";
+                        then {
+                            self.has_set_contract = true;
+                            if !self.in_conditional && (!self.has_owner_in_if || !self.has_caller_in_if) {
+                                    self.unprotected = true;
+                                    self.span = Some(expr.span);
+                            }
+                            // dbg!("has_caller:{} - has_owner:{} - in_conditional: {}", self.has_caller_in_if, self.has_owner_in_if, self.in_conditional);
+                        }
+                    }
+                }
+                walk_expr(self, expr);
             }
+        }
+
+        let mut reentrant_storage = SetContractStorage {
+            span: None,
+            unprotected: false,
+            in_conditional: false,
+            has_caller_in_if: false,
+            has_owner_in_if: false,
+            has_set_contract: false,
+        };
+
+        walk_expr(&mut reentrant_storage, &body.value);
+
+        if reentrant_storage.has_set_contract && reentrant_storage.unprotected {
+            span_lint_and_help(
+                cx,
+                SET_STORAGE_WARN,
+                // body.value.span,
+                reentrant_storage.span.unwrap(),
+                "Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage",
+                None,
+                "Set access control and proper authorization validation for the set_contract_storage() function",
+            );
         }
     }
 }
