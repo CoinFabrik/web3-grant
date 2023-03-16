@@ -1,0 +1,1043 @@
+[1mBuilding workspace metadata entry `dos_unbounded_operation`[0m
+   Compiling dos_unbounded_operation v0.1.0 (/home/jgodoy/polkadot/web3-grant/docs/dylint/smart_contracts_linters/dos-unbounded-operation)
+warning: unused import: `if_chain::if_chain`
+ --> src/lib.rs:8:5
+  |
+8 | use if_chain::if_chain;
+  |     ^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `rustc_hir::intravisit::Visitor`
+ --> src/lib.rs:9:5
+  |
+9 | use rustc_hir::intravisit::Visitor;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `FnKind`, `walk_expr`
+  --> src/lib.rs:10:29
+   |
+10 | use rustc_hir::intravisit::{walk_expr, FnKind};
+   |                             ^^^^^^^^^  ^^^^^^
+
+warning: unused import: `rustc_hir::QPath`
+  --> src/lib.rs:11:5
+   |
+11 | use rustc_hir::QPath;
+   |     ^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Body`, `FnDecl`, `HirId`
+  --> src/lib.rs:12:17
+   |
+12 | use rustc_hir::{Body, FnDecl, HirId};
+   |                 ^^^^  ^^^^^^  ^^^^^
+
+warning: unused import: `Expr`
+  --> src/lib.rs:13:17
+   |
+13 | use rustc_hir::{Expr, ExprKind};
+   |                 ^^^^
+
+warning: unused import: `rustc_span::Span`
+  --> src/lib.rs:15:5
+   |
+15 | use rustc_span::Span;
+   |     ^^^^^^^^^^^^^^^^
+
+warning: unused variable: `ident`
+   --> src/lib.rs:126:42
+    |
+126 |             if let ExprKind::Field(base, ident) = expr.kind {
+    |                                          ^^^^^ help: if this is intentional, prefix it with an underscore: `_ident`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: `dos_unbounded_operation` (lib) generated 8 warnings (run `cargo fix --lib -p dos_unbounded_operation` to apply 8 suggestions)
+    Finished release [optimized] target(s) in 0.82s
+[1mBuilding workspace metadata entry `panic_error`[0m
+    Finished release [optimized] target(s) in 0.06s
+[1mBuilding workspace metadata entry `reentrancy`[0m
+    Finished release [optimized] target(s) in 0.07s
+[1mBuilding workspace metadata entry `set_storage_storage`[0m
+    Finished release [optimized] target(s) in 0.06s
+[1mBuilding workspace metadata entry `unused_return_enum`[0m
+    Finished release [optimized] target(s) in 0.06s
+[1mChecking with toolchain `nightly-2023-01-27-x86_64-unknown-linux-gnu`[0m
+    Checking dos-unbounded-operation v0.1.0 (/home/jgodoy/polkadot/web3-grant/docs/detectors/dos-unbounded-operation/vulnerable-example)
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).35),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:38:13: 38:17 (#0),
+                res: Local(
+                    HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).36),
+                        res: Local(
+                            HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:38:13: 38:17 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:38:13
+   |
+38 |             self.payees.insert(self.next_payee_ix, &new_payee);
+   |             ^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+   = note: `#[warn(dos_unbounded_operation)]` on by default
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).38),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:38:32: 38:36 (#0),
+                res: Local(
+                    HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).39),
+                        res: Local(
+                            HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:38:32: 38:36 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:38:32
+   |
+38 |             self.payees.insert(self.next_payee_ix, &new_payee);
+   |                                ^^^^^^^^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).46),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:39:13: 39:17 (#0),
+                res: Local(
+                    HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).47),
+                        res: Local(
+                            HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:39:13: 39:17 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:39:13
+   |
+39 |             self.next_payee_ix += 1;
+   |             ^^^^^^^^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).52),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:42:13: 42:17 (#0),
+                res: Local(
+                    HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).53),
+                        res: Local(
+                            HirId(DefId(0:248 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::add_payee).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:42:13: 42:17 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:42:13
+   |
+42 |             self.next_payee_ix - 1
+   |             ^^^^^^^^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:249 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::get_payee).8),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:47:13: 47:17 (#0),
+                res: Local(
+                    HirId(DefId(0:249 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::get_payee).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:249 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::get_payee).9),
+                        res: Local(
+                            HirId(DefId(0:249 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::get_payee).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:47:13: 47:17 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:47:13
+   |
+47 |             self.payees.get(id)
+   |             ^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).7),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:52:25: 52:29 (#0),
+                res: Local(
+                    HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).8),
+                        res: Local(
+                            HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:52:25: 52:29 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:52:25
+   |
+52 |             for i in 0..self.next_payee_ix {
+   |                         ^^^^^^^^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).23),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:53:29: 53:33 (#0),
+                res: Local(
+                    HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).24),
+                        res: Local(
+                            HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:53:29: 53:33 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:53:29
+   |
+53 |                 let payee = self.payees.get(&i).unwrap();
+   |                             ^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).39),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:54:37: 54:42 (#0),
+                res: Local(
+                    HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).29),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: payee#0,
+                        hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).40),
+                        res: Local(
+                            HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).29),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:54:37: 54:42 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:54:37
+   |
+54 |                 self.env().transfer(payee.address, payee.value).unwrap();
+   |                                     ^^^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).42),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:54:52: 54:57 (#0),
+                res: Local(
+                    HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).29),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: payee#0,
+                        hir_id: HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).43),
+                        res: Local(
+                            HirId(DefId(0:250 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#6::{impl#0}::pay_out).29),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:54:52: 54:57 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:54:52
+   |
+54 |                 self.env().transfer(payee.address, payee.value).unwrap();
+   |                                                    ^^^^^^^^^^^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:373 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#3}::fmt).20),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#82),
+                res: Local(
+                    HirId(DefId(0:373 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#3}::fmt).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:373 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#3}::fmt).21),
+                        res: Local(
+                            HirId(DefId(0:373 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#3}::fmt).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#82),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:376 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode_to).14),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#84),
+                res: Local(
+                    HirId(DefId(0:376 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode_to).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#84,
+                        hir_id: HirId(DefId(0:376 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode_to).15),
+                        res: Local(
+                            HirId(DefId(0:376 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode_to).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#84),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:378 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode).12),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#84),
+                res: Local(
+                    HirId(DefId(0:378 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#84,
+                        hir_id: HirId(DefId(0:378 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode).13),
+                        res: Local(
+                            HirId(DefId(0:378 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::encode).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#84),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:379 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::using_encoded).14),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#84),
+                res: Local(
+                    HirId(DefId(0:379 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::using_encoded).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#84,
+                        hir_id: HirId(DefId(0:379 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::using_encoded).15),
+                        res: Local(
+                            HirId(DefId(0:379 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::_#3::{impl#0}::using_encoded).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#84),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:388 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#4}::hash).13),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#89),
+                res: Local(
+                    HirId(DefId(0:388 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#4}::hash).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:388 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#4}::hash).14),
+                        res: Local(
+                            HirId(DefId(0:388 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#4}::hash).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#89),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).7),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#90),
+                res: Local(
+                    HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).8),
+                        res: Local(
+                            HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#90),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).10),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#90),
+                res: Local(
+                    HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).4),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: other#90,
+                        hir_id: HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).11),
+                        res: Local(
+                            HirId(DefId(0:392 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#6}::eq).4),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#90),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:397 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#9}::clone).14),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#92),
+                res: Local(
+                    HirId(DefId(0:397 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#9}::clone).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:397 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#9}::clone).15),
+                        res: Local(
+                            HirId(DefId(0:397 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#9}::clone).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#92),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:261 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#1}::to_account_id).14),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#0),
+                res: Local(
+                    HirId(DefId(0:261 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#1}::to_account_id).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:261 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#1}::to_account_id).15),
+                        res: Local(
+                            HirId(DefId(0:261 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#7::{impl#1}::to_account_id).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#0),
+}
+warning: Abitrary users should not have control over keys because it implies writing any value of left mapping, lazy variable, or the main struct of the contract located in position 0 of the storage
+  --> lib.rs:18:5
+   |
+18 | /     pub struct DosUnboundedOperation {
+19 | |         payees: Mapping<u128, Payee>,
+20 | |         next_payee_ix: u128,
+21 | |     }
+   | |_____^
+   |
+   = help: Set access control and proper authorization validation for the set_contract_storage() function
+
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:409 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#11}::fmt).20),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#105),
+                res: Local(
+                    HirId(DefId(0:409 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#11}::fmt).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:409 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#11}::fmt).21),
+                        res: Local(
+                            HirId(DefId(0:409 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#11}::fmt).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#105),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:412 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode_to).14),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#107),
+                res: Local(
+                    HirId(DefId(0:412 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode_to).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#107,
+                        hir_id: HirId(DefId(0:412 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode_to).15),
+                        res: Local(
+                            HirId(DefId(0:412 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode_to).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#107),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:414 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode).12),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#107),
+                res: Local(
+                    HirId(DefId(0:414 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#107,
+                        hir_id: HirId(DefId(0:414 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode).13),
+                        res: Local(
+                            HirId(DefId(0:414 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::encode).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#107),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:415 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::using_encoded).14),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#107),
+                res: Local(
+                    HirId(DefId(0:415 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::using_encoded).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#107,
+                        hir_id: HirId(DefId(0:415 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::using_encoded).15),
+                        res: Local(
+                            HirId(DefId(0:415 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#19::{impl#0}::using_encoded).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#107),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:424 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#12}::hash).13),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#112),
+                res: Local(
+                    HirId(DefId(0:424 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#12}::hash).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:424 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#12}::hash).14),
+                        res: Local(
+                            HirId(DefId(0:424 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#12}::hash).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#112),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).7),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#113),
+                res: Local(
+                    HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).8),
+                        res: Local(
+                            HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#113),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).10),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#113),
+                res: Local(
+                    HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).4),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: other#113,
+                        hir_id: HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).11),
+                        res: Local(
+                            HirId(DefId(0:428 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#14}::eq).4),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#113),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:433 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#17}::clone).14),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 18:5 (#115),
+                res: Local(
+                    HirId(DefId(0:433 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#17}::clone).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:433 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#17}::clone).15),
+                        res: Local(
+                            HirId(DefId(0:433 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#17}::clone).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#115),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:299 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call).5),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#0),
+                res: Local(
+                    HirId(DefId(0:299 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:299 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call).6),
+                        res: Local(
+                            HirId(DefId(0:299 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#0),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:300 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call_mut).5),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#0),
+                res: Local(
+                    HirId(DefId(0:300 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call_mut).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:300 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call_mut).6),
+                        res: Local(
+                            HirId(DefId(0:300 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#9::{impl#0}::call_mut).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#0),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:304 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#10}::to_account_id).21),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:18:5: 21:6 (#0),
+                res: Local(
+                    HirId(DefId(0:304 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#10}::to_account_id).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:304 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#10}::to_account_id).22),
+                        res: Local(
+                            HirId(DefId(0:304 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#10}::to_account_id).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:18:5: 21:6 (#0),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).20),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:7:14: 7:14 (#170),
+                res: Local(
+                    HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).21),
+                        res: Local(
+                            HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:7:14: 7:19 (#170),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).26),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:7:14: 7:14 (#170),
+                res: Local(
+                    HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#0,
+                        hir_id: HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).27),
+                        res: Local(
+                            HirId(DefId(0:435 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::{impl#18}::fmt).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:7:14: 7:19 (#170),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).13),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:7:36: 7:49 (#175),
+                res: Local(
+                    HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#175,
+                        hir_id: HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).14),
+                        res: Local(
+                            HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:7:36: 7:49 (#175),
+}
+[src/lib.rs:127] {} = ()
+[src/lib.rs:127] base = Expr {
+    hir_id: HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).26),
+    kind: Path(
+        Resolved(
+            None,
+            Path {
+                span: lib.rs:7:36: 7:49 (#175),
+                res: Local(
+                    HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).2),
+                ),
+                segments: [
+                    PathSegment {
+                        ident: self#175,
+                        hir_id: HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).27),
+                        res: Local(
+                            HirId(DefId(0:442 ~ dos_unbounded_operation[adf7]::dos_unbounded_operation::_#22::{impl#0}::encode_to).2),
+                        ),
+                        args: None,
+                        infer_args: true,
+                    },
+                ],
+            },
+        ),
+    ),
+    span: lib.rs:7:36: 7:49 (#175),
+}
+warning: `dos-unbounded-operation` (lib) generated 13 warnings (3 duplicates)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.28s
