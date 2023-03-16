@@ -1,11 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-
 #[ink::contract]
 mod erc20 {
+    use ink::env;
     use ink::storage::traits::ManualKey;
     use ink::storage::Mapping;
-    use ink::env;
 
     /// The ERC-20 error types.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -23,7 +22,11 @@ mod erc20 {
     #[ink::trait_definition]
     pub trait MisusedSetContractStorage {
         #[ink(message)]
-        fn misused_set_contract_storage(&mut self, user_input_key: [u8; 68], user_input_data: u128) -> Result<()>;
+        fn misused_set_contract_storage(
+            &mut self,
+            user_input_key: [u8; 68],
+            user_input_data: u128,
+        ) -> Result<()>;
     }
 
     /// Trait implemented by all ERC-20 respecting smart contracts.
@@ -52,12 +55,7 @@ mod erc20 {
 
         /// Transfers `value` tokens on the behalf of `from` to the account `to`.
         #[ink(message)]
-        fn transfer_from(
-            &mut self,
-            from: AccountId,
-            to: AccountId,
-            value: Balance,
-        ) -> Result<()>;
+        fn transfer_from(&mut self, from: AccountId, to: AccountId, value: Balance) -> Result<()>;
     }
 
     /// A simple ERC-20 contract.
@@ -163,7 +161,13 @@ mod erc20 {
         fn approve(&mut self, spender: AccountId, value: Balance) -> Result<()> {
             let owner = self.env().caller();
             self.allowances.insert((&owner, &spender), &value);
-            env::debug_println!("{:?}", (AsRef::<[u8]>::as_ref(&owner), AsRef::<[u8]>::as_ref(&spender)));
+            env::debug_println!(
+                "{:?}",
+                (
+                    AsRef::<[u8]>::as_ref(&owner),
+                    AsRef::<[u8]>::as_ref(&spender)
+                )
+            );
             self.env().emit_event(Approval {
                 owner,
                 spender,
@@ -187,16 +191,11 @@ mod erc20 {
         /// Returns `InsufficientBalance` error if there are not enough tokens on
         /// the account balance of `from`.
         #[ink(message)]
-        fn transfer_from(
-            &mut self,
-            from: AccountId,
-            to: AccountId,
-            value: Balance,
-        ) -> Result<()> {
+        fn transfer_from(&mut self, from: AccountId, to: AccountId, value: Balance) -> Result<()> {
             let caller = self.env().caller();
             let allowance = self.allowance_impl(&from, &caller);
             if allowance < value {
-                return Err(Error::InsufficientAllowance)
+                return Err(Error::InsufficientAllowance);
             }
             self.transfer_from_to(&from, &to, value)?;
             self.allowances
@@ -207,7 +206,11 @@ mod erc20 {
 
     impl MisusedSetContractStorage for Erc20 {
         #[ink(message)]
-        fn misused_set_contract_storage(&mut self, user_input_key: [u8; 68], user_input_data: u128) -> Result<()> {
+        fn misused_set_contract_storage(
+            &mut self,
+            user_input_key: [u8; 68],
+            user_input_data: u128,
+        ) -> Result<()> {
             env::set_contract_storage(&user_input_key, &user_input_data);
             Ok(())
         }
@@ -257,7 +260,7 @@ mod erc20 {
         ) -> Result<()> {
             let from_balance = self.balance_of_impl(from);
             if from_balance < value {
-                return Err(Error::InsufficientBalance)
+                return Err(Error::InsufficientBalance);
             }
 
             self.balances.insert(from, &(from_balance - value));
@@ -272,16 +275,14 @@ mod erc20 {
         }
     }
 
-    /// Unit tests.
     #[cfg(test)]
     mod tests {
         /// Imports all the definitions from the outer scope so we can use them here.
         use super::*;
         use ink::{
-            env::hash::{
-                Blake2x256,
-                CryptoHash,
-                HashOutput,
+            env::{
+                hash::{Blake2x256, CryptoHash, HashOutput},
+                DefaultEnvironment,
             },
             primitives::Clear,
         };
@@ -314,10 +315,9 @@ mod erc20 {
                 let len_encoded = encoded.len();
                 if len_encoded <= len_result {
                     result.as_mut()[..len_encoded].copy_from_slice(&encoded);
-                    return result
+                    return result;
                 }
-                let mut hash_output =
-                    <<Blake2x256 as HashOutput>::Type as Default>::default();
+                let mut hash_output = <<Blake2x256 as HashOutput>::Type as Default>::default();
                 <Blake2x256 as CryptoHash>::hash(&encoded, &mut hash_output);
                 let copy_len = core::cmp::min(hash_output.len(), len_result);
                 result.as_mut()[0..copy_len].copy_from_slice(&hash_output[0..copy_len]);
@@ -405,8 +405,7 @@ mod erc20 {
                 Some(AccountId::from([0x01; 32])),
                 100,
             );
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
             // Alice owns all the tokens on contract instantiation
             assert_eq!(erc20.balance_of(accounts.alice), 100);
             // Bob does not owns tokens
@@ -419,8 +418,7 @@ mod erc20 {
             let initial_supply = 100;
             let mut erc20 = Erc20::new(initial_supply);
             // Transfer event triggered during initial construction.
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             assert_eq!(erc20.balance_of(accounts.bob), 0);
             // Alice transfers 10 tokens to Bob.
@@ -451,8 +449,7 @@ mod erc20 {
             // Constructor works.
             let initial_supply = 100;
             let mut erc20 = Erc20::new(initial_supply);
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             assert_eq!(erc20.balance_of(accounts.bob), 0);
             // Set Bob as caller
@@ -485,8 +482,7 @@ mod erc20 {
             let initial_supply = 100;
             let mut erc20 = Erc20::new(initial_supply);
             // Transfer event triggered during initial construction.
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             // Bob fails to transfer tokens owned by Alice.
             assert_eq!(
@@ -532,8 +528,7 @@ mod erc20 {
         fn allowance_must_not_change_on_failed_transfer() {
             let initial_supply = 100;
             let mut erc20 = Erc20::new(initial_supply);
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             // Alice approves Bob for token transfers on her behalf.
             let alice_balance = erc20.balance_of(accounts.alice);
@@ -583,6 +578,134 @@ mod erc20 {
                 self.prefix.encode_to(dest);
                 self.value.encode_to(dest);
             }
+        }
+
+        #[ink::test]
+        fn misuse_contract_storage() {
+            // Arrange
+            let mut contract = Erc20::new(100);
+            // Using ink_e2e default accounts as those are used when setting the contract storage
+            let alice_account_id: AccountId = ink_e2e::alice::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let bob_account_id: AccountId = ink_e2e::bob::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+
+            // Set Bob's allowance for Alice to 10
+            let allowance = contract.allowance(alice_account_id, bob_account_id);
+            assert_eq!(allowance, 0);
+
+            ink::env::test::set_caller::<DefaultEnvironment>(alice_account_id);
+            contract
+                .approve(bob_account_id, 10)
+                .expect("Approve failed");
+
+            let allowance = contract.allowance(alice_account_id, bob_account_id);
+            assert_eq!(allowance, 10);
+
+            // Act
+            ink::env::test::set_caller::<DefaultEnvironment>(bob_account_id);
+            contract
+                .misused_set_contract_storage(
+                    [
+                        255, 0, 0, 0, 212, 53, 147, 199, 21, 253, 211, 28, 97, 20, 26, 189, 4, 169,
+                        159, 214, 130, 44, 133, 88, 133, 76, 205, 227, 154, 86, 132, 231, 165, 109,
+                        162, 125, 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37,
+                        252, 82, 135, 97, 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242,
+                        106, 72,
+                    ],
+                    1000,
+                )
+                .expect("Set contract storage failed");
+
+            // Assert
+            let allowance = contract.allowance(alice_account_id, bob_account_id);
+            assert_eq!(allowance, 1000);
+        }
+    }
+    #[cfg(all(test, feature = "e2e-tests"))]
+    mod e2e_tests {
+        use super::*;
+        use ink_e2e::build_message;
+
+        type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
+
+        #[ink_e2e::test]
+        fn misuse_contract_storage_e2e(mut client: ink_e2e::Client<C, E>) -> E2EResult<()> {
+            // Arrange
+            let constructor = Erc20Ref::new(100);
+            let contract_acc_id = client
+                .instantiate(
+                    "set-contract-storage",
+                    &ink_e2e::alice(),
+                    constructor,
+                    0,
+                    None,
+                )
+                .await
+                .expect("Contract instantiation failed")
+                .account_id;
+            let alice_account_id: AccountId = ink_e2e::alice::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let bob_account_id: AccountId = ink_e2e::bob::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+
+            // Set Bob's allowance for Alice to 10
+            let allowance_msg = build_message::<Erc20Ref>(contract_acc_id.clone())
+                .call(|contract| contract.allowance(alice_account_id, bob_account_id));
+            let allowance = client
+                .call_dry_run(&ink_e2e::alice(), &allowance_msg, 0, None)
+                .await;
+            assert_eq!(allowance.return_value(), 0);
+
+            let approve_msg = build_message::<Erc20Ref>(contract_acc_id.clone())
+                .call(|contract| contract.approve(bob_account_id, 10));
+            client
+                .call(&ink_e2e::alice(), approve_msg, 0, None)
+                .await
+                .expect("Approve failed");
+
+            let allowance_msg = build_message::<Erc20Ref>(contract_acc_id.clone())
+                .call(|contract| contract.allowance(alice_account_id, bob_account_id));
+            let allowance = client
+                .call_dry_run(&ink_e2e::alice(), &allowance_msg, 0, None)
+                .await;
+            assert_eq!(allowance.return_value(), 10);
+
+            // Act
+            let misused_msg = build_message::<Erc20Ref>(contract_acc_id.clone()).call(|contract| {
+                contract.misused_set_contract_storage(
+                    [
+                        255, 0, 0, 0, 212, 53, 147, 199, 21, 253, 211, 28, 97, 20, 26, 189, 4, 169,
+                        159, 214, 130, 44, 133, 88, 133, 76, 205, 227, 154, 86, 132, 231, 165, 109,
+                        162, 125, 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37,
+                        252, 82, 135, 97, 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242,
+                        106, 72,
+                    ],
+                    1000,
+                )
+            });
+            client
+                .call(&ink_e2e::bob(), misused_msg, 0, None)
+                .await
+                .expect("Set contract storage failed");
+
+            // Assert
+            let allowance_msg = build_message::<Erc20Ref>(contract_acc_id.clone())
+                .call(|contract| contract.allowance(alice_account_id, bob_account_id));
+            let allowance = client
+                .call_dry_run(&ink_e2e::alice(), &allowance_msg, 0, None)
+                .await;
+            assert_eq!(allowance.return_value(), 1000);
+
+            Ok(())
         }
     }
 }

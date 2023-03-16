@@ -12,7 +12,8 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 | reentrancy            | Reentrancy       | Analysis Categories Wiki & Deployed ink! projects | [Consistency of contract state under recursive calls.](https://github.com/CoinFabrik/web3-grant/tree/main/docs/detectors/reentrancy)                                                                         | High     | Tiki, Turi |
 | panic-error            | Validations and error handling       | Analysis Categories Wiki & Deployed ink! projects | [Code panics on error instead of using descriptive enum](https://github.com/CoinFabrik/web3-grant/tree/main/docs/detectors/panic-error)                                                                         | Informational     | Agus |
 | unused-return-enum            | Validations and error handling       | Analysis Categories Wiki & Deployed ink! projects | [Return enum from a function is not completely used](https://github.com/CoinFabrik/web3-grant/tree/main/docs/detectors/unused-return-enum) | Low     | Agus |
-| dos-unbounded-operation | Validations and error handling | Analysis Categories Wiki & Deployed ink! projects | [Return enum from a function is not completely used](https://github.com/CoinFabrik/web3-grant/tree/main/docs/detectors/dos-unbounded-operation) | Low | Agus |
+| dos-unbounded-operation | DoS | Analysis Categories Wiki & Deployed ink! projects | [Return enum from a function is not completely used](https://github.com/CoinFabrik/web3-grant/tree/main/docs/detectors/dos-unbounded-operation) | High | Agus |
+| dos-unexpected-revert | DoS | Analysis Categories Wiki & Deployed ink! projects | [DoS due to improper storage.](https://github.com/CoinFabrik/web3-grant/tree/main/docs/detectors/unexpected-revert) | High | Tiki, Turi |
 
 ## References
 
