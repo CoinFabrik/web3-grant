@@ -1,5 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
+pub use self::vault::{
+    Vault,
+    VaultRef,
+};
+
 #[ink::contract]
 mod vault {
     use ink::{storage::Mapping, env::call::{build_call, Selector} };
