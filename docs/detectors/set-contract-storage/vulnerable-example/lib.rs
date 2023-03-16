@@ -584,8 +584,15 @@ mod erc20 {
         fn misuse_contract_storage() {
             // Arrange
             let mut contract = Erc20::new(100);
-            let alice_account_id = ink::env::test::default_accounts::<DefaultEnvironment>().alice;
-            let bob_account_id = ink::env::test::default_accounts::<DefaultEnvironment>().bob;
+            // Using ink_e2e default accounts as those are used when setting the contract storage
+            let alice_account_id: AccountId = ink_e2e::alice::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let bob_account_id: AccountId = ink_e2e::bob::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
 
             // Set Bob's allowance for Alice to 10
             let allowance = contract.allowance(alice_account_id, bob_account_id);
@@ -618,8 +625,12 @@ mod erc20 {
             let allowance = contract.allowance(alice_account_id, bob_account_id);
             assert_eq!(allowance, 1000);
         }
-
+    }
+    #[cfg(all(test, feature = "e2e-tests"))]
+    mod e2e_tests {
+        use super::*;
         use ink_e2e::build_message;
+
         type E2EResult<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
         #[ink_e2e::test]
