@@ -15,6 +15,7 @@ ink = { version = "4.0.1", default-features = false }
 ink_prelude = "4.0.1"
 ink_env = "4.0.1"
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+ink_e2e = { version = "4.0" }
 
 
 # Prevent this from interfering with workspaces
@@ -61,5 +62,11 @@ doc = false
 [[bin]]
 name = "fuzz_allowance_must_not_change_on_failed_transfer"
 path = "fuzz_targets/fuzz_allowance_must_not_change_on_failed_transfer.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_misuse_contract_storage"
+path = "fuzz_targets/fuzz_misuse_contract_storage.rs"
 test = false
 doc = false
