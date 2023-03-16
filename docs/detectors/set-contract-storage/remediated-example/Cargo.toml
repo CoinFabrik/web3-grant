@@ -13,7 +13,6 @@ std = ["ink/std", "scale/std", "scale-info/std"]
 ink-as-dependency = []
 e2e-tests = []
 
-
 [dependencies]
 ink = { version = "4.0.0", default-features = false }
 scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
@@ -22,3 +21,8 @@ ink_lang = "3.0.0"
 
 [dev-dependencies]
 ink_e2e = "4.0.0"
+
+[workspace.metadata.dylint]
+libraries = [
+    { path = "../../../dylint/smart_contracts_linters/*" },
+]

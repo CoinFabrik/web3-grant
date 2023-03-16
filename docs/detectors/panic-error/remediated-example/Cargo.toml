@@ -24,3 +24,8 @@ scale-info = { version = "2.3", default-features = false, features = ["derive"],
 
 [dev-dependencies]
 ink_e2e = { version = "4.0" }
+
+[workspace.metadata.dylint]
+libraries = [
+    { path = "../../../dylint/smart_contracts_linters/*" },
+]
