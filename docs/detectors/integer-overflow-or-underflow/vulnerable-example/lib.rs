@@ -30,6 +30,7 @@ pub mod integer_overflow_underflow {
         }
     }
 
+    #[cfg(feature = "std")]
     pub mod test_utils {
         use super::*;
 
