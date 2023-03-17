@@ -1,0 +1,47 @@
+[package]
+name = "integer-overflow-or-underflow-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+integer-overflow-or-underflow = { path = "..", features = ["arbitrary"] }
+arbitrary = "1.0.1"
+ink = { version = "4.0.1", default-features = false }
+ink_prelude = "4.0.1"
+ink_env = "4.0.1"
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "fuzz_target_1"
+path = "fuzz_targets/fuzz_target_1.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_constructor_works"
+path = "fuzz_targets/fuzz_constructor_works.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_add_overflows"
+path = "fuzz_targets/fuzz_add_overflows.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "fuzz_sub_overflows"
+path = "fuzz_targets/fuzz_sub_overflows.rs"
+test = false
+doc = false
