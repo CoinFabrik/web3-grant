@@ -1,5 +1,5 @@
 [package]
-name = "my_contract-fuzz"
+name = "set-contract-storage-fuzz"
 version = "0.0.0"
 publish = false
 edition = "2021"
@@ -8,15 +8,10 @@ edition = "2021"
 cargo-fuzz = true
 
 [dependencies]
-libfuzzer-sys = "0.4"
-my_contract = { path = "..", features = ["arbitrary"] }
-arbitrary = "1.0.1"
+arbitrary = { version = "1.0.1", features = ["derive"] }
 ink = { version = "4.0.1", default-features = false }
-ink_prelude = "4.0.1"
-ink_env = "4.0.1"
-scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
-ink_e2e = { version = "4.0" }
-
+libfuzzer-sys = "0.4"
+set-contract-storage = { path = "../../../docs/detectors/set-contract-storage/vulnerable-example" }
 
 # Prevent this from interfering with workspaces
 [workspace]
@@ -24,8 +19,6 @@ members = ["."]
 
 [profile.release]
 debug = 1
-
-
 
 [[bin]]
 name = "fuzz_new_works"
