@@ -8,7 +8,7 @@ use arbitrary::Arbitrary;
 #[derive(Clone, Debug, Arbitrary)]
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 pub struct Input {
-    pub valueForNew: u8
+    pub value_for_new: u8
 }
 
 fuzz_target!(|input: Input| {
@@ -19,7 +19,7 @@ fuzz_target!(|input: Input| {
                     {
                         {
                             {
-                                let value = input.valueForNew;
+                                let value = input.value_for_new;
                                 let contract = IntegerOverflowUnderflow::new(value);
                                 match (&contract.get(), &value) {
                                     (left_val, right_val) => {

@@ -8,12 +8,10 @@ edition = "2021"
 cargo-fuzz = true
 
 [dependencies]
-libfuzzer-sys = "0.4"
-integer-overflow-or-underflow = { path = "..", features = ["arbitrary"] }
-arbitrary = "1.0.1"
+arbitrary = { version = "1.0.1", features = ["derive"] }
 ink = { version = "4.0.1", default-features = false }
-ink_prelude = "4.0.1"
-ink_env = "4.0.1"
+integer-overflow-or-underflow = { path = "../../../docs/detectors/integer-overflow-or-underflow/vulnerable-example" }
+libfuzzer-sys = "0.4"
 
 # Prevent this from interfering with workspaces
 [workspace]
@@ -21,12 +19,6 @@ members = ["."]
 
 [profile.release]
 debug = 1
-
-[[bin]]
-name = "fuzz_target_1"
-path = "fuzz_targets/fuzz_target_1.rs"
-test = false
-doc = false
 
 [[bin]]
 name = "fuzz_constructor_works"

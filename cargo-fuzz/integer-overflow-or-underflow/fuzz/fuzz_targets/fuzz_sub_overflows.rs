@@ -8,7 +8,7 @@ use arbitrary::Arbitrary;
 #[derive(Clone, Debug, Arbitrary)]
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 pub struct Input {
-    pub valueForSub: u8
+    pub value_for_sub: u8
 }
 
 fuzz_target!(|input: Input| {
@@ -21,7 +21,7 @@ fuzz_target!(|input: Input| {
                         {
                             {
                                 let mut contract = IntegerOverflowUnderflow::new(u8::MIN);
-                                contract.sub(input.valueForSub);
+                                contract.sub(input.value_for_sub);
                                 match (&contract.get(), &u8::MAX) {
                                     (left_val, right_val) => {
                                         if !(*left_val == *right_val) {
@@ -50,5 +50,3 @@ fuzz_target!(|input: Input| {
 
 
 });
-
-
