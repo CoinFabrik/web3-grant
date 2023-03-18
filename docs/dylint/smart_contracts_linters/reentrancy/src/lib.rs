@@ -6,9 +6,9 @@ extern crate rustc_span;
 
 use clippy_utils::diagnostics::span_lint_and_help;
 use if_chain::if_chain;
-use rustc_hir::intravisit::Visitor;
+use rustc_hir::intravisit::{Visitor, walk_stmt};
 use rustc_hir::intravisit::{walk_expr, FnKind};
-use rustc_hir::{Body, FnDecl, HirId,};
+use rustc_hir::{Body, FnDecl, HirId, Stmt,};
 use rustc_hir::{Expr, ExprKind};
 use rustc_lint::{LateContext, LateLintPass};
 use rustc_span::Span;
@@ -48,9 +48,51 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
             span: Option<Span>,
             has_invoke_contract_call: bool,
             allow_reentrancy_flag: bool,
+            state_change: bool,
         }
 
         impl<'tcx> Visitor<'tcx> for ReentrantStorage {
+            fn visit_stmt(&mut self, s: &'tcx Stmt<'tcx>) {
+                // check for an statement that modifies the state
+                // the state is modified if the statement is an assignment and modifies an struct
+                // or if if invokes a function and the receiver is a env::balance
+                if self.has_invoke_contract_call && self.allow_reentrancy_flag {
+                    if_chain! {
+                        if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
+                        if let rustc_hir::ExprKind::Assign(lhs, rhs, _) = &expr.kind;
+                        if let rustc_hir::ExprKind::Path(qpath) = &lhs.kind;
+                        if let rustc_hir::QPath::Resolved(_, path) = qpath;
+                        if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res;
+                        then {
+                            dbg!({}, "Found a state change");
+                            dbg!({}, s);
+                            // self.span = Some(s.span);
+                            self.state_change = true;
+                        }
+                    }
+                    if_chain! {
+                        // check access to balance.insert
+                        if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
+                        if let rustc_hir::ExprKind::MethodCall(func, _, args, _) = &expr.kind;
+                        if let function_name = func.ident.name.to_string();
+                        if function_name == "insert";
+                        // Fix this: checking for "balance"
+                        // if let rustc_hir::ExprKind::Path(qpath) = &args[0].kind;
+                        // if let rustc_hir::QPath::Resolved(_, path) = qpath;
+                        // if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res ;
+                        then {
+                            self.state_change = true;
+                        }
+                        else {
+                            dbg!({}, s);
+                        }
+                    }
+                }
+                else {
+                    walk_stmt(self, s);
+                }
+            }
+
             fn visit_expr(&mut self, expr: &'tcx Expr<'_>) {
                 if_chain! {
                     if let ExprKind::MethodCall(func, _, args, _) = &expr.kind;
@@ -80,11 +122,14 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
             span: None,
             has_invoke_contract_call: false,
             allow_reentrancy_flag: false,
+            state_change: false,
         };
 
         walk_expr(&mut reentrant_storage, &body.value);
 
-        if reentrant_storage.has_invoke_contract_call && reentrant_storage.allow_reentrancy_flag {
+        if reentrant_storage.has_invoke_contract_call 
+            && reentrant_storage.allow_reentrancy_flag 
+            && reentrant_storage.state_change {
             span_lint_and_help(
                 cx,
                 REENTRANCY,
