@@ -53,7 +53,7 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
 
         fn check_invoke_contract_call(r: &mut ReentrantStorage, expr: &Expr)  {
             if_chain! {
-                if let ExprKind::MethodCall(func, _, args, _) = &expr.kind;
+                if let ExprKind::MethodCall(func, _, _, _) = &expr.kind;
                 if let function_name = func.ident.name.to_string();
                 if function_name == "invoke_contract" ;
                 then {
@@ -81,32 +81,27 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
         fn check_state_change(r: &mut ReentrantStorage, s: &Stmt) {
             if_chain! {
                 if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
-                if let rustc_hir::ExprKind::Assign(lhs, rhs, _) = &expr.kind;
-                if let rustc_hir::ExprKind::Path(qpath) = &lhs.kind;
-                if let rustc_hir::QPath::Resolved(_, path) = qpath;
-                if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res;
-                then {
-                    dbg!({}, "Found a state change");
-                    dbg!({}, s);
-                    // self.span = Some(s.span);
+                if let rustc_hir::ExprKind::Assign(lhs, ..) = &expr.kind;
+                if let rustc_hir::ExprKind::Field(base, _) = lhs.kind; // self.field_name <- base: self, field_name: ident
+                if let rustc_hir::ExprKind::Path(path) = &base.kind;
+                if let rustc_hir::QPath::Resolved(None, ref path) = *path;
+                if path.segments.iter().any(|base| base.ident.as_str().contains("self"));                then {
                     r.state_change = true;
-                }
+                } 
             }
             if_chain! {
                 // check access to balance.insert
                 if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
-                if let rustc_hir::ExprKind::MethodCall(func, _, args, _) = &expr.kind;
+                if let rustc_hir::ExprKind::MethodCall(func, rec, ..) = &expr.kind;
                 if let function_name = func.ident.name.to_string();
                 if function_name == "insert";
-                // Fix this: checking for "balance"
-                // if let rustc_hir::ExprKind::Path(qpath) = &args[0].kind;
-                // if let rustc_hir::QPath::Resolved(_, path) = qpath;
-                // if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res ;
+                // Fix this: checking for "balances"
+                if let rustc_hir::ExprKind::Field(base, _) = &rec.kind; // self.field_name <- base: self, field_name: ident
+                if let rustc_hir::ExprKind::Path(path) = &base.kind;
+                if let rustc_hir::QPath::Resolved(None, ref path) = *path;
+                if path.segments.iter().any(|base| base.ident.as_str().contains("self"));
                 then {
                     r.state_change = true;
-                }
-                else {
-                    dbg!({}, s);
                 }
             }
 
@@ -128,7 +123,7 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
             
 
             fn visit_expr(&mut self, expr: &'tcx Expr<'_>) {
-                if(self.allow_reentrancy_flag) {
+                if self.allow_reentrancy_flag {
                     check_invoke_contract_call(self, expr);
                 }
                 check_allow_reentrancy(self, expr);
