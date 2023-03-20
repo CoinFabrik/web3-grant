@@ -45,6 +45,10 @@ impl<'tcx> LateLintPass<'tcx> for SetStorageWarn {
         _: Span,
         _: HirId,
     ) {
+
+        // TODO: La razón por la que se usó un visitor de esta forma (para almacenar la info "global" en el scope de un if)
+        // es porque no encontré una forma de poner un struct por fuera al que se pueda acceder desde la implementación
+        // de los métodos de LateLintPass. Cambiar esta forma, o borrar comentario.
         struct SetContractStorage {
             span: Option<Span>,
             unprotected: bool,
