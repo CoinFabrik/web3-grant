@@ -292,8 +292,8 @@ pub mod erc20 {
         }
 
         impl<X> scale::Encode for PrefixedValue<'_, '_, X>
-            where
-                X: scale::Encode,
+        where
+            X: scale::Encode,
         {
             #[inline]
             fn size_hint(&self) -> usize {
@@ -328,8 +328,8 @@ pub mod erc20 {
             }
 
             fn encoded_into_hash<T>(entity: &T) -> Hash
-                where
-                    T: scale::Encode,
+            where
+                T: scale::Encode,
             {
                 let mut result = Hash::CLEAR_HASH;
                 let len_result = result.as_ref().len();
@@ -365,7 +365,7 @@ pub mod erc20 {
                 }),
             ];
             for (n, (actual_topic, expected_topic)) in
-            event.topics.iter().zip(expected_topics).enumerate()
+                event.topics.iter().zip(expected_topics).enumerate()
             {
                 let topic = <Hash as scale::Decode>::decode(&mut &actual_topic[..])
                     .expect("encountered invalid topic encoding");
@@ -594,12 +594,12 @@ pub mod erc20 {
                 212, 53, 147, 199, 21, 253, 211, 28, 97, 20, 26, 189, 4, 169, 159, 214, 130, 44,
                 133, 88, 133, 76, 205, 227, 154, 86, 132, 231, 165, 109, 162, 125,
             ]
-                .into();
+            .into();
             let bob_account_id: AccountId = [
                 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37, 252, 82, 135, 97,
                 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242, 106, 72,
             ]
-                .into();
+            .into();
 
             // Set Bob's allowance for Alice to `bob_initial_allowance`
             let allowance = erc20.allowance(alice_account_id, bob_account_id);
@@ -616,15 +616,12 @@ pub mod erc20 {
             // Act
             set_caller(bob_account_id);
             erc20
-                .misused_set_contract_storage(
-                    storage_location,
-                    bob_exploited_allowance,
-                )
+                .misused_set_contract_storage(storage_location, bob_exploited_allowance)
                 .expect("Set contract storage failed");
 
-            // Assert
-            let allowance = erc20.allowance(alice_account_id, bob_account_id);
-            //assert_eq!(allowance, bob_exploited_allowance);
+            // Assert - assertion was moved to the test function to allow for fuzzing
+            // let allowance = erc20.allowance(alice_account_id, bob_account_id);
+            // assert_eq!(allowance, bob_exploited_allowance);
 
             erc20
         }
@@ -675,14 +672,36 @@ pub mod erc20 {
 
         #[ink::test]
         fn misuse_contract_storage() {
-            test_utils::misuse_contract_storage(100, 10, 20, [
-                255, 0, 0, 0, 212, 53, 147, 199, 21, 253, 211, 28, 97, 20, 26, 189, 4, 169,
-                159, 214, 130, 44, 133, 88, 133, 76, 205, 227, 154, 86, 132, 231, 165, 109,
-                162, 125, 142, 175, 4, 21, 22, 135, 115, 99, 38, 201, 254, 161, 126, 37,
-                252, 82, 135, 97, 54, 147, 201, 18, 144, 156, 178, 38, 170, 71, 148, 242,
-                106, 72,
-            ]);
+            let alice_account_id: AccountId = ink_e2e::alice::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let bob_account_id: AccountId = ink_e2e::bob::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let initial_supply = 100;
+            let bob_initial_allowance = 10;
+            let bob_exploited_allowance = 20;
+            let storage_location: [u8; 68] = {
+                let mut storage_location = [0; 68];
+                let (mapping_location, mapping_key_value) = storage_location.split_at_mut(4);
+                let (mapping_key, mapping_value) = mapping_key_value.split_at_mut(32);
 
+                mapping_location.copy_from_slice(&[255, 0, 0, 0]);
+                mapping_key.copy_from_slice(alice_account_id.as_ref());
+                mapping_value.copy_from_slice(bob_account_id.as_ref());
+
+                storage_location
+            };
+            let erc20 = test_utils::misuse_contract_storage(
+                initial_supply,
+                bob_initial_allowance,
+                bob_exploited_allowance,
+                storage_location,
+            );
+            let allowance = erc20.allowance(alice_account_id, bob_account_id);
+            assert_eq!(allowance, bob_exploited_allowance);
         }
     }
 
