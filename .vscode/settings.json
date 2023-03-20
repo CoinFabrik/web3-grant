@@ -1,0 +1,15 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "cargo-fuzz/set-contract-storage/fuzz/Cargo.toml",
+        "docs/detectors/dos-unbounded-operation/vulnerable-example/Cargo.toml",
+        "docs/detectors/dos-unbounded-operation/remediated-example/Cargo.toml",
+        "docs/detectors/integer-overflow-or-underflow/remediated-example/Cargo.toml",
+        "docs/detectors/integer-overflow-or-underflow/vulnerable-example/Cargo.toml",
+        "docs/detectors/panic-error/remediated-example/Cargo.toml",
+        "docs/detectors/panic-error/vulnerable-example/Cargo.toml",
+        "docs/detectors/set-contract-storage/remediated-example/Cargo.toml",
+        "docs/detectors/set-contract-storage/vulnerable-example/Cargo.toml",
+        "docs/detectors/unused-return-enum/remediated-example/Cargo.toml",
+        "docs/detectors/unused-return-enum/vulnerable-example/Cargo.toml",
+    ]
+}

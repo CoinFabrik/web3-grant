@@ -703,6 +703,44 @@ pub mod erc20 {
             let allowance = erc20.allowance(alice_account_id, bob_account_id);
             assert_eq!(allowance, bob_exploited_allowance);
         }
+
+        #[ink::test]
+        fn misuse_contract_storage_fails() {
+            let alice_account_id: AccountId = ink_e2e::alice::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let bob_account_id: AccountId = ink_e2e::bob::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let charlie_account_id: AccountId = ink_e2e::charlie::<ink_e2e::PolkadotConfig>()
+                .account_id()
+                .0
+                .into();
+            let initial_supply = 100;
+            let bob_initial_allowance = 10;
+            let bob_exploited_allowance = 20;
+            let storage_location: [u8; 68] = {
+                let mut storage_location = [0; 68];
+                let (mapping_location, mapping_key_value) = storage_location.split_at_mut(4);
+                let (mapping_key, mapping_value) = mapping_key_value.split_at_mut(32);
+
+                mapping_location.copy_from_slice(&[255, 0, 0, 0]);
+                mapping_key.copy_from_slice(alice_account_id.as_ref());
+                mapping_value.copy_from_slice(charlie_account_id.as_ref());
+
+                storage_location
+            };
+            let erc20 = test_utils::misuse_contract_storage(
+                initial_supply,
+                bob_initial_allowance,
+                bob_exploited_allowance,
+                storage_location,
+            );
+            let allowance = erc20.allowance(alice_account_id, bob_account_id);
+            assert_eq!(allowance, bob_initial_allowance);
+        }
     }
 
     #[cfg(all(test, feature = "e2e-tests"))]
