@@ -60,6 +60,7 @@ mod vault {
             let caller_addr = self.env().caller();
             let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
             if amount <= caller_balance {
+                //The call is built without allowing reentrancy calls
                 let call = build_call::<ink::env::DefaultEnvironment>()
                     .call(address)
                     .transferred_value(amount)
