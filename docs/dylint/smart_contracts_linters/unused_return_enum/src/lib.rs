@@ -109,7 +109,7 @@ impl<'tcx> LateLintPass<'tcx> for UnusedReturnEnum {
                     count_ok: 0,
                 };
                 visitor.visit_expr(&body.value);
-                if visitor.count_err + visitor.count_ok > 0 {
+                if visitor.count_err < 1 || visitor.count_ok < 1 {
                     if visitor.count_err != visitor.count_ok {
                         span_lint_and_help(
                             cx,
