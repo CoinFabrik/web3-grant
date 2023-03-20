@@ -51,68 +51,87 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
             state_change: bool,
         }
 
+        fn check_invoke_contract_call(r: &mut ReentrantStorage, expr: &Expr)  {
+            if_chain! {
+                if let ExprKind::MethodCall(func, _, args, _) = &expr.kind;
+                if let function_name = func.ident.name.to_string();
+                if function_name == "invoke_contract" ;
+                then {
+                        r.has_invoke_contract_call = true;
+                        r.span = Some(expr.span);
+                }
+            }
+        }
+        fn check_allow_reentrancy(r: &mut ReentrantStorage, expr: &Expr) {
+            if_chain! {
+                if let ExprKind::MethodCall(func, _, args, _) = &expr.kind;
+                if let function_name = func.ident.name.to_string();
+                if function_name.contains("set_allow_reentry");
+                then {
+                        if_chain! {
+                            if let ExprKind::Lit(lit) = &args[0].kind;
+                            if &lit.node.to_string() == "true";
+                            then {
+                                r.allow_reentrancy_flag = true;
+                            }
+                        }
+                    }
+                }
+        }
+        fn check_state_change(r: &mut ReentrantStorage, s: &Stmt) {
+            if_chain! {
+                if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
+                if let rustc_hir::ExprKind::Assign(lhs, rhs, _) = &expr.kind;
+                if let rustc_hir::ExprKind::Path(qpath) = &lhs.kind;
+                if let rustc_hir::QPath::Resolved(_, path) = qpath;
+                if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res;
+                then {
+                    dbg!({}, "Found a state change");
+                    dbg!({}, s);
+                    // self.span = Some(s.span);
+                    r.state_change = true;
+                }
+            }
+            if_chain! {
+                // check access to balance.insert
+                if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
+                if let rustc_hir::ExprKind::MethodCall(func, _, args, _) = &expr.kind;
+                if let function_name = func.ident.name.to_string();
+                if function_name == "insert";
+                // Fix this: checking for "balance"
+                // if let rustc_hir::ExprKind::Path(qpath) = &args[0].kind;
+                // if let rustc_hir::QPath::Resolved(_, path) = qpath;
+                // if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res ;
+                then {
+                    r.state_change = true;
+                }
+                else {
+                    dbg!({}, s);
+                }
+            }
+
+        }
+
         impl<'tcx> Visitor<'tcx> for ReentrantStorage {
             fn visit_stmt(&mut self, s: &'tcx Stmt<'tcx>) {
                 // check for an statement that modifies the state
                 // the state is modified if the statement is an assignment and modifies an struct
                 // or if if invokes a function and the receiver is a env::balance
                 if self.has_invoke_contract_call && self.allow_reentrancy_flag {
-                    if_chain! {
-                        if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
-                        if let rustc_hir::ExprKind::Assign(lhs, rhs, _) = &expr.kind;
-                        if let rustc_hir::ExprKind::Path(qpath) = &lhs.kind;
-                        if let rustc_hir::QPath::Resolved(_, path) = qpath;
-                        if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res;
-                        then {
-                            dbg!({}, "Found a state change");
-                            dbg!({}, s);
-                            // self.span = Some(s.span);
-                            self.state_change = true;
-                        }
-                    }
-                    if_chain! {
-                        // check access to balance.insert
-                        if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
-                        if let rustc_hir::ExprKind::MethodCall(func, _, args, _) = &expr.kind;
-                        if let function_name = func.ident.name.to_string();
-                        if function_name == "insert";
-                        // Fix this: checking for "balance"
-                        // if let rustc_hir::ExprKind::Path(qpath) = &args[0].kind;
-                        // if let rustc_hir::QPath::Resolved(_, path) = qpath;
-                        // if let rustc_hir::def::Res::Def(rustc_hir::def::DefKind::Struct, _) = path.res ;
-                        then {
-                            self.state_change = true;
-                        }
-                        else {
-                            dbg!({}, s);
-                        }
-                    }
+                    check_state_change(self, s);
                 }
                 else {
                     walk_stmt(self, s);
                 }
             }
 
+            
+
             fn visit_expr(&mut self, expr: &'tcx Expr<'_>) {
-                if_chain! {
-                    if let ExprKind::MethodCall(func, _, args, _) = &expr.kind;
-                    if let function_name = func.ident.name.to_string();
-                    then {
-                        if function_name == "invoke_contract" {
-                            self.has_invoke_contract_call = true;
-                            self.span = Some(expr.span);
-                            // TODO: Check if the state changes after this statement
-                        } else if function_name.contains("set_allow_reentry") {
-                            if_chain! {
-                                if let ExprKind::Lit(lit) = &args[0].kind;
-                                if &lit.node.to_string() == "true";
-                                then {
-                                    self.allow_reentrancy_flag = true;
-                                }
-                            }
-                        }
-                    }
+                if(self.allow_reentrancy_flag) {
+                    check_invoke_contract_call(self, expr);
                 }
+                check_allow_reentrancy(self, expr);
 
                 walk_expr(self, expr);
             }
