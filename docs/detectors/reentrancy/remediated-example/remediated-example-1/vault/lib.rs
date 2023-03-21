@@ -1,5 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
+pub use self::vault::{
+    Vault,
+    VaultRef,
+};
+
 #[ink::contract]
 mod vault {
     use ink::{storage::Mapping, env::call::{build_call, Selector} };
@@ -54,6 +59,7 @@ mod vault {
             let caller_addr = self.env().caller();
             let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
             if amount <= caller_balance {
+                //The balance is updated before the contract call
                 self.balances.insert(caller_addr, &(caller_balance - amount));
                 let call = build_call::<ink::env::DefaultEnvironment>()
                     .call(address)
