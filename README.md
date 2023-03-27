@@ -32,3 +32,4 @@ Candidate tools to fork/work with:
 - [Clippy](https://github.com/rust-lang/rust-clippy): Rust linting tool, static set of lints.
 - [Dylint](https://github.com/trailofbits/dylint): Rust linting tool, dynamic set of lints. Based on Clippy, it can replicate Clippy.
 - [Semgrep](https://github.com/returntocorp/semgrep): A lightweight static analysis tool with beta support for Rust.
+- [Cargo-fuzz](https://github.com/rust-fuzz/cargo-fuzz): A cargo subcommand for fuzzing with libFuzzer.
