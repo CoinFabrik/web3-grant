@@ -22,9 +22,9 @@ Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart c
 
 ## References
 
-Similar Tools from other Blockchains:
+Similar tools from other blockchains:
 
-- [Slither](https://github.com/crytic/slither): Static analyzer for solidity.
+- [Slither](https://github.com/crytic/slither): Static analyzer for Solidity.
 - [Rustle](https://github.com/blocksecteam/rustle): Static analyzer for Near.
 
 Candidate tools to fork/work with:
