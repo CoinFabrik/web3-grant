@@ -16,5 +16,5 @@ We have three sources for candidate for examples to be detected (detectors):
 
 2. Deployed ink! projects.
 
-3. Analysis Categories[https://blog.coinfabrik.com/analysis-categories/). We generate examples from classic examples in other blockchains.
+3. [Analysis Categories](https://blog.coinfabrik.com/analysis-categories/). We generate examples from classic examples in other blockchains.
 
