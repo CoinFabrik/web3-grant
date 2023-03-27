@@ -9,11 +9,6 @@ rules:
             - pattern-inside: pub fn $FN_NAME(&mut self,...) {...}
             - pattern: for $X in $START..self.$FIELD {...}
  
-      - pattern-not-inside: |
-          if $Y < ... {...}
-      - pattern-not-inside: |
-          if $Y <= ...  {...}
-
     message: Found not bounded loop
     languages:
       - rust
