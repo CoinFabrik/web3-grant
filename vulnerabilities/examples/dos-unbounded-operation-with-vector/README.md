@@ -1,8 +1,8 @@
-# DoS Unbounded Operation
+# DoS Unbounded Operation with Vector
 
 ## Configuration
 
-- Detector ID: `dos-unbounded-operation`
+- Detector ID: `dos-unbounded-operation-with-vector`
 - Analysis Category: `DoS`
 - Severity: `High`
 
