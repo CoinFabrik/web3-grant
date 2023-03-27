@@ -22,5 +22,7 @@ Similar Tools from other Blockchains:
 - [Rustle](https://github.com/blocksecteam/rustle): Static analyzer for Near.
 
 Candidate tools to fork/work with:
-- [Dylint](https://github.com/trailofbits/dylint): Rust linting tool, dynamic set of lints. Based on Clippy, it can replicate Clippy.
 - [Clippy](https://github.com/rust-lang/rust-clippy): Rust linting tool, static set of lints.
+- [Dylint](https://github.com/trailofbits/dylint): Rust linting tool, dynamic set of lints. Based on Clippy, it can replicate Clippy.
+- [Semgrep](https://github.com/returntocorp/semgrep): A lightweight static analysis tool with beta support for Rust.
+
