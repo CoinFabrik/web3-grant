@@ -8,27 +8,21 @@ Semgrep is a fast, open source static analysis tool for finding bugs, detecting 
 
 ## Usage
 
-`$ semgrep --rule="<rule.yaml> /PATH/TO/SRC` 
+`$ semgrep --config=<rule.yaml> /PATH/TO/SRC` 
 
 ### Examples
 
-`$ semgrep --rule="panic-error.yaml" panic-error.rs`
+`$ semgrep --config="panic-error.yaml" ../../../vulnerabilities/examples/panic-error/vulnerable-example/lib.rs`
 
 ## Rules
 
 The following rules are written into yaml files:
 
-* integer-overflow-or-underflow.yaml
-* panic-error.yaml 
-* set-contract-storage.yaml
+* integer-overflow-or-underflow
+* panic-error.yaml
+* set-contract-storage
+* dos-unbounded-operation-with-vector
 
-## Samples
-
-The following RUST files are provided as examples:
-
-* integer-overflow-or-underflow.rs (and integer-overflow-or-underflow-fixed.rs)
-* panic-error.rs (and panic-error-fixed.rs)
-* set-contract-storage.rs
 
 
 
