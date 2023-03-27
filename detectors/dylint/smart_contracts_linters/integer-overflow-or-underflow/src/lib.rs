@@ -14,13 +14,13 @@ use rustc_span::source_map::Span;
 
 
 #[derive(Default)]
-pub struct AritmeticContext {
+pub struct ArithmeticContext {
     expr_id: Option<hir::HirId>,
     /// This field is used to check whether expressions are constants, such as in enum discriminants
     /// and consts
     const_span: Option<Span>,
 }
-impl AritmeticContext {
+impl ArithmeticContext {
     fn skip_expr(&mut self, e: &hir::Expr<'_>) -> bool {
         self.expr_id.is_some() || self.const_span.map_or(false, |span| span.contains(e.span))
     }
@@ -148,18 +148,18 @@ dylint_linting::impl_late_lint! {
     /// ```
     pub INTEGER_OVERFLOW_UNDERFLOW,
     Warn,
-    "`panic!` is useful for testing and prototyping, but should be avoided in production code",
+    "checks for any operators (`+`, `-`, `*`, `<<`, etc) which are capable of overflowing",
     IntegerOverflowUnderflow::default()
 }
 
 #[derive(Default)]
 pub struct IntegerOverflowUnderflow {
-    arithmetic_context: AritmeticContext,
+    arithmetic_context: ArithmeticContext,
 }
 impl IntegerOverflowUnderflow {
     pub fn new(verbose_bit_mask_threshold: u64) -> Self {
         Self {
-            arithmetic_context: AritmeticContext::default(),
+            arithmetic_context: ArithmeticContext::default(),
         }
     }
 }

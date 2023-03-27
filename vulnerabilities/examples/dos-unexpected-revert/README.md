@@ -8,7 +8,7 @@
 
 ## Description
 
-The vulnerability of DoS through unexpected revert arises when a smart contract does not handle storage size errors correctly, and a user can add an excessive number of entries, leading to an unexpected revert of transactions by other users and a Denial of Service. This vulnerability can be exploited by an attacker to perform a DoS attack on the network and can result in lost funds, poor user experience, and even harm the network's overall security.
+This vulnerability of DoS through unexpected revert arises when a smart contract does not handle storage size errors correctly, and a user can add an excessive number of entries, leading to an unexpected revert of transactions by other users and a Denial of Service. This vulnerability can be exploited by an attacker to perform a DoS attack on the network and can result in lost funds, poor user experience, and even harm the network's overall security.
 
 ## Exploit Scenario
 
