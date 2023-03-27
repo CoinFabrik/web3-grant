@@ -7,8 +7,8 @@ extern crate rustc_span;
 use clippy_utils::diagnostics::span_lint_and_help;
 use if_chain::if_chain;
 use rustc_hir::intravisit::FnKind;
-use rustc_hir::{Body, FnDecl, HirId, TyKind};
 use rustc_hir::QPath;
+use rustc_hir::{Body, FnDecl, HirId, TyKind};
 use rustc_lint::{LateContext, LateLintPass};
 use rustc_span::Span;
 
@@ -76,7 +76,7 @@ struct CounterVisitor {
 }
 
 impl<'tcx> Visitor<'tcx> for CounterVisitor {
-    fn visit_expr(&mut self, expr: &'tcx rustc_hir::Expr<'tcx>,) {
+    fn visit_expr(&mut self, expr: &'tcx rustc_hir::Expr<'tcx>) {
         if_chain! {
             if let rustc_hir::ExprKind::Call(fun, _) = &expr.kind;
             if let rustc_hir::ExprKind::Path(path_method) = &fun.kind;
@@ -91,12 +91,20 @@ impl<'tcx> Visitor<'tcx> for CounterVisitor {
                 }
             }
         }
-        walk_expr(self, expr,);
+        walk_expr(self, expr);
     }
 }
 
 impl<'tcx> LateLintPass<'tcx> for UnusedReturnEnum {
-    fn check_fn(&mut self, cx: &LateContext<'tcx>, _: FnKind<'tcx>, decl: &'tcx FnDecl<'tcx>, body: &'tcx Body<'tcx>, _: Span, _: HirId,) {
+    fn check_fn(
+        &mut self,
+        cx: &LateContext<'tcx>,
+        _: FnKind<'tcx>,
+        decl: &'tcx FnDecl<'tcx>,
+        body: &'tcx Body<'tcx>,
+        _: Span,
+        _: HirId,
+    ) {
         if_chain! {
             // Filter functions with that return "Result"
             if let FnRetTy::Return(ref ty) = decl.output;

@@ -10,7 +10,6 @@
 // use rustc_hir::{Expr, ExprKind};
 // use rustc_lint::{LateContext, LateLintPass};
 
-
 extern crate rustc_ast;
 extern crate rustc_span;
 
@@ -23,7 +22,6 @@ use rustc_ast::{
 };
 use rustc_lint::{EarlyContext, EarlyLintPass};
 use rustc_span::sym;
-
 
 dylint_linting::impl_pre_expansion_lint! {
     /// ### What it does
