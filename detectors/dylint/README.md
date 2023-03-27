@@ -1,31 +1,32 @@
 # Dylint based detectors
 
-We present a set of detectors that relie on the dylint tool.   
-dylint is a Rust linting tool, similar to Clippy but instead  of running a statically predetermined set of lints, dylint runs lints from user-specified, dynamic libraries. 
+We would like to introduce a new set of detectors that are powered by Dylint - a Rust linting tool. Similar to Clippy, Dylint can run lints to help identify potential issues in code. However, unlike Clippy, Dylint can run lints from user-specified dynamic libraries instead of just a statically predetermined set.
 
-dylint is easier to extend and reduce the compile/run cicle,  allowing developers to maintain their own personal lint collections.
+This unique feature of Dylint makes it easier for developers to extend and customize their own personal lint collections, leading to reduced compile and run cycles.
 
-## Installation
+## Running lints
+
+The next three steps, describe how to run lints from a dynamic library.
+
+1. Install `cargo-dylint` and `dylint-link`:
 
 ```sh
-$ cargo install cargo-dylint dylint-link`
+cargo install cargo-dylint dylint-link
 ```
 
-## Usage
-1) Create your linter. For instance [set_contract_storage](https://github.com/CoinFabrik/web3-grant/tree/dylint/docs/dylint/set_contract_storage)
-
-2) Go to the project you want to analyze and the following annotation in the Cargo.toml:
+2. Add the following to the project you want to run the lint on:
 
 ```sh
 [workspace.metadata.dylint]
 libraries = [
-    { path = "/PATH/TO/LINTER/" },
+    { git = "{{TBD_GITHUB_REPO}}", pattern = "detectors/dylint/smart_contract_linters/*" },
 ]
 ```
-and then run in the project folder
+
+3. Run `cargo-dylint`:
 
 ```sh
-`$ cargo dylint --all --workspace` 
+cargo dylint --all --workspace
 ```
 
 ## References
