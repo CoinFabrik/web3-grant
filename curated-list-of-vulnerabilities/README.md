@@ -64,7 +64,7 @@ During our smart contract audits at Coinfabrik, our auditors perform a manual re
 We used the Analysis Categories above, and common examples of vulnerabilities detected within each category in other blockchains, as a guideline for finding and developing vulnerable examples of Substrate Ink! smart contracts.
 
 
-## Analyses of Deployed Projects
+## Analysis of Deployed Projects
 
 Taking into consideration that a complete audit of a smart contract project takes significant time, usually in the order of weeks, we looked for a few Substrate Ink! smart contract projects deployed on Polkadot or Kusama to analyze for vulnerabilities. Our objective was to perform a quick evaluation of the projects during the course of a week, looking for possible vulnerabilities, enhancements or best practices that could be taken either directly or as inspiration for examples to include later in our list of vulnerabilities.
 
@@ -120,7 +120,7 @@ These types of vulnerabilities are commonly referred to as "integer overflow" an
 
 We classified this type of vulnerability under the ID integer-overflow-or-underflow. It is categorized as a vulnerability of Arithmetic type, with a High severity.
 
-In the context of Substrate, we found that this vulnerability could only be realized if overflow and underflow checks are disabled at the time of compilation. We explain this vulnerability in further detail at its documentation.
+In the context of Substrate, we found that this vulnerability could only be realized if overflow and underflow checks are disabled at the time of compilation. We explain this vulnerability in further detail at its [documentation](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/integer-overflow-or-underflow).
 
 #### 2 - Set contract Storage
 
