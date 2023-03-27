@@ -1,5 +1,7 @@
 # Scout
 
+![https://img.shields.io/badge/license-MIT-green](https://img.shields.io/badge/license-MIT-green)
+
 Scout is an extensible open-source tool to assist Rust Polkadot / Kusama smart contract developers to detect common security issues and deviations from best practices.
 
 <p align="center">
