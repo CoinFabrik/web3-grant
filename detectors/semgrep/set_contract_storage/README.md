@@ -1,4 +1,4 @@
-These semgrep rules are designed to identify potential misuse of the `env::set_contract_storage` function. 
+These semgrep rules are designed to identify potential misuse of the `env::set_contract_storage` function by unauthorized account. 
 
 # Syntactic rule
 
