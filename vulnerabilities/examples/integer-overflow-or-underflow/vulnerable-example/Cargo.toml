@@ -30,3 +30,8 @@ overflow-checks = false
 
 [profile.release]
 overflow-checks = false
+
+[workspace.metadata.dylint]
+libraries = [
+    { path = "../../../dylint/smart_contracts_linters/integer-overflow-or-underflow/" },
+]
