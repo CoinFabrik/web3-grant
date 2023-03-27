@@ -10,7 +10,7 @@ cargo-fuzz = true
 [dependencies]
 arbitrary = { version = "1.0.1", features = ["derive"] }
 ink = { version = "4.0.1", default-features = false }
-integer-overflow-or-underflow = { path = "../../../docs/detectors/integer-overflow-or-underflow/vulnerable-example" }
+integer-overflow-or-underflow = { path = "../../../../vulnerabilities/examples/integer-overflow-or-underflow/vulnerable-example" }
 libfuzzer-sys = "0.4"
 
 # Prevent this from interfering with workspaces
@@ -21,19 +21,19 @@ members = ["."]
 debug = 1
 
 [[bin]]
-name = "fuzz_constructor_works"
-path = "fuzz_targets/fuzz_constructor_works.rs"
+name = "fuzz-constructor-works"
+path = "fuzz-targets/fuzz-constructor-works.rs"
 test = false
 doc = false
 
 [[bin]]
-name = "fuzz_add_overflows"
-path = "fuzz_targets/fuzz_add_overflows.rs"
+name = "fuzz-add-overflows"
+path = "fuzz-targets/fuzz-add-overflows.rs"
 test = false
 doc = false
 
 [[bin]]
-name = "fuzz_sub_overflows"
-path = "fuzz_targets/fuzz_sub_overflows.rs"
+name = "fuzz-sub-overflows"
+path = "fuzz-targets/fuzz-sub-overflows.rs"
 test = false
 doc = false

@@ -27,5 +27,5 @@ ink_e2e = { version = "4.0" }
 
 [workspace.metadata.dylint]
 libraries = [
-    { path = "../../../dylint/smart_contracts_linters/*" },
+    { path = "../../../../detectors/dylint/smart-contract-linters/*" },
 ]
