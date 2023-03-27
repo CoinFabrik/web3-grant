@@ -2,8 +2,8 @@
 
 | Detector ID | Category | Source | Description | Severity | Reviewing | Status | 
 |----------------------|------------------|--------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|----------|----------|---------------------------|
-| weak-randomness       | Block attributes | Analysis Categories Wiki                        | [Insecure source of randomness through block attributes.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/Block-attributes/Use-of-insufficiently-random-values)                                                                         | ?        | FALSE    | 2-Under Review Coinfabrik |
-| time-manipulation     | Block attributes | Analysis Categories Wiki                        | [Using block attributes in order to determine time can lead to manipulation by miners.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/Block-attributes/Time-manipulation)                                        | ?        | FALSE    | 2-Under Review Coinfabrik |
+| weak-randomness       | Block attributes | Analysis Categories Wiki                        | Insecure source of randomness through block attributes.                                                                         | ?        | FALSE    | 2-Under Review Coinfabrik |
+| time-manipulation     | Block attributes | Analysis Categories Wiki                        | Using block attributes in order to determine time can lead to manipulation by miners.                                   | ?        | FALSE    | 2-Under Review Coinfabrik |
 
 We prioritize analysis on issues that appear on deployed projects or audits.
 
