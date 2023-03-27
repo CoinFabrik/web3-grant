@@ -4,9 +4,9 @@
 
 #[ink::contract]
 mod erc20 {
+    use ink::env;
     use ink::storage::traits::ManualKey;
     use ink::storage::Mapping;
-    use ink::env;
 
     /// The ERC-20 error types.
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -16,7 +16,7 @@ mod erc20 {
         InsufficientBalance,
         /// Returned if not enough allowance to fulfill a request is available.
         InsufficientAllowance,
-        
+
         UserNotOwner,
     }
 
@@ -26,7 +26,11 @@ mod erc20 {
     #[ink::trait_definition]
     pub trait MisusedSetContractStorage {
         #[ink(message)]
-        fn misused_set_contract_storage(&mut self, user_input_key: [u8; 68], user_input_data: u128) -> Result<()>;
+        fn misused_set_contract_storage(
+            &mut self,
+            user_input_key: [u8; 68],
+            user_input_data: u128,
+        ) -> Result<()>;
     }
 
     /// Trait implemented by all ERC-20 respecting smart contracts.
@@ -55,12 +59,7 @@ mod erc20 {
 
         /// Transfers `value` tokens on the behalf of `from` to the account `to`.
         #[ink(message)]
-        fn transfer_from(
-            &mut self,
-            from: AccountId,
-            to: AccountId,
-            value: Balance,
-        ) -> Result<()>;
+        fn transfer_from(&mut self, from: AccountId, to: AccountId, value: Balance) -> Result<()>;
     }
 
     /// A simple ERC-20 contract.
@@ -73,7 +72,7 @@ mod erc20 {
         /// Mapping of the token amount which an account is allowed to withdraw
         /// from another account.
         allowances: Mapping<(AccountId, AccountId), Balance, ManualKey<255>>,
-        owner: AccountId
+        owner: AccountId,
     }
 
     /// Event emitted when a token transfer occurs.
@@ -115,7 +114,7 @@ mod erc20 {
                 total_supply,
                 balances,
                 allowances: Default::default(),
-                owner: owner
+                owner: owner,
             }
         }
     }
@@ -167,7 +166,13 @@ mod erc20 {
         fn approve(&mut self, spender: AccountId, value: Balance) -> Result<()> {
             let owner = self.env().caller();
             self.allowances.insert((&owner, &spender), &value);
-            env::debug_println!("{:?}", (AsRef::<[u8]>::as_ref(&owner), AsRef::<[u8]>::as_ref(&spender)));
+            env::debug_println!(
+                "{:?}",
+                (
+                    AsRef::<[u8]>::as_ref(&owner),
+                    AsRef::<[u8]>::as_ref(&spender)
+                )
+            );
             self.env().emit_event(Approval {
                 owner,
                 spender,
@@ -191,16 +196,11 @@ mod erc20 {
         /// Returns `InsufficientBalance` error if there are not enough tokens on
         /// the account balance of `from`.
         #[ink(message)]
-        fn transfer_from(
-            &mut self,
-            from: AccountId,
-            to: AccountId,
-            value: Balance,
-        ) -> Result<()> {
+        fn transfer_from(&mut self, from: AccountId, to: AccountId, value: Balance) -> Result<()> {
             let caller = self.env().caller();
             let allowance = self.allowance_impl(&from, &caller);
             if allowance < value {
-                return Err(Error::InsufficientAllowance)
+                return Err(Error::InsufficientAllowance);
             }
             self.transfer_from_to(&from, &to, value)?;
             self.allowances
@@ -211,7 +211,11 @@ mod erc20 {
 
     impl MisusedSetContractStorage for Erc20 {
         #[ink(message)]
-        fn misused_set_contract_storage(&mut self, user_input_key: [u8; 68], user_input_data: u128) -> Result<()> {
+        fn misused_set_contract_storage(
+            &mut self,
+            user_input_key: [u8; 68],
+            user_input_data: u128,
+        ) -> Result<()> {
             if self.env().caller() == self.owner {
                 env::set_contract_storage(&user_input_key, &user_input_data);
                 Ok(())
@@ -265,7 +269,7 @@ mod erc20 {
         ) -> Result<()> {
             let from_balance = self.balance_of_impl(from);
             if from_balance < value {
-                return Err(Error::InsufficientBalance)
+                return Err(Error::InsufficientBalance);
             }
 
             self.balances.insert(from, &(from_balance - value));
@@ -286,11 +290,7 @@ mod erc20 {
         /// Imports all the definitions from the outer scope so we can use them here.
         use super::*;
         use ink::{
-            env::hash::{
-                Blake2x256,
-                CryptoHash,
-                HashOutput,
-            },
+            env::hash::{Blake2x256, CryptoHash, HashOutput},
             primitives::Clear,
         };
 
@@ -322,10 +322,9 @@ mod erc20 {
                 let len_encoded = encoded.len();
                 if len_encoded <= len_result {
                     result.as_mut()[..len_encoded].copy_from_slice(&encoded);
-                    return result
+                    return result;
                 }
-                let mut hash_output =
-                    <<Blake2x256 as HashOutput>::Type as Default>::default();
+                let mut hash_output = <<Blake2x256 as HashOutput>::Type as Default>::default();
                 <Blake2x256 as CryptoHash>::hash(&encoded, &mut hash_output);
                 let copy_len = core::cmp::min(hash_output.len(), len_result);
                 result.as_mut()[0..copy_len].copy_from_slice(&hash_output[0..copy_len]);
@@ -419,8 +418,7 @@ mod erc20 {
                 Some(AccountId::from([0x01; 32])),
                 100,
             );
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
             // Alice owns all the tokens on contract instantiation
             assert_eq!(erc20.balance_of(accounts.alice), 100);
             // Bob does not owns tokens
@@ -435,8 +433,7 @@ mod erc20 {
             let zero_addr = AccountId::from(zero_arr);
             let mut erc20 = Erc20::new(initial_supply, zero_addr);
             // Transfer event triggered during initial construction.
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             assert_eq!(erc20.balance_of(accounts.bob), 0);
             // Alice transfers 10 tokens to Bob.
@@ -469,8 +466,7 @@ mod erc20 {
             let zero_arr: [u8; 32] = [0; 32];
             let zero_addr = AccountId::from(zero_arr);
             let mut erc20 = Erc20::new(initial_supply, zero_addr);
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             assert_eq!(erc20.balance_of(accounts.bob), 0);
             // Set Bob as caller
@@ -505,8 +501,7 @@ mod erc20 {
             let zero_addr = AccountId::from(zero_arr);
             let mut erc20 = Erc20::new(initial_supply, zero_addr);
             // Transfer event triggered during initial construction.
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             // Bob fails to transfer tokens owned by Alice.
             assert_eq!(
@@ -554,8 +549,7 @@ mod erc20 {
             let zero_arr: [u8; 32] = [0; 32];
             let zero_addr = AccountId::from(zero_arr);
             let mut erc20 = Erc20::new(initial_supply, zero_addr);
-            let accounts =
-                ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
+            let accounts = ink::env::test::default_accounts::<ink::env::DefaultEnvironment>();
 
             // Alice approves Bob for token transfers on her behalf.
             let alice_balance = erc20.balance_of(accounts.alice);

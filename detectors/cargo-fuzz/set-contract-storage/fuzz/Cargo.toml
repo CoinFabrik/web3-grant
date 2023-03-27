@@ -11,7 +11,7 @@ cargo-fuzz = true
 arbitrary = { version = "1.0.1", features = ["derive"] }
 ink = { version = "4.0.1", default-features = false }
 libfuzzer-sys = "0.4"
-set-contract-storage = { path = "../../../docs/detectors/set-contract-storage/vulnerable-example" }
+set-contract-storage = { path = "../../../../vulnerabilities/examples/set-contract-storage/vulnerable-example" }
 
 # Prevent this from interfering with workspaces
 [workspace]
@@ -21,45 +21,45 @@ members = ["."]
 debug = 1
 
 [[bin]]
-name = "fuzz_new_works"
-path = "fuzz_targets/fuzz_new_works.rs"
+name = "fuzz-new-works"
+path = "fuzz-targets/fuzz-new-works.rs"
 test = false
 doc = false
 
 [[bin]]
-name = "fuzz_total_supply_works"
-path = "fuzz_targets/fuzz_total_supply_works.rs"
+name = "fuzz-total-supply-works"
+path = "fuzz-targets/fuzz-total-supply-works.rs"
 test = false
 doc = false
 
 [[bin]]
-name = "fuzz_balance_of_works"
-path = "fuzz_targets/fuzz_balance_of_works.rs"
-test = false
-doc = false
-
-
-[[bin]]
-name = "fuzz_transfer_works"
-path = "fuzz_targets/fuzz_transfer_works.rs"
+name = "fuzz-balance-of-works"
+path = "fuzz-targets/fuzz-balance-of-works.rs"
 test = false
 doc = false
 
 
 [[bin]]
-name = "fuzz_transfer_from_works"
-path = "fuzz_targets/fuzz_transfer_from_works.rs"
+name = "fuzz-transfer-works"
+path = "fuzz-targets/fuzz-transfer-works.rs"
+test = false
+doc = false
+
+
+[[bin]]
+name = "fuzz-transfer-from-works"
+path = "fuzz-targets/fuzz-transfer-from-works.rs"
 test = false
 doc = false
 
 [[bin]]
-name = "fuzz_allowance_must_not_change_on_failed_transfer"
-path = "fuzz_targets/fuzz_allowance_must_not_change_on_failed_transfer.rs"
+name = "fuzz-allowance-must-not-change-on-failed-transfer"
+path = "fuzz-targets/fuzz-allowance-must-not-change-on-failed-transfer.rs"
 test = false
 doc = false
 
 [[bin]]
-name = "fuzz_misuse_contract_storage"
-path = "fuzz_targets/fuzz_misuse_contract_storage.rs"
+name = "fuzz-misuse-contract-storage"
+path = "fuzz-targets/fuzz-misuse-contract-storage.rs"
 test = false
 doc = false
