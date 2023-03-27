@@ -74,7 +74,7 @@ Our detector checks for integer arithmetic operations which could overflow or pa
 
 #### Implementation 
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trate:
+In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_body
 - check_body_post
 - check_expr
@@ -115,7 +115,7 @@ This detector checks for calls to env::set_contract_storage().
 
 #### Implementation 
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trate:
+In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_fn
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function env::set_contract_storage(). We also check if the function call is performed within an `if` statement that determines whether the caller is the contract owner, in the later case no warning is raised.
@@ -153,7 +153,7 @@ This detector checks the usage of the flag set_allow_reentry(true), followed by 
 
 #### Implementation 
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trate:
+In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_fn
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the flag set_allow_reentry(true) and the function invoke_contract_call(). The check_fn function is also used to detect for assignments (=, +=, -=, etc) and calls to the insert() function.
@@ -176,7 +176,7 @@ This detector checks the usage of the panic! macro.
 
 #### Implementation 
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trate:
+In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_expr
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the panic! macro.
@@ -200,7 +200,7 @@ This detector checks that if the function return value is of type Result then th
 
 #### Implementation 
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trate:
+In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_fn
 - visitor
 
@@ -225,7 +225,7 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 #### Implementation 
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trate:
+In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - [Completar uba]
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the [Completar Uba].
@@ -249,7 +249,7 @@ This detector checks that only the owner can manipulate vectors' content.
 
 #### Implementation 
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trate:
+In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_fn
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it allows users to modify vectors without being the contract owners.
