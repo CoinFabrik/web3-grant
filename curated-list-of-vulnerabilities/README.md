@@ -1,3 +1,5 @@
+# Curated List of Vulnerabilities
+
 Smart contracts deployed in the Polkadot or Kusama networks are liable to exploitation as it happens with all running code. In this section we describe our effort to discover relevant security-related issues introduced during the development of smart contracts in Substrate Ink!. Some issues are particular to Substrate while others are common across multiple networks. While focusing on security vulnerabilities, we also look for issues related to best practices and enhancements. 
 
 # Methodology and Analysis
