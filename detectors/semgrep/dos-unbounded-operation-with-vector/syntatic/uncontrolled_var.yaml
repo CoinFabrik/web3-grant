@@ -1,0 +1,20 @@
+rules:
+  - id: tainted-for-copy
+    patterns:
+      - pattern-either:
+          - patterns: 
+            - pattern: for $X in $START..$END {...}
+            - pattern-inside: pub fn $FN_NAME(...,$END:$ENDTYPE,...) {...}
+          - patterns: 
+            - pattern-inside: pub fn $FN_NAME(&mut self,...) {...}
+            - pattern: for $X in $START..self.$FIELD {...}
+ 
+      - pattern-not-inside: |
+          if $Y < ... {...}
+      - pattern-not-inside: |
+          if $Y <= ...  {...}
+
+    message: Found not bounded loop
+    languages:
+      - rust
+    severity: WARNING
