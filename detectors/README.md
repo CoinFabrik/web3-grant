@@ -213,9 +213,9 @@ If definitions of Err() and/or Ok() are in the code but do not flow to the retur
 
 ## 6. DoS Unbounded operation
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation-with-vector).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unbounded-operation-with-vector), we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unbounded-operation), we detail the implementation below.
 
 ### Dylint
 
@@ -235,11 +235,11 @@ In particular, we have used this function to search for every for or while loop 
 False positives are to be expected when using variables that can only be set using controlled flows that limit the values within acceptable ranges. These cases can be detected by using tainting techniques and/or interprocedural dataflow analysis.
 
 
-## 7. DoS Unexpected revert
+## 7. DoS Unexpected revert with vector
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert-with-vector).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unexpected-revert), we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unexpected-revert-with-vector), we detail the implementation below.
 
 ### Dylint
 
@@ -365,7 +365,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     </tr>
     <tr>
       <td>#6</td>
-      <td>dos-unbounded-operation-with-vector</td>
+      <td>dos-unbounded-operation</td>
       <td>DOS</td>
       <td>✅</td>
       <td>❎</td>
@@ -377,7 +377,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     </tr>
     <tr>
       <td>#7</td>
-      <td>dos-unexpected-revert</td>
+      <td>dos-unexpected-revert-with-vector</td>
       <td>DOS</td>
       <td>✅</td>
       <td>❎</td>
