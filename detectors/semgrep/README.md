@@ -18,7 +18,7 @@ Semgrep is a fast, open source static analysis tool for finding bugs, detecting 
 
 The following rules are written into yaml files:
 
-* dos-unbounded-operation-with-vector/uncontrolled-var.yaml
+* dos-unbounded-operation/uncontrolled-var.yaml
 * integer-overflow-or-underflow/integer-overflow-or-underflow.yaml
 * panic-error/panic-error.yaml
 * set-contract-storage/syntactic/unprotected-use.yaml
@@ -26,9 +26,9 @@ The following rules are written into yaml files:
 
 ## Executing each rule
 
-### dos-unbounded-operation-with-vector/uncontrolled-var.yaml
+### dos-unbounded-operation/uncontrolled-var.yaml
 
-`$ semgrep --config="dos-unbounded-operation-with-vector/uncontrolled-var.yaml" ../../vulnerabilities/examples/dos-unbounded-operation-with-vector/vulnerable-example/lib.rs`
+`$ semgrep --config="dos-unbounded-operation/uncontrolled-var.yaml" ../../vulnerabilities/examples/dos-unbounded-operation/vulnerable-example/lib.rs`
 
 ### integer-overflow-or-underflow/integer-overflow-or-underflow.yaml
 
