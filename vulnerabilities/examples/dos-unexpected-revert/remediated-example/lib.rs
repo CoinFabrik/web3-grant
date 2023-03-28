@@ -20,22 +20,24 @@ mod unexpected_revert {
     #[derive(Debug, PartialEq, Eq, Clone, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Errors {
-        CandidateAlreadyAdded,
         AccountAlreadyVoted,
+        CandidateAlreadyAdded,
         CandidateDoesntExist,
+        Overflow,
+        TimestampBeforeCurrentBlock,
         VoteEnded,
     }
 
     impl UnexpectedRevert {
         /// Constructor that initializes the `bool` value to the given `init_value`.
         #[ink(constructor)]
-        pub fn new(end_timestamp: u64) -> Self {
+        pub fn new(end_timestamp: u64) -> Result<Self, Errors> {
             if end_timestamp <= Self::env().block_timestamp() {
-                panic!("Timestamp must be after current block")
+                return Err(Errors::TimestampBeforeCurrentBlock);
             }
             let zero_arr: [u8; 32] = [0; 32];
             let zero_addr = AccountId::from(zero_arr);
-            Self {
+            Ok(Self {
                 total_votes: 0,
                 total_candidates: 0,
                 most_voted_candidate: zero_addr,
@@ -44,7 +46,7 @@ mod unexpected_revert {
                 already_voted: Mapping::default(),
                 votes: Mapping::default(),
                 vote_timestamp_end: end_timestamp,
-            }
+            })
         }
 
         /// Add a candidate to this vote
@@ -120,13 +122,14 @@ mod unexpected_revert {
                 Err(Errors::AccountAlreadyVoted)
             } else {
                 self.already_voted.insert(caller, &true);
-                let votes_opt = self.votes.get(candidate);
-                if votes_opt.is_none() {
-                    return Err(Errors::CandidateDoesntExist);
-                }
-                let votes = votes_opt.unwrap() + 1;
+                let votes = self
+                    .votes
+                    .get(candidate)
+                    .ok_or(Errors::CandidateDoesntExist)?
+                    .checked_add(1)
+                    .ok_or(Errors::Overflow)?;
                 self.votes.insert(candidate, &votes);
-                self.total_votes += 1;
+                self.total_votes.checked_add(1).ok_or(Errors::Overflow)?;
                 if self.candidate_votes < votes {
                     self.candidate_votes = votes;
                     self.most_voted_candidate = candidate;
@@ -152,7 +155,7 @@ mod unexpected_revert {
                 Ok(n) => (n.as_secs() + 10 * 60) * 1000,
                 Err(_) => panic!("SystemTime before UNIX EPOCH!"),
             };
-            let mut contract = UnexpectedRevert::new(now);
+            let mut contract = UnexpectedRevert::new(now).unwrap();
 
             let mut candidate: Result<(), Errors> = Err(Errors::VoteEnded);
             for i in 0u32..512 {

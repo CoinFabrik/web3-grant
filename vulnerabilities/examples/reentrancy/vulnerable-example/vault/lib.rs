@@ -13,6 +13,16 @@ mod vault {
         balances: Mapping<AccountId, Balance>,
     }
 
+    #[derive(Debug, PartialEq, Eq, Clone, scale::Encode, scale::Decode)]
+    #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
+    pub enum Error {
+        ContractInvokeFailed,
+        InsufficientBalance,
+        Overflow,
+        TransferFailed,
+        Underflow,
+    }
+
     impl Vault {
         #[ink(constructor)]
         pub fn new() -> Self {
@@ -22,12 +32,14 @@ mod vault {
         }
 
         #[ink(message, payable)]
-        pub fn deposit(&mut self) -> Balance {
+        pub fn deposit(&mut self) -> Result<Balance, Error> {
             let caller_addr = self.env().caller();
             let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
-            let updated_balance = caller_balance + self.env().transferred_value();
+            let updated_balance = caller_balance
+                .checked_add(self.env().transferred_value())
+                .ok_or(Error::Overflow)?;
             self.balances.insert(caller_addr, &updated_balance);
-            return updated_balance;
+            Ok(updated_balance)
         }
 
         #[ink(message)]
@@ -36,19 +48,19 @@ mod vault {
         }
 
         #[ink(message)]
-        pub fn withdraw(&mut self, amount: Balance) -> Balance {
+        pub fn withdraw(&mut self, amount: Balance) -> Result<Balance, Error> {
             let caller_addr = self.env().caller();
-            let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
-            if amount <= caller_balance {
-                let updated_balance = caller_balance - amount;
-                if self.env().transfer(self.env().caller(), amount).is_err() {
-                    panic!("requested transfer failed.")
-                }
-                self.balances.insert(caller_addr, &updated_balance);
-                return updated_balance;
-            } else {
-                panic!("amount > balance")
+            let caller_balance = self.balance(caller_addr);
+            if amount > caller_balance {
+                return Err(Error::InsufficientBalance);
             }
+
+            let updated_balance = caller_balance.checked_sub(amount).ok_or(Error::Underflow)?;
+            self.env()
+                .transfer(self.env().caller(), amount)
+                .map_err(|_| Error::TransferFailed)?;
+            self.balances.insert(caller_addr, &updated_balance);
+            Ok(updated_balance)
         }
 
         #[ink(message)]
@@ -57,34 +69,36 @@ mod vault {
             address: AccountId,
             amount: Balance,
             selector: u32,
-        ) -> Balance {
+        ) -> Result<Balance, Error> {
             ink::env::debug_println!(
                 "call_with_value function called from {:?}",
                 self.env().caller()
             );
             let caller_addr = self.env().caller();
-            let caller_balance = self.balances.get(caller_addr).unwrap_or(0);
-            if amount <= caller_balance {
-                let call = build_call::<ink::env::DefaultEnvironment>()
-                    .call(address)
-                    .transferred_value(amount)
-                    .exec_input(ink::env::call::ExecutionInput::new(Selector::new(
-                        selector.to_be_bytes(),
-                    )))
-                    .call_flags(ink::env::CallFlags::default().set_allow_reentry(true))
-                    .returns::<()>()
-                    .params();
-                self.env()
-                    .invoke_contract(&call)
-                    .unwrap_or_else(|err| panic!("Err {:?}", err))
-                    .unwrap_or_else(|err| panic!("LangErr {:?}", err));
-                self.balances
-                    .insert(caller_addr, &(caller_balance - amount));
+            let caller_balance = self.balance(caller_addr);
 
-                return caller_balance - amount;
-            } else {
-                return caller_balance;
+            if amount > caller_balance {
+                return Ok(caller_balance);
             }
+
+            let call = build_call::<ink::env::DefaultEnvironment>()
+                .call(address)
+                .transferred_value(amount)
+                .exec_input(ink::env::call::ExecutionInput::new(Selector::new(
+                    selector.to_be_bytes(),
+                )))
+                .call_flags(ink::env::CallFlags::default().set_allow_reentry(true))
+                .returns::<()>()
+                .params();
+            self.env()
+                .invoke_contract(&call)
+                .map_err(|_| Error::ContractInvokeFailed)?
+                .map_err(|_| Error::ContractInvokeFailed)?;
+
+            let new_balance = caller_balance.checked_sub(amount).ok_or(Error::Underflow)?;
+            self.balances.insert(caller_addr, &new_balance);
+
+            Ok(new_balance)
         }
     }
 }

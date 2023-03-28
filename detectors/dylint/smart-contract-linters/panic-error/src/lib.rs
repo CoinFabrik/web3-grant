@@ -1,15 +1,6 @@
 #![feature(rustc_private)]
 #![warn(unused_extern_crates)]
 
-// extern crate rustc_hir;
-
-// use clippy_utils::diagnostics::span_lint_and_help;
-// use clippy_utils::macros::{is_panic, root_macro_call_first_node};
-// use if_chain::if_chain;
-// use rustc_hir::QPath;
-// use rustc_hir::{Expr, ExprKind};
-// use rustc_lint::{LateContext, LateLintPass};
-
 extern crate rustc_ast;
 extern crate rustc_span;
 

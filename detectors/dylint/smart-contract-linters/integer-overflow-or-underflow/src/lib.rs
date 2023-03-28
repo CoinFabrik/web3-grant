@@ -6,7 +6,6 @@ extern crate rustc_span;
 use clippy_utils::consts::constant_simple;
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::is_integer_literal;
-use clippy_utils::{diagnostics::span_lint_and_help, sym};
 use rustc_hir::{self as hir, Body, Expr, ExprKind, UnOp};
 use rustc_lint::LateContext;
 use rustc_lint::LateLintPass;
@@ -184,7 +183,7 @@ pub struct IntegerOverflowUnderflow {
     arithmetic_context: ArithmeticContext,
 }
 impl IntegerOverflowUnderflow {
-    pub fn new(verbose_bit_mask_threshold: u64) -> Self {
+    pub fn new() -> Self {
         Self {
             arithmetic_context: ArithmeticContext::default(),
         }
