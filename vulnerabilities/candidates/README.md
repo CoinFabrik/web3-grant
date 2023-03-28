@@ -2,28 +2,29 @@
 
 | Detector ID | Category | Source | Description | Severity | Reviewing | Status | 
 |----------------------|------------------|--------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------|----------|----------|---------------------------|
-| unexpected-revert     | DoS              | Analysis Categories Wiki                        | [Unexpected revert occurs when the access to a function is blocked by forcing it to revert.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/DoS/Unexpected-revert)                                    | ?        | FALSE    | 2-Under Review Coinfabrik |
-| block-gas-limit       | DoS              | Analysis Categories Wiki                        | [Block Gas Limit happens when an attacker floods the execution of a function with so much data that it hits the gas limit of the block, causing the transaction to revert.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/DoS/Block-gas-limit) | ?        | FALSE    | 2-Under Review Coinfabrik |
-| weak-randomness       | Block attributes | Analysis Categories Wiki                        | [Insecure source of randomness through block attributes.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/Block-attributes/Use-of-insufficiently-random-values)                                                                         | ?        | FALSE    | 2-Under Review Coinfabrik |
-| time-manipulation     | Block attributes | Analysis Categories Wiki                        | [Using block attributes in order to determine time can lead to manipulation by miners.](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses/Block-attributes/Time-manipulation)                                        | ?        | FALSE    | 2-Under Review Coinfabrik |
+| weak-randomness       | Block attributes | Analysis Categories Wiki                        | Insecure source of randomness through block attributes.                                                                         | ?        | FALSE    | 2-Under Review Coinfabrik |
+| time-manipulation     | Block attributes | Analysis Categories Wiki                        | Using block attributes in order to determine time can lead to manipulation by miners.                                   | ?        | FALSE    | 2-Under Review Coinfabrik |
 
-We prioritize analysis on issues that appear on [deployed projects](https://docs.google.com/spreadsheets/d/19fVqHwQwfhWUBfHppiEnr9yJ9Ep-qr_czGSSkTvKn5E/edit?usp=share_link) as potential vulnerabilities by chatGPT.
+We prioritize analysis on issues that appear on deployed projects or audits.
 
-Take a look at [this](https://docs.google.com/spreadsheets/d/1mCE1KIXSngQP8VsY7fo4UqH_QL_7VKQ0JSUvhGuY4Rs/edit#gid=0) table for other detector candidates.
 
 ## Methodology
 
-We have three sources for candidate for examples to be detected (detectors):
+We use three sources for candidate vulnerabilities:
 
-1. The [list of audits of Substrate Polkadot projects by auditing companies](https://docs.google.com/spreadsheets/d/1xQ-RTui38vTAXKIbBOLZmbUEvHjTGrbdRvbG12c7n-8/edit#gid=0). In order to get candidates we look at the audit's findings and the associated github repo.
+1. Audits of Substrate Polkadot projects by auditing companies. In order to get candidates we look at the audit's findings and the associated github repo.
 
-2. Deployed [ink! projects](https://docs.google.com/spreadsheets/d/19fVqHwQwfhWUBfHppiEnr9yJ9Ep-qr_czGSSkTvKn5E/edit?usp=share_link).
+2. Deployed ink! projects. We look at the projects github repo.
 
-3. The [Analysis Categories Wiki](https://gitlab.com/coinfabrik-private/coinfabrik-wiki/-/wikis/Auditing/Analyses). In order to get candidates we search the wiki for examples in solidity and try to generate the candidate in ink! using ChatGPT with the following prompt below. If the type of vulnerability is possible, a new line is added to the Detectors list. If the type of vulnerability is not possible, a new line is added to the [candidates table](https://docs.google.com/spreadsheets/d/1mCE1KIXSngQP8VsY7fo4UqH_QL_7VKQ0JSUvhGuY4Rs/edit#gid=0).
+3. [Analysis Categories](https://blog.coinfabrik.com/analysis-categories/). We generate examples from classic examples in other blockchains.
 
+In order to submit a candidate:
 
-Determine whether vulnerabilities associated to <eg: priviledged roles> are possible in polkadot substrate.
+1. Branch this repo into a new branch with the vulnerability's name.
 
-If this type of vulenerability is possible, provide a simple code example of a smart contract in ink!, where the only vulnerability found is associated to <eg: priviledged roles>. Provide details on how to deploy this smart contract, interact with it, and exploit its vulnerability. Indicate the severity of this vulnerability."
+2. Edit this README.md adding your candidate to the table.
 
-If this type of vulnerability is not possible, explain why it is not possible in substrate polkadot.
+3. Add a folder with your candidate's name to this directory, following the documentation guideline in the `template` folder.
+
+4. Push your changes and make a pull request.
+

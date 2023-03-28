@@ -14,7 +14,7 @@ mod unexpected_revert {
         most_voted_candidate: AccountId,
         //Votes of the most voted candidate
         candidate_votes: u64,
-        vote_timestamp_end: u64
+        vote_timestamp_end: u64,
     }
 
     #[derive(Debug, PartialEq, Eq, Clone, scale::Encode, scale::Decode)]
@@ -23,7 +23,7 @@ mod unexpected_revert {
         CandidateAlreadyAdded,
         AccountAlreadyVoted,
         CandidateDoesntExist,
-        VoteEnded
+        VoteEnded,
     }
 
     impl UnexpectedRevert {
@@ -43,17 +43,17 @@ mod unexpected_revert {
                 candidates: Mapping::default(),
                 already_voted: Mapping::default(),
                 votes: Mapping::default(),
-                vote_timestamp_end: end_timestamp
+                vote_timestamp_end: end_timestamp,
             }
         }
 
         /// Add a candidate to this vote
         #[ink(message)]
-        pub fn add_candidate(&mut self, candidate: AccountId) -> Result<(),Errors> {
+        pub fn add_candidate(&mut self, candidate: AccountId) -> Result<(), Errors> {
             if self.vote_ended() {
                 return Err(Errors::VoteEnded);
             }
-            if self.votes.contains(candidate){
+            if self.votes.contains(candidate) {
                 Err(Errors::CandidateAlreadyAdded)
             } else {
                 self.candidates.insert(self.total_candidates, &candidate);
@@ -65,7 +65,7 @@ mod unexpected_revert {
 
         /// Get votes for a specific candidate
         #[ink(message)]
-        pub fn get_votes_for_a_candidate(&self, candidate: AccountId) -> Result<u64,Errors> {
+        pub fn get_votes_for_a_candidate(&self, candidate: AccountId) -> Result<u64, Errors> {
             let votes_opt = self.votes.get(candidate);
             if votes_opt.is_none() {
                 Err(Errors::CandidateDoesntExist)
@@ -90,17 +90,17 @@ mod unexpected_revert {
         pub fn get_total_votes(&self) -> u64 {
             self.total_votes
         }
-        
+
         #[ink(message)]
         pub fn get_total_candidates(&self) -> u64 {
             self.total_candidates
         }
 
         #[ink(message)]
-        pub fn get_candidate(&self, index: u64) -> Result<AccountId,Errors> {
+        pub fn get_candidate(&self, index: u64) -> Result<AccountId, Errors> {
             match self.candidates.get(index) {
                 Some(candidate) => Ok(candidate),
-                None => Err(Errors::CandidateDoesntExist)
+                None => Err(Errors::CandidateDoesntExist),
             }
         }
 
@@ -111,7 +111,7 @@ mod unexpected_revert {
 
         /// Vote for one of the candidates
         #[ink(message)]
-        pub fn vote(&mut self, candidate: AccountId) -> Result<(),Errors> {
+        pub fn vote(&mut self, candidate: AccountId) -> Result<(), Errors> {
             if self.vote_ended() {
                 return Err(Errors::VoteEnded);
             }
@@ -124,7 +124,7 @@ mod unexpected_revert {
                 if votes_opt.is_none() {
                     return Err(Errors::CandidateDoesntExist);
                 }
-                let votes = votes_opt.unwrap()+1;
+                let votes = votes_opt.unwrap() + 1;
                 self.votes.insert(candidate, &votes);
                 self.total_votes += 1;
                 if self.candidate_votes < votes {
@@ -149,26 +149,26 @@ mod unexpected_revert {
         #[ink::test]
         fn insert_512_candidates() {
             let now: u64 = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-                Ok(n) => (n.as_secs()+10*60)*1000,
+                Ok(n) => (n.as_secs() + 10 * 60) * 1000,
                 Err(_) => panic!("SystemTime before UNIX EPOCH!"),
             };
             let mut contract = UnexpectedRevert::new(now);
 
             let mut candidate: Result<(), Errors> = Err(Errors::VoteEnded);
             for i in 0u32..512 {
-                let mut zero_vec = vec![0u8;28];
+                let mut zero_vec = vec![0u8; 28];
                 zero_vec.extend(i.to_be_bytes().iter().cloned());
-                let arr: [u8; 32] = match zero_vec.as_slice().try_into(){
+                let arr: [u8; 32] = match zero_vec.as_slice().try_into() {
                     Ok(arr) => arr,
                     Err(_) => panic!(),
                 };
                 let addr = AccountId::from(arr);
                 candidate = contract.add_candidate(addr);
-                assert_eq!(contract.get_total_candidates(), (i+1) as u64);
+                assert_eq!(contract.get_total_candidates(), (i + 1) as u64);
             }
-            
-            assert_eq!(contract.get_total_candidates(), 512u64);   
-            assert_eq!(candidate.is_ok(), true);   
+
+            assert_eq!(contract.get_total_candidates(), 512u64);
+            assert_eq!(candidate.is_ok(), true);
         }
     }
 
@@ -181,7 +181,7 @@ mod unexpected_revert {
         #[ink_e2e::test]
         async fn insert_512_candidates(mut client: ink_e2e::Client<C, E>) {
             let now: u64 = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
-                Ok(n) => (n.as_secs()+10*60)*1000,
+                Ok(n) => (n.as_secs() + 10 * 60) * 1000,
                 Err(_) => panic!("SystemTime before UNIX EPOCH!"),
             };
             let constructor = UnexpectedRevertRef::new(now);
@@ -192,35 +192,29 @@ mod unexpected_revert {
                 .account_id;
 
             for i in 0u32..512 {
-                let mut zero_vec = vec![0u8;28];
+                let mut zero_vec = vec![0u8; 28];
                 zero_vec.extend(i.to_be_bytes().iter().cloned());
-                let arr: [u8; 32] = match zero_vec.as_slice().try_into(){
+                let arr: [u8; 32] = match zero_vec.as_slice().try_into() {
                     Ok(arr) => arr,
                     Err(_) => panic!(),
                 };
                 let addr = AccountId::from(arr);
-                
+
                 let add_candidate = build_message::<UnexpectedRevertRef>(contract_acc_id.clone())
-                    .call(|contract| {
-                        contract.add_candidate(addr)
-                    });
+                    .call(|contract| contract.add_candidate(addr));
                 client
                     .call(&ink_e2e::bob(), add_candidate.clone(), 0, None)
                     .await
                     .expect("add_candidate failed");
             }
-            let get_total_candidates = build_message::<UnexpectedRevertRef>(contract_acc_id.clone())
-                .call(|contract| {
-                    contract.get_total_candidates()
-                });
+            let get_total_candidates =
+                build_message::<UnexpectedRevertRef>(contract_acc_id.clone())
+                    .call(|contract| contract.get_total_candidates());
             let candidates_count = client
                 .call(&ink_e2e::bob(), get_total_candidates.clone(), 0, None)
                 .await
                 .expect("candidates_count failed");
-            assert_eq!(
-                candidates_count.return_value(),
-                512
-            );
+            assert_eq!(candidates_count.return_value(), 512);
         }
     }
 }

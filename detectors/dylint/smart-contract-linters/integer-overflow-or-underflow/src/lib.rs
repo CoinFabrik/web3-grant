@@ -1,17 +1,16 @@
 #![feature(rustc_private)]
 
-extern crate rustc_span;
 extern crate rustc_hir;
+extern crate rustc_span;
 
-use clippy_utils::{diagnostics::span_lint_and_help, sym};
-use rustc_lint::{LateLintPass};
 use clippy_utils::consts::constant_simple;
 use clippy_utils::diagnostics::span_lint;
 use clippy_utils::is_integer_literal;
-use rustc_hir::{self as hir, UnOp, Expr, ExprKind, Body};
+use clippy_utils::{diagnostics::span_lint_and_help, sym};
+use rustc_hir::{self as hir, Body, Expr, ExprKind, UnOp};
 use rustc_lint::LateContext;
+use rustc_lint::LateLintPass;
 use rustc_span::source_map::Span;
-
 
 #[derive(Default)]
 pub struct ArithmeticContext {
@@ -51,38 +50,66 @@ impl ArithmeticContext {
             _ => (),
         }
 
-        let (l_ty, r_ty) = (cx.typeck_results().expr_ty(l), cx.typeck_results().expr_ty(r));
+        let (l_ty, r_ty) = (
+            cx.typeck_results().expr_ty(l),
+            cx.typeck_results().expr_ty(r),
+        );
         if l_ty.peel_refs().is_integral() && r_ty.peel_refs().is_integral() {
             match op {
                 hir::BinOpKind::Div | hir::BinOpKind::Rem => match &r.kind {
                     hir::ExprKind::Lit(_lit) => (),
                     hir::ExprKind::Unary(hir::UnOp::Neg, expr) => {
                         if is_integer_literal(expr, 1) {
-                            span_lint(cx, INTEGER_OVERFLOW_UNDERFLOW, expr.span, "integer arithmetic detected");
+                            span_lint(
+                                cx,
+                                INTEGER_OVERFLOW_UNDERFLOW,
+                                expr.span,
+                                "integer arithmetic detected",
+                            );
                             self.expr_id = Some(expr.hir_id);
                         }
-                    },
+                    }
                     _ => {
-                        span_lint(cx, INTEGER_OVERFLOW_UNDERFLOW, expr.span, "integer arithmetic detected");
+                        span_lint(
+                            cx,
+                            INTEGER_OVERFLOW_UNDERFLOW,
+                            expr.span,
+                            "integer arithmetic detected",
+                        );
                         self.expr_id = Some(expr.hir_id);
-                    },
+                    }
                 },
                 _ => {
-                    span_lint(cx, INTEGER_OVERFLOW_UNDERFLOW, expr.span, "integer arithmetic detected");
+                    span_lint(
+                        cx,
+                        INTEGER_OVERFLOW_UNDERFLOW,
+                        expr.span,
+                        "integer arithmetic detected",
+                    );
                     self.expr_id = Some(expr.hir_id);
-                },
+                }
             }
         }
     }
 
-    pub fn check_negate<'tcx>(&mut self, cx: &LateContext<'tcx>, expr: &'tcx hir::Expr<'_>, arg: &'tcx hir::Expr<'_>) {
+    pub fn check_negate<'tcx>(
+        &mut self,
+        cx: &LateContext<'tcx>,
+        expr: &'tcx hir::Expr<'_>,
+        arg: &'tcx hir::Expr<'_>,
+    ) {
         if self.skip_expr(expr) {
             return;
         }
         let ty = cx.typeck_results().expr_ty(arg);
         if constant_simple(cx, cx.typeck_results(), expr).is_none() {
             if ty.is_integral() {
-                span_lint(cx, INTEGER_OVERFLOW_UNDERFLOW, expr.span, "integer arithmetic detected");
+                span_lint(
+                    cx,
+                    INTEGER_OVERFLOW_UNDERFLOW,
+                    expr.span,
+                    "integer arithmetic detected",
+                );
                 self.expr_id = Some(expr.hir_id);
             }
         }
@@ -108,7 +135,7 @@ impl ArithmeticContext {
                     }
                 }
                 self.const_span = Some(body_span);
-            },
+            }
             hir::BodyOwnerKind::Fn | hir::BodyOwnerKind::Closure => (),
         }
     }
@@ -168,16 +195,18 @@ impl<'tcx> LateLintPass<'tcx> for IntegerOverflowUnderflow {
     fn check_expr(&mut self, cx: &LateContext<'tcx>, e: &'tcx Expr<'_>) {
         match e.kind {
             ExprKind::Binary(op, lhs, rhs) => {
-                self.arithmetic_context.check_binary(cx, e, op.node, lhs, rhs);
-            },
+                self.arithmetic_context
+                    .check_binary(cx, e, op.node, lhs, rhs);
+            }
             ExprKind::AssignOp(op, lhs, rhs) => {
-                self.arithmetic_context.check_binary(cx, e, op.node, lhs, rhs);
-            },
+                self.arithmetic_context
+                    .check_binary(cx, e, op.node, lhs, rhs);
+            }
             ExprKind::Unary(op, arg) => {
                 if op == UnOp::Neg {
                     self.arithmetic_context.check_negate(cx, e, arg);
                 }
-            },
+            }
             _ => (),
         }
     }

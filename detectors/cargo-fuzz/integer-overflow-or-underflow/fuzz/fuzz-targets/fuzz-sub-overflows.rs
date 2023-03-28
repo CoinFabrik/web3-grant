@@ -13,7 +13,7 @@ pub struct Input {
 
 fuzz_target!(|input: Input| {
     ink::env::test::run_test::<ink::env::DefaultEnvironment, _>(|_| {
-        test_utils::sub_underflows(u8::MAX, input.value_for_sub);
+        test_utils::sub_underflows(u8::MIN, input.value_for_sub);
         Ok(())
     })
     .unwrap();

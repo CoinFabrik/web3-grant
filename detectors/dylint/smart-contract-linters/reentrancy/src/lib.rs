@@ -6,9 +6,9 @@ extern crate rustc_span;
 
 use clippy_utils::diagnostics::span_lint_and_help;
 use if_chain::if_chain;
-use rustc_hir::intravisit::{Visitor, walk_stmt};
 use rustc_hir::intravisit::{walk_expr, FnKind};
-use rustc_hir::{Body, FnDecl, HirId, Stmt,};
+use rustc_hir::intravisit::{walk_stmt, Visitor};
+use rustc_hir::{Body, FnDecl, HirId, Stmt};
 use rustc_hir::{Expr, ExprKind};
 use rustc_lint::{LateContext, LateLintPass};
 use rustc_span::Span;
@@ -64,22 +64,22 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
         }
         fn check_allow_reentrancy(expr: &Expr) -> bool {
             if_chain! {
-                if let ExprKind::MethodCall(func, _, args, _) = &expr.kind;
-                if let function_name = func.ident.name.to_string();
-                if function_name.contains("set_allow_reentry");
-                then {
-                        if_chain! {
-                            if let ExprKind::Lit(lit) = &args[0].kind;
-                            if &lit.node.to_string() == "true";
-                            then {
-                                return true;
-                            }
+            if let ExprKind::MethodCall(func, _, args, _) = &expr.kind;
+            if let function_name = func.ident.name.to_string();
+            if function_name.contains("set_allow_reentry");
+            then {
+                    if_chain! {
+                        if let ExprKind::Lit(lit) = &args[0].kind;
+                        if &lit.node.to_string() == "true";
+                        then {
+                            return true;
                         }
                     }
                 }
+            }
             return false;
         }
-        fn check_state_change(s: &Stmt)  -> bool {
+        fn check_state_change(s: &Stmt) -> bool {
             if_chain! {
                 if let rustc_hir::StmtKind::Semi(expr) = &s.kind;
                 if let rustc_hir::ExprKind::Assign(lhs, ..) = &expr.kind;
@@ -88,7 +88,7 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
                 if let rustc_hir::QPath::Resolved(None, ref path) = *path;
                 if path.segments.iter().any(|base| base.ident.as_str().contains("self"));                then {
                     return true;
-                } 
+                }
             }
             if_chain! {
                 // check access to balance.insert
@@ -106,7 +106,6 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
                 }
             }
             return false;
-
         }
 
         impl<'tcx> Visitor<'tcx> for ReentrantStorage {
@@ -118,13 +117,10 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
                     if check_state_change(stmt) {
                         self.state_change = true;
                     }
-                }
-                else {
+                } else {
                     walk_stmt(self, stmt);
                 }
             }
-
-            
 
             fn visit_expr(&mut self, expr: &'tcx Expr<'_>) {
                 if self.allow_reentrancy_flag {
@@ -151,9 +147,10 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
 
         walk_expr(&mut reentrant_storage, &body.value);
 
-        if reentrant_storage.has_invoke_contract_call 
-            && reentrant_storage.allow_reentrancy_flag 
-            && reentrant_storage.state_change {
+        if reentrant_storage.has_invoke_contract_call
+            && reentrant_storage.allow_reentrancy_flag
+            && reentrant_storage.state_change
+        {
             span_lint_and_help(
                 cx,
                 REENTRANCY,
@@ -165,5 +162,4 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
             );
         }
     }
-
 }
