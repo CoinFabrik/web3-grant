@@ -1,18 +1,14 @@
 # Set contract storage
 
-## Configuration
-
-* Detector ID: `set-contract-storage`
-* Analysis Category: `Authorization`
-* Severity: `High`
-
 ## Description
+- Analysis Category: `Authorization`
+- Severity: `High`
+- Detector ID: `set-contract-storage`
 
 Functions using keys as variables without proper access control or input sanitation can allow users to perform changes in arbitrary memory locations.
 In this example, we see how this vulnerability can be exploited to change a user's allowance in an ERC20 contract.
 
 ## Exploit Scenario
-
 In this example we see insufficient access control for the `set_contract_storage()` function.
 
 ```rust
@@ -777,11 +773,6 @@ Breaking down the used key `[255,0,0,0,212,53,147,199,21,253,211,28,97,20,26,189
 * `[255,0,0,0]` stands for allowances mapping.
 * `[212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125]` corresponds, byte by byte, to Alice's address `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY`.
 * `[142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72]` corresponds, bytye by byte, to Bob's address `5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty`.
-
-
-### Tutorial
-
-See this [tutorial](https://drive.google.com/file/d/1jXZNBy_TmJbPhDYSzZSSMGmm9-NGVGzE/view?usp=share_link) (in Spanish) showing this exploit in action. Tutorial starts at min 10:30.
 
 ## Remediation
 

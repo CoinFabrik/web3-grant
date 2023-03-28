@@ -1,16 +1,17 @@
 # Integer overflow or underflow
 
 ## Description
-- Detector ID: `integer-overflow-or-underflow`
 - Analysis Category: `Arithmetic`
 - Severity: `High`
+- Detector ID: `integer-overflow-or-underflow`
 
-These types of vulnerabilities are commonly referred to as "integer overflow" 
-and "integer underflow" vulnerabilities, and they can occur when an arithmetic
-operation overflows or underflows the available memory allocated to the variable.
+This type of vulnerability occurs when an arithmetic operation attempts to 
+create a numeric value that is outside the valid range in substrate, e.g, 
+a `u8` unsigned integer can be at most M:=2**8-1=255, hence the sum *M+1* 
+produces an overflow. 
 
 ## Exploit Scenario
-There follows a snippete of a simple `ink!` smart contract that is vulnerable to
+There follows a snippet of a simple `ink!` smart contract that is vulnerable to
 an integer overflow vulnerability.
 
 ```rust
@@ -48,17 +49,16 @@ mod integer_overflow_underflow {
 }
 ```
 
-This contract stores a single value of type `u8` and provides three functions
-for interacting with it. The `add` function allows users to add a specified 
-amount to the stored value, the `sub` function allows users to substract a 
-specified amount, while the `get` function allows users to retrieve the current
-value.
+The above contract stores a single value of type `u8` and provides three 
+functions allowing interaction with the single value. 
+The `add()` function allows users to add a specified amount to the stored value,
+the `sub()` function allows users to substract a specified amount, while the 
+`get()` function allows users to retrieve the current value.
 
-However, this contract is vulnerable to an integer overflow attack if a user
-tries to add a value that exceeds the maximum value that can be stored in an 
-`u8` variable. If the result of the addition operation overflows the available
-memory allocated to the variable, the value will wrap around to zero, 
-potentially leading to unexpected behavior.
+This contract is vulnerable to an integer overflow attack that may be exercised
+if a user adds a value that exceeds the maximum value that can be stored in an 
+`u8` variable, then the addition operation overflows the variable and the value
+wraps to zero (ignoring the carry), potentially leading to unexpected behavior.
 
 This vulnerability is **only** present if overflow and underflow checks are 
 disabled at the time of compilation. We can disable it by adding to the 
@@ -131,11 +131,6 @@ error: integer arithmetic detected
 
 error: could not compile `integer-overflow` due to 2 previous errors
 ```
-
-### Tutorial
-
-See this [tutorial](https://drive.google.com/file/d/1B9SCFUok8Rxo6enIuz-f83fHPpS4jY1H/view?usp=share_link) (in Spanish) showing this exploit in action.
-
 
 ## Remediation
 

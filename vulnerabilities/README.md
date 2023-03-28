@@ -16,7 +16,7 @@ Each folder consists of:
 - **Documentation**: A `README.md` file with a detailed description on how the
 vulnerability may be exercised (Exploit Section) and how it can be prevented
 (Remediation Section). Evenmore, in some cases we included a Deployment 
-subsection, a Video Tutorial and References.
+subsection and References.
 - A **vulnerable smart** contract file `lib.rs` with its associated 
     `Cargo.toml`.
     - If necessary, an exploit smart contract that would perform the attack on
