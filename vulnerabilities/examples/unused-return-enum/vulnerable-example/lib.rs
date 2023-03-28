@@ -26,7 +26,7 @@ mod unused_return_enum {
         ) -> Result<Balance, Error> {
             let absolute_difference = value1.abs_diff(value2);
             let sum = value1 + value2;
-            let percentage_difference = match 100u128.checked_mul(absolute_difference / sum) {
+            let _percentage_difference = match 100u128.checked_mul(absolute_difference / sum) {
                 Some(result) => result,
                 None => panic!("overflow!"),
             };
