@@ -36,10 +36,10 @@ mod dos_unbounded_operation {
             let new_payee = Payee { address, value };
 
             self.payees.insert(self.next_payee_ix, &new_payee);
-            self.next_payee_ix += 1;
+            self.next_payee_ix = self.next_payee_ix.checked_add(1).unwrap();
 
             // Return the index of the new payee
-            self.next_payee_ix - 1
+            self.next_payee_ix.checked_sub(1).unwrap()
         }
 
         #[ink(message)]
