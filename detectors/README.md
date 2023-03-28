@@ -118,11 +118,12 @@ This detector checks for calls to env::set_contract_storage().
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_fn
 
-In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function env::set_contract_storage(). We also check if the function call is performed within an `if` statement that determines whether the caller is the contract owner, in the later case no warning is raised.
+In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function env::set_contract_storage(). We also check if the function call is performed within an `if` statement that determines whether the caller is the contract owner, in the latter case no warning is shown.
 
 #### Caveats
 
-If owner validation is performed with an auxiliary function, this detector will not recognize the vulnerability.
+If ownership validation is performed in an auxiliary function, the linter will not be able to identify it, and the warning will be indicated as a false positive.
+Conceptually, this detector should detect a problem in the information flow: user-provided data being used for the invocation of the set_contract_storage function without prior sanitization. We assume that if the data is entered by the contract owner, it has been sanitized beforehand.
 
 ### Cargo-Fuzz
 
@@ -149,18 +150,19 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 #### Description
 
-This detector checks the usage of the flag set_allow_reentry(true), followed by an invoke_contract_call() and changes in contract state performed by assignments or inserts in mappings.
+Conceptually, the warning should be issued when there is some evidence that check-effect interaction pattern is not adequately followed by code invoking a contract that may call back the original one.
 
 #### Implementation 
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - check_fn
 
-In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the flag set_allow_reentry(true) and the function invoke_contract_call(). The check_fn function is also used to detect for assignments (=, +=, -=, etc) and calls to the insert() function.
+In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function set_allow_reentry(true) and the function invoke_contract_call() then we check for subsequent state changes like assignments (=, +=, -=, etc) or calls to the insert() function of mappings.
 
 #### Caveats
 
-If the usage of set_allow_reentry(true) or later state changes are performed in an auxiliary function, this detector will not detect the reentrancy.
+If called method does not perform a malicious reentrancy (i.e. known method from known contract) false positives will arise.
+If the usage of set_allow_reentry(true) or later state changes are performed in an auxiliary function, this detector will not detect the reentrancy. To detect these cases, it is necessary to perform interprocedural dataflow analysis
 
 ## 4. Panic error
 
@@ -183,8 +185,7 @@ In particular, we used this function to check for every expression in the analyz
 
 #### Caveats
 
-There are no caveats for this detector.
-
+While this linter detects explicit calls to panic!, there may be some ways to raise a panic such as unwrap() or expect().
 
 ## 5. Unused return enum
 
@@ -208,10 +209,9 @@ In particular, we used this function together with a visitor to check for every 
 
 #### Caveats
 
-There are no caveats for this detector.
+If definitions of Err() and/or Ok() are in the code but do not flow to the return value due to the definition of a variable or because they are defined in a dead code block, the warning will not be shown. If the definitions are made in an auxiliary method, the warning will be shown, resulting in a false positive.
 
-
-## 6. DoS Unbounded operation with vector
+## 6. DoS Unbounded operation
 
 We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation-with-vector).
 
@@ -221,18 +221,18 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 #### Description
 
-[Completar UBA]
+This detector checks that when using for or while loops, their conditions limit the execution to a constant number of iterations.
 
 #### Implementation 
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- [Completar uba]
+- check_expr
 
-In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the [Completar Uba].
+In particular, we have used this function to search for every for or while loop through the code's expressions and determine if their conditions contain variables or function calls.
 
 #### Caveats
 
-[Completar UBA]
+False positives are to be expected when using variables that can only be set using controlled flows that limit the values within acceptable ranges. These cases can be detected by using tainting techniques and/or interprocedural dataflow analysis.
 
 
 ## 7. DoS Unexpected revert
