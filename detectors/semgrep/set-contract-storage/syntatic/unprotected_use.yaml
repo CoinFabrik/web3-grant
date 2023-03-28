@@ -1,4 +1,4 @@
-rules:
+rewrules:
   - id: misused_set_contract_storage
     patterns:
       - pattern-inside: |
