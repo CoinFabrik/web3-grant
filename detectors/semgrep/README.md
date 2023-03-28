@@ -12,7 +12,7 @@ Semgrep is a fast, open source static analysis tool for finding bugs, detecting 
 
 ### Examples
 
-`$ semgrep --config="panic-error.yaml" ../../../vulnerabilities/examples/panic-error/vulnerable-example/lib.rs`
+`$ semgrep --config="panic-error/panic-error.yaml" ../../vulnerabilities/examples/panic-error/vulnerable-example/lib.rs`
 
 ## Rules
 
