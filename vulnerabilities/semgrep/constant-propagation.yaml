@@ -1,8 +1,0 @@
-rules:
-- id: constant-propagation
-  languages:
-      - rust
-  pattern: return 42
-  message:  I found you!
-  severity: WARNING
-
