@@ -14,6 +14,8 @@ pub mod erc20 {
         InsufficientBalance,
         /// Returned if not enough allowance to fulfill a request is available.
         InsufficientAllowance,
+        Overflow,
+        Underflow,
     }
 
     /// The ERC-20 result type.
