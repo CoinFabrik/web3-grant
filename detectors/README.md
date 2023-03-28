@@ -375,7 +375,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td></td>
       <td></td>
     </tr>
-    <td>
+    <tr>
       <td>#7</td>
       <td>dos-unexpected-revert</td>
       <td>DOS</td>

@@ -2,13 +2,13 @@
 
 #[ink::contract]
 mod unexpected_revert {
-    use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
     /// Example of an unexpected revert because of storage size
     #[ink(storage)]
     pub struct UnexpectedRevert {
         total_votes: u64,
-        candidates: Vec<AccountId>,
+        total_candidates: u64,
+        candidates: Mapping<u64, AccountId>,
         votes: Mapping<AccountId, u64>,
         already_voted: Mapping<AccountId, bool>,
         most_voted_candidate: AccountId,
@@ -20,30 +20,33 @@ mod unexpected_revert {
     #[derive(Debug, PartialEq, Eq, Clone, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Errors {
-        CandidateAlreadyAdded,
         AccountAlreadyVoted,
+        CandidateAlreadyAdded,
         CandidateDoesntExist,
+        Overflow,
+        TimestampBeforeCurrentBlock,
         VoteEnded,
     }
 
     impl UnexpectedRevert {
         /// Constructor that initializes the `bool` value to the given `init_value`.
         #[ink(constructor)]
-        pub fn new(end_timestamp: u64) -> Self {
+        pub fn new(end_timestamp: u64) -> Result<Self, Errors> {
             if end_timestamp <= Self::env().block_timestamp() {
-                panic!("Timestamp must be after current block")
+                return Err(Errors::TimestampBeforeCurrentBlock);
             }
             let zero_arr: [u8; 32] = [0; 32];
             let zero_addr = AccountId::from(zero_arr);
-            Self {
+            Ok(Self {
                 total_votes: 0,
+                total_candidates: 0,
                 most_voted_candidate: zero_addr,
                 candidate_votes: 0,
-                candidates: Vec::default(),
+                candidates: Mapping::default(),
                 already_voted: Mapping::default(),
                 votes: Mapping::default(),
                 vote_timestamp_end: end_timestamp,
-            }
+            })
         }
 
         /// Add a candidate to this vote
@@ -55,7 +58,8 @@ mod unexpected_revert {
             if self.votes.contains(candidate) {
                 Err(Errors::CandidateAlreadyAdded)
             } else {
-                self.candidates.push(candidate);
+                self.candidates.insert(self.total_candidates, &candidate);
+                self.total_candidates += 1;
                 self.votes.insert(candidate, &0);
                 Ok(())
             }
@@ -91,15 +95,14 @@ mod unexpected_revert {
 
         #[ink(message)]
         pub fn get_total_candidates(&self) -> u64 {
-            self.candidates.len() as u64
+            self.total_candidates
         }
 
         #[ink(message)]
         pub fn get_candidate(&self, index: u64) -> Result<AccountId, Errors> {
-            if (index as usize) < self.candidates.len() {
-                Ok(self.candidates[index as usize])
-            } else {
-                Err(Errors::CandidateDoesntExist)
+            match self.candidates.get(index) {
+                Some(candidate) => Ok(candidate),
+                None => Err(Errors::CandidateDoesntExist),
             }
         }
 
@@ -119,13 +122,14 @@ mod unexpected_revert {
                 Err(Errors::AccountAlreadyVoted)
             } else {
                 self.already_voted.insert(caller, &true);
-                let votes_opt = self.votes.get(candidate);
-                if votes_opt.is_none() {
-                    return Err(Errors::CandidateDoesntExist);
-                }
-                let votes = votes_opt.unwrap() + 1;
+                let votes = self
+                    .votes
+                    .get(candidate)
+                    .ok_or(Errors::CandidateDoesntExist)?
+                    .checked_add(1)
+                    .ok_or(Errors::Overflow)?;
                 self.votes.insert(candidate, &votes);
-                self.total_votes += 1;
+                self.total_votes.checked_add(1).ok_or(Errors::Overflow)?;
                 if self.candidate_votes < votes {
                     self.candidate_votes = votes;
                     self.most_voted_candidate = candidate;
@@ -151,7 +155,7 @@ mod unexpected_revert {
                 Ok(n) => (n.as_secs() + 10 * 60) * 1000,
                 Err(_) => panic!("SystemTime before UNIX EPOCH!"),
             };
-            let mut contract = UnexpectedRevert::new(now);
+            let mut contract = UnexpectedRevert::new(now).unwrap();
 
             let mut candidate: Result<(), Errors> = Err(Errors::VoteEnded);
             for i in 0u32..512 {
@@ -178,7 +182,6 @@ mod unexpected_revert {
         use std::time::SystemTime;
 
         #[ink_e2e::test]
-        #[should_panic(expected = "add_candidate failed: CallDryRun")]
         async fn insert_512_candidates(mut client: ink_e2e::Client<C, E>) {
             let now: u64 = match SystemTime::now().duration_since(SystemTime::UNIX_EPOCH) {
                 Ok(n) => (n.as_secs() + 10 * 60) * 1000,
@@ -207,6 +210,14 @@ mod unexpected_revert {
                     .await
                     .expect("add_candidate failed");
             }
+            let get_total_candidates =
+                build_message::<UnexpectedRevertRef>(contract_acc_id.clone())
+                    .call(|contract| contract.get_total_candidates());
+            let candidates_count = client
+                .call(&ink_e2e::bob(), get_total_candidates.clone(), 0, None)
+                .await
+                .expect("candidates_count failed");
+            assert_eq!(candidates_count.return_value(), 512);
         }
     }
 }
