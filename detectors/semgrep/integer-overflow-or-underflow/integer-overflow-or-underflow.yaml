@@ -1,0 +1,12 @@
+rules:
+- id: integer-overflow-or-underflow
+  languages:
+      - rust
+  pattern-either:
+      - pattern: $VAL1 + $VAL2 
+      - pattern: $VAL1 - $VAL2 
+      - pattern: $VAL1 += $VAL2 
+      - pattern: $VAL1 -= $VAL2 
+  message:  an arithmetic operation overflows or underflows the available memory allocated to the variable
+  severity: WARNING
+

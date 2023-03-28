@@ -1,0 +1,20 @@
+rules:
+- id: misused_set_contract_storage
+  mode: taint
+  pattern-sources:
+   - pattern: |
+     fn $F(..., $IK: $T,...  {...}
+  pattern-sinks:
+   - pattern: env::set_contract_storage($IK, ...)
+
+
+  pattern-sanitizers:
+   - patterns:
+     - pattern-either:
+         - pattern-inside: |
+             if self.env().caller() == self.owner {...}
+         - pattern-inside: |
+             if self.owner == self.env().caller() {...}
+  message: User controlled parameter $IK may corrupt the contract storage as it passed to `set_contract_storage`. Only the owner of the contract should be allowed to perform this operation.   
+  languages: [rust]
+  severity: WARNING
