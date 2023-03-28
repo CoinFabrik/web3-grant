@@ -1,7 +1,6 @@
 # DoS Unexpected Revert
 
 ## Configuration
-
 - Detector ID: `dos-unexpected-revert`
 - Analysis Category: `DoS`
 - Severity: `High`

@@ -1,5 +1,4 @@
 # Curated List of Vulnerabilities
-
 In this section we describe our effort to discover relevant security-related 
 issues introduced during the development of smart contracts in Substrate Ink!. 
 Many do generalize to substate-based networks, but that need not be the rule. 
@@ -31,7 +30,7 @@ vulnerabilities/examples.
 This type of vulnerability occurs when an arithmetic operation attempts to 
 create a numeric value that is outside the valid range in substrate, e.g, 
 a `u8` unsigned integer can be at most M:=2**8-1=255, hence the sum *M+1* 
-may create an overflow. 
+produces an overflow. 
 
 An overflow/underflow is typically caught and generates an error. When it 
 is not caught, the operation will result in an inexact result which could 
@@ -105,20 +104,20 @@ We classified this issue, a deviation for best practices, which could have
 security implications under the ID _panic-error_ and under the category 
 _Validations and Error Handling_,  with an Enhancement Severity.
 
-### 5 - Unused return enum
-Ink! messages can return a Result enum with a custom error type. This is useful
-for the caller to know what went wrong when the message fails. The definition 
-of the Result type enum consists of two variants: Ok and Err. If any of the 
-variants is not used, the code could be simplified or it could imply a bug.
+### 5 - Unused Return enum
+`Ink!` messages can return a `Result` `enum` with a custom error type. This is
+useful for the caller to know what went wrong when the message fails. The 
+definition of the `Result` type enum consists of two variants: Ok and Err. If 
+any of the variants is not used, the code could be simplified or it could imply
+a bug.
 
-We classified this type of vulnerability under the ID unused-return-enum. It 
-is categorized as a vulnerability of Validations and error handling type, 
-with an Low severity.
+We assigned the ID _unused-return-enum_ and put this vulnerability under
+the _Validations and Error Handling_ category with a Low Severity.
 
 In our example, we see how lack of revision on the usage of both types (`Ok`
 and `Err`) leads to code where its intended functionality is not realized.
 
-### 6 - DoS Unbounded operation with vector
+### 6 - DoS Unbounded Operation With Vector
 Each block in a Substrate Blockchain has an upper bound on the amount of gas
 that can be spent, and thus the amount of computation that can be done. This 
 is the Block Gas Limit. If the gas spent by a function call on an `ink!` smart
@@ -140,13 +139,13 @@ Needless to say, there are many different ways to cause a DOS vulnerability.
 This case is relevant and introduced repeteadly by the developer untrained in
 web3 environments. 
 
-### 7 - DoS Unexpected revert
+### 7 - DoS Unexpected Revert
 Another type of Denial of Service attack is called unexpected revert. It occurs
 by preventing transactions by other users from being successfully executed 
 forcing the blockchain state to revert to its original state.
 
-We classified this type of vulnerability under the ID dos-unexpected-revert.
-It is categorized as a vulnerability of DoS type, with and High severity.
+We classified this type of vulnerability under the ID _dos-unexpected-revert_.
+It is put in the _Denial of Service_ category with and Medium Severity.
 
 In this particular example, a Denial of Service through unexpected revert is 
 accomplished by exploiting a smart contract that does not manage storage size 

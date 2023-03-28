@@ -1,19 +1,17 @@
 # Integer overflow or underflow
 
-## Configuration
-
-* Detector ID: `integer-overflow-or-underflow`
-* Analysis Category: `Arithmetic`
-* Severity: `High`
-
-
 ## Description
+- Detector ID: `integer-overflow-or-underflow`
+- Analysis Category: `Arithmetic`
+- Severity: `High`
 
-These types of vulnerabilities are commonly referred to as "integer overflow" and "integer underflow" vulnerabilities, and they can occur when an arithmetic operation overflows or underflows the available memory allocated to the variable.
+These types of vulnerabilities are commonly referred to as "integer overflow" 
+and "integer underflow" vulnerabilities, and they can occur when an arithmetic
+operation overflows or underflows the available memory allocated to the variable.
 
 ## Exploit Scenario
-
-Here's an example of a simple ink! smart contract that could be vulnerable to an integer overflow vulnerability:
+There follows a snippete of a simple `ink!` smart contract that is vulnerable to
+an integer overflow vulnerability.
 
 ```rust
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -50,38 +48,56 @@ mod integer_overflow_underflow {
 }
 ```
 
-This contract stores a single value of type `u8` and provides three functions for interacting with it. The `add` function allows users to add a specified amount to the stored value, the `sub` function allows users to substract a specified amount, while the `get` function allows users to retrieve the current value.
+This contract stores a single value of type `u8` and provides three functions
+for interacting with it. The `add` function allows users to add a specified 
+amount to the stored value, the `sub` function allows users to substract a 
+specified amount, while the `get` function allows users to retrieve the current
+value.
 
-However, this contract is vulnerable to an integer overflow attack if a user tries to add a value that exceeds the maximum value that can be stored in a `u8` variable. If the result of the addition operation overflows the available memory allocated to the variable, the value will wrap around to zero, potentially leading to unexpected behavior.
+However, this contract is vulnerable to an integer overflow attack if a user
+tries to add a value that exceeds the maximum value that can be stored in an 
+`u8` variable. If the result of the addition operation overflows the available
+memory allocated to the variable, the value will wrap around to zero, 
+potentially leading to unexpected behavior.
 
-This vulnerability is **only** present if overflow and underflow checks are disabled at the time of compilation. We can disable it by adding to the `Cargo.toml` file the following configuration:
+This vulnerability is **only** present if overflow and underflow checks are 
+disabled at the time of compilation. We can disable it by adding to the 
+`Cargo.toml` file the following configuration:
 
 ```toml
 [profile.release]
 overflow-checks = false
 ```
 
-This way, the overflow checks will be disabled whenever the contract is built using the `release` profile. More info can be found [here](https://doc.rust-lang.org/cargo/reference/profiles.html).
+This way, the overflow checks will be disabled whenever the contract is built 
+using the `release` profile. More info can be found 
+[here](https://doc.rust-lang.org/cargo/reference/profiles.html).
 
-To deploy this smart contract, you would need to compile it using the ink! compiler and deploy it to a Polkadot Substrate network using a suitable deployment tool such as Polkadot JS. Once deployed, users could interact with the contract by calling its functions using a compatible wallet or blockchain explorer.
+To deploy this smart contract, you would need to compile it using the `ink!`
+compiler and deploy it to a Polkadot Substrate network using a suitable 
+deployment tool such as Polkadot JS. Once deployed, users could interact with
+the contract by calling its functions using a compatible wallet or blockchain
+explorer.
 
 ### Deployment
-
 Before deployment, the contract must be built using the tool `cargo-contract`:
 
 ```shell
 cargo contract build --release
 ```
 
-Following that, the contract can be deployed either by using `cargo-contract` or a GUI tool such as the one available on https://contracts-ui.substrate.io/:
+Following that, the contract can be deployed either by using `cargo-contract`
+or a GUI tool such as the one available on https://contracts-ui.substrate.io/:
 
 ```shell
 cargo contract instantiate --constructor new --args 0 --suri //Alice
 ```
 
 ### Possible Prevention Tools
-
-By leveraging `clippy`, Rust's linting tool, the user can enable a certain set of rules that disallows the usage of arithmetic operators (`+`, `-`, `*`, `/`).  The following lines could be added at the top of the contract file in order to enable them:
+By leveraging `clippy`, Rust's linting tool, the user can enable a certain set
+of rules that disallows the usage of arithmetic operators (`+`, `-`, `*`, `/`).
+The following lines could be added at the top of the contract file in order to
+enable them:
 
 ```rust
 #![deny(clippy::integer_arithmetic)]
@@ -91,7 +107,7 @@ which triggers the following error:
 
 ```shell
 ❯ cargo clippy
-    Checking integer-overflow v0.1.0 (/Users/agustin/work/coinfabrik/web3-grant/vulnerabilities/integer-overflow)
+    Checking integer-overflow v0.1.0 (/vulnerabilities/integer-overflow)
 error: integer arithmetic detected
   --> lib.rs:20:13
    |
