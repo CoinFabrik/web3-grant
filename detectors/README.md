@@ -392,6 +392,8 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td></td>
       <td></td>
     </tr>
+  </tbody>
+</table>
 
 ## Further Work
 
