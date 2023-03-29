@@ -1,4 +1,4 @@
-# Integer overflow or underflow
+# Integer Overflow or Underflow
 
 ## Configuration
 
