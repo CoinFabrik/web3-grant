@@ -1,4 +1,4 @@
-# Unused return enum
+# Unused Return Enum
 
 ## Configuration
 
