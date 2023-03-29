@@ -210,69 +210,79 @@ are at least an `Err` and an `Ok`.
 None.
 
 
-## 6. DoS Unbounded operation with vector
+## 6. DoS Unbounded Operation With Vector
+We based our analysis for set-contract-storage detection on the 
+[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation-with-vector).
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation-with-vector).
-
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unbounded-operation-with-vector), we detail the implementation below.
+For this vulnerability, we were able to produce successful detectors using 
+[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unbounded-operation-with-vector),
+we detail the implementation below.
 
 ### Dylint
-
 #### Description
-
 [Completar UBA]
 
 #### Implementation 
-
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - [Completar uba]
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the [Completar Uba].
 
 #### Caveats
-
 [Completar UBA]
 
 
 ## 7. DoS Unexpected revert
+We based our analysis for set-contract-storage detection on the 
+[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert).
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert).
-
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unexpected-revert), we detail the implementation below.
+For this vulnerability, we were able to produce successful detectors using 
+[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unexpected-revert), 
+we detail the implementation below.
 
 ### Dylint
-
 #### Description
-
 This detector checks that only the owner can manipulate vectors' content.
 
 #### Implementation 
+In order to implement this detector we developed the following functions of the
+[LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
+trait:
+- `check_fn`
 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_fn
-
-In particular, we used this function to check for every expression in the analyzed code, and to determine whether it allows users to modify vectors without being the contract owners.
+In particular, we used this function to check for every expression in the 
+analyzed code, and to determine whether it allows users to modify vectors 
+without being the contract owners.
 
 #### Caveats
-
-If the owner validation is performed in an auxiliary function, this detector will not detect the unexpected revert.
+If the owner validation is performed in an auxiliary function, this detector
+will not detect the unexpected revert.
 
 
 # Results
+Summarizing, with the tools mentioned above, we attempted to build detectors 
+that would detect the vulnerability examples in our list. 
 
-Summarizing, with the tools mentioned above, we attempted to build detectors that would detect the vulnerability examples in our list. 
+For all cases, we were able to construct linters with Dylint, verifying that 
+the detectors effectively recognized the issues in the vulnerable code and 
+that no false positives occurred on the remediated examples. 
 
-For all cases, we were able to construct linters with Dylint, verifying that the detectors effectively recognized the issues in the vulnerable code and that no false positives occurred on the remediated examples. 
+We also built fuzzers for vulnerabilities #1-integer-overflow-or-underflow 
+and #2-set-contract-storage, where input variation seemed like a possible 
+application of this technique.
 
-We also built fuzzers for vulnerabilities #1-integer-overflow-or-underflow and #2-set-contract-storage, where input variation seemed like a possible application of this technique.
-
-Finally, we also constructed some detectors with Semgrep for vulnerabilities [listar vulnerabilidades con ejemplos en semgrep].
+Finally, we also constructed some detectors with Semgrep for vulnerabilities
+ [listar vulnerabilidades con ejemplos en semgrep].
 
 ## Detection of Vulnerability Examples with Tools
 
-The following table summarizes our work on building detectors to identify vulnerabilities in our list of vulnerability examples. 
+The following table summarizes our work on building detectors to identify 
+vulnerabilities in our list of vulnerability examples. 
 
-We use ✅ to indicate that the vulnerability was detected in the vulnerable example (vuln.), ❎ to indicate that the vulnerability was not detected in the remediated example (remed.), and empty cells in cases where no detectors have been built. 
+We use ✅ to indicate that the vulnerability was detected in the vulnerable 
+example (vuln.), ❎ to indicate that the vulnerability was not detected in 
+the remediated example (remed.), and empty cells in cases where no detectors 
+have been built. 
 
 <table>
   <thead>
@@ -387,12 +397,6 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td></td>
     </tr>
 
-
-## Further Work
-
-For the current list of vulnerable examples, Dylint seems to be a good option to use in the construction of a security analysis tool for Substrate Ink!. As new vulnerability examples are added to the list, Cargo-fuzz and Semgrep can be considered in parallel, especially in cases where the confidence of detectors implemented in Dylint is not satisfactory.
-
-In particular, as Semgrep improves its Rust compatibility, it could be considered for detector building due to its ease of use and tainting capabilities.
 
 
 
