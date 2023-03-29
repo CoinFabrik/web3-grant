@@ -6,9 +6,9 @@ On the other hand, we also analyzed fuzzing techniques and tools for particular 
 
 ## Static Analysis
 
-Static analysis is an automated analysis technique used to examine issues and potential vulnerabilities in code without performing its execution. Considering the successful adoption of this technique for vulnerability detectors in other blockchains (eg: Slither for Solidity and Rustle for NEAR), and available tools for static analysis in Rust like Clippy and Dylint, we reviewed the latter and their applicability for Substrate Ink! contracts.  We also partially reviewed the static analyzer Semgrep, even though its support for Rust is currently experimental.
+Static analysis is an automated analysis technique used to examine issues and potential vulnerabilities in code without performing its execution. Considering the successful adoption of this technique for vulnerability detectors in other blockchains (eg: Slither for Solidity and Rustle for NEAR), and available tools for static analysis in Rust like Clippy and Dylint, we reviewed the latter and their applicability for Substrate Ink! contracts. We also partially reviewed the static analyzer Semgrep, even though its support for Rust is currently experimental.
 
-### Clippy 
+### Clippy
 
 Clippy is a static code analysis tool that supports detection of programming errors via analysis of the abstract syntax tree of Rust code. The tool currently supports over 600 lints that produce correctness, stylistic, and performance warnings (amongst others). Available at github under an Apache v2 / MIT license, Clippy is actively maintained and used by Rust programmers. Furthermore, there is good documentation on how to add new lints.
 
@@ -24,13 +24,13 @@ Whereas Clippy runs a predetermined, static set of lints, Dylint runs lints from
 
 Semgrep is a text search utility that understands –to some extent– the programming language semantics, thus queries can go beyond searching for regular expressions or navigating over abstract syntax trees to include conditions on the role that particular strings have in the code (e.g., name of a function as opposed to the name of a variable).
 
-Semgrep comes with an intra-procedural data-flow engine that supports taint analysis. Thus, analysis of the flow of data from user defined sources to sinks without passing through sanitizers is possible. 
+Semgrep comes with an intra-procedural data-flow engine that supports taint analysis. Thus, analysis of the flow of data from user defined sources to sinks without passing through sanitizers is possible.
 
-Adding rules works rather differently than in Clippy. Instead of modifying the source code and recompiling, Semgrep is simply called providing as a parameter the user-defined rules to be checked. This makes prototyping and adding application specific rules very easy and potentially all issues detected by Clippy and Dylint could be also detected by Semgrep. 
+Adding rules works rather differently than in Clippy. Instead of modifying the source code and recompiling, Semgrep is simply called providing as a parameter the user-defined rules to be checked. This makes prototyping and adding application specific rules very easy and potentially all issues detected by Clippy and Dylint could be also detected by Semgrep.
 
 The core Semgrep tool is available on github on GNU Lesser general public license and is actively maintained. Although Semgrep supports multiple languages, support for Rust is beta at the moment. Amongst the various Rust-specific problems we encountered, not supporting detection of macro applications, constrains some of the potential of the tool for detecting problems in Substrate smart contracts. Therefore, in order to have Semgrep detect some of the issues that involve macros either Semgrep must be extended to support macros or the code must be instrumented to change the syntax of the macros to a text format accepted by Semgrep.
 
-Writing rules in Semgrep is straightforward, and rules that may require some work to program in Clippy or Dylint can be specified quite simply in Semgrep. 
+Writing rules in Semgrep is straightforward, and rules that may require some work to program in Clippy or Dylint can be specified quite simply in Semgrep.
 
 ### Conclusion
 
@@ -42,15 +42,15 @@ On the other hand, while taint analysis is supported in Semgrep, and inclusion o
 
 ## Dynamic Analysis
 
-Dynamic analysis refers to the analysis of a program's behavior during runtime. In the case of smart contracts, it involves the deployment of smart contracts on a local node. In contrast to static analysis which involves analyzing the source code without executing it, dynamic analysis involves running the program and analyzing it in real time. For this Proof of Concept, we explored the usage of fuzzing for the detection of some vulnerabilities. 
+Dynamic analysis refers to the analysis of a program's behavior during runtime. In the case of smart contracts, it involves the deployment of smart contracts on a local node. In contrast to static analysis which involves analyzing the source code without executing it, dynamic analysis involves running the program and analyzing it in real time. For this Proof of Concept, we explored the usage of fuzzing for the detection of some vulnerabilities.
 
 Fuzzing is performed by generating a set of input test cases that are fed into the program in order to detect potential issues, usually in edge scenarios. This is particularly relevant in smart contracts in the context of input validation errors and possible integer overflows or underflows.
 
-For this milestone, we focused on well-established  fuzzers with production support for Rust.
+For this milestone, we focused on well-established fuzzers with production support for Rust.
 
 ### Cargo-fuzz
 
-Cargo-fuzz is a tool used to invoke a fuzzer. Even though it could be extended in the future for other fuzzers, it currently only supports its libFuzzer through the libfuzzer-sys crate.
+Cargo-fuzz is a tool used to invoke a fuzzer. Even though it could be extended in the future for other fuzzers, it currently only supports libFuzzer through the libfuzzer-sys crate.
 
 ### Conclusion
 
@@ -62,29 +62,30 @@ For each vulnerability in our list, we explain what tools and techniques were ap
 
 ## 1. Integer Overflow or Underflow
 
-We based our analysis for overflow or underflow detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/integer-overflow-or-underflow).
+We based our analysis for overflow or underflow detection on the [vulnerability example associated to this issue](/vulnerabilities/examples/integer-overflow-or-underflow).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/integer-overflow-or-underflow) and [Cargo-fuzz](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/cargo-fuzz/integer-overflow-or-underflow), we detail their implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](/detectors/dylint/smart_contracts_linters/integer-overflow-or-underflow) and [Cargo-fuzz](/detectors/cargo-fuzz/integer-overflow-or-underflow), we detail their implementation below.
 
 ### Dylint
 
 #### Description
 
-Our detector checks for integer arithmetic operations which could overflow or panic. Specifically, it checks for any operators (+, -, &ast, <<, etc) which are capable of overflowing according to the Rust Reference, or which can panic (/, %). No bounds analysis or sophisticated reasoning is attempted.
+Our detector checks for integer arithmetic operations which could overflow or panic. Specifically, it checks for any operators (+, -, \*, <<, etc) which are capable of overflowing according to the Rust Reference, or which can panic (/, %). No bounds analysis or sophisticated reasoning is attempted.
 
-#### Implementation 
+#### Implementation
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_body
-- check_body_post
-- check_expr
-- check_expr_post
 
-In particular, we used these functions to check for every expression in the analyzed code, and to determine whether it contains one the operations that generate overflows/underflows. We also validate that the types being handled are integers. 
+- `check_body`
+- `check_body_post`
+- `check_expr`
+- `check_expr_post`
+
+In particular, we used these functions to check for every expression in the analyzed code, and to determine whether it contains one the operations that generate overflows/underflows. We also validate that the types being handled are integers.
 
 #### Caveats
 
-Even though this detector works as intended, the fact that Rust prevents natively overflows makes it usefull for error handling and detection rather than vulnerability prevention.
+Rust includes a runtime check for integer overflows and underflows, which panics if any of these operations are detected. Adding this detector to the code will move the check to compile time, allowing the developer to handle the error in a more appropriate way.
 
 ### Cargo-Fuzz
 
@@ -100,12 +101,11 @@ Using ink::env test module, we implemented a fuzz_target to execute the differen
 
 The fuzzer built for this vulnerability was written using the tests of the vulnerability example that we worked with. Therefore it only works for this contract.
 
-
 ## 2. Set Contract Storage
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/set-contract-storage).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](/vulnerabilities/examples/set-contract-storage).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/set-contract-storge) and [Cargo-fuzz](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/cargo-fuzz/set-contract-storage), we detail their implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](/detectors/dylint/smart_contracts_linters/set-contract-storge) and [Cargo-fuzz](/detectors/cargo-fuzz/set-contract-storage), we detail their implementation below.
 
 ### Dylint
 
@@ -113,10 +113,11 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 This detector checks for calls to env::set_contract_storage().
 
-#### Implementation 
+#### Implementation
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_fn
+
+- `check_fn`
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function env::set_contract_storage(). We also check if the function call is performed within an `if` statement that determines whether the caller is the contract owner, in the latter case no warning is shown.
 
@@ -139,12 +140,11 @@ Using ink::env test module, we implemented a fuzz_target to execute the differen
 
 The fuzzer built for this vulnerability was written using the tests of the vulnerability example that we worked with. Therefore it only works for this contract. Furthermore, the bytesize of the arguments makes it very hard to find them using this technique.
 
-
 ## 3. Reentrancy
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/reentrancy).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](/vulnerabilities/examples/reentrancy).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/reentrancy)  we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](/detectors/dylint/smart_contracts_linters/reentrancy) we detail the implementation below.
 
 ### Dylint
 
@@ -152,10 +152,11 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 Conceptually, the warning should be issued when there is some evidence that check-effect interaction pattern is not adequately followed by code invoking a contract that may call back the original one.
 
-#### Implementation 
+#### Implementation
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_fn
+
+- `check_fn`
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function set_allow_reentry(true) and the function invoke_contract_call() then we check for subsequent state changes like assignments (=, +=, -=, etc) or calls to the insert() function of mappings.
 
@@ -166,9 +167,9 @@ If the usage of set_allow_reentry(true) or later state changes are performed in 
 
 ## 4. Panic Error
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/panic-error).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](/vulnerabilities/examples/panic-error).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/panic-error)  we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](/detectors/dylint/smart_contracts_linters/panic-error) we detail the implementation below.
 
 ### Dylint
 
@@ -176,10 +177,11 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 This detector checks the usage of the panic! macro.
 
-#### Implementation 
+#### Implementation
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_expr
+
+- `check_expr`
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the panic! macro.
 
@@ -189,9 +191,9 @@ While this linter detects explicit calls to panic!, there may be some ways to ra
 
 ## 5. Unused Return Enum
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/unused-return-enum).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](/vulnerabilities/examples/unused-return-enum).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/unused-return-enum)  we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](/detectors/dylint/smart_contracts_linters/unused-return-enum) we detail the implementation below.
 
 ### Dylint
 
@@ -199,11 +201,12 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 This detector checks that if the function return value is of type Result then there exists at least one return value that uses Err and another return value that uses Ok.
 
-#### Implementation 
+#### Implementation
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_fn
-- visitor
+
+- `check_fn`
+- `visitor`
 
 In particular, we used this function together with a visitor to check for every expression of a function with return type Result whether its returns values are at least one Err and one Ok.
 
@@ -213,9 +216,9 @@ If definitions of Err() and/or Ok() are in the code but do not flow to the retur
 
 ## 6. DoS Unbounded Operation
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](/vulnerabilities/examples/dos-unbounded-operation).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unbounded-operation), we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](/detectors/dylint/smart_contracts_linters/dos-unbounded-operation), we detail the implementation below.
 
 ### Dylint
 
@@ -223,10 +226,11 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 This detector checks that when using for or while loops, their conditions limit the execution to a constant number of iterations.
 
-#### Implementation 
+#### Implementation
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_expr
+
+- `check_expr`
 
 In particular, we have used this function to search for every for or while loop through the code's expressions and determine if their conditions contain variables or function calls.
 
@@ -234,12 +238,11 @@ In particular, we have used this function to search for every for or while loop 
 
 False positives are to be expected when using variables that can only be set using controlled flows that limit the values within acceptable ranges. These cases can be detected by using tainting techniques and/or interprocedural dataflow analysis.
 
-
 ## 7. DoS Unexpected Revert with Vector
 
-We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert-with-vector).
+We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](/vulnerabilities/examples/dos-unexpected-revert-with-vector).
 
-For this vulnerability, we were able to produce successfull detectors using [Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unexpected-revert-with-vector), we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using [Dylint](/detectors/dylint/smart_contracts_linters/dos-unexpected-revert-with-vector), we detail the implementation below.
 
 ### Dylint
 
@@ -247,10 +250,11 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 This detector checks that only the owner can manipulate vectors' content.
 
-#### Implementation 
+#### Implementation
 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-- check_fn
+
+- `check_fn`
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it allows users to modify vectors without being the contract owners.
 
@@ -258,12 +262,11 @@ In particular, we used this function to check for every expression in the analyz
 
 If the owner validation is performed in an auxiliary function, this detector will not detect the unexpected revert.
 
-
 # Results
 
-Summarizing, with the tools mentioned above, we attempted to build detectors that would detect the vulnerability examples in our list. 
+Summarizing, with the tools mentioned above, we attempted to build detectors that would detect the vulnerability examples in our list.
 
-For all cases, we were able to construct linters with Dylint, verifying that the detectors effectively recognized the issues in the vulnerable code and that no false positives occurred on the remediated examples. 
+For all cases, we were able to construct linters with Dylint, verifying that the detectors effectively recognized the issues in the vulnerable code and that no false positives occurred on the remediated examples.
 
 We also built fuzzers for vulnerabilities #1-integer-overflow-or-underflow and #2-set-contract-storage, where input variation seemed like a possible application of this technique.
 
@@ -271,9 +274,9 @@ Finally, we also constructed some detectors with Semgrep for vulnerabilities [li
 
 ## Detection of Vulnerability Examples with Tools
 
-The following table summarizes our work on building detectors to identify vulnerabilities in our list of vulnerability examples. 
+The following table summarizes our work on building detectors to identify vulnerabilities in our list of vulnerability examples.
 
-We use ✅ to indicate that the vulnerability was detected in the vulnerable example (vuln.), ❎ to indicate that the vulnerability was not detected in the remediated example (remed.), and empty cells in cases where no detectors have been built. 
+We use ✅ to indicate that the vulnerability was detected in the vulnerable example (vuln.), ❎ to indicate that the vulnerability was not detected in the remediated example (remed.), and empty cells in cases where no detectors have been built.
 
 <table>
   <thead>
@@ -301,7 +304,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     <tr>
       <td>#1</td>
       <td>integer-overflow-or-underflow</td>
-      <td>ARITHMETIC</td>
+      <td>Arithmetic</td>
       <td>✅</td>
       <td>❎</td>
       <td>✅</td>
@@ -314,7 +317,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     <tr>
       <td>#2</td>
       <td>set-contract-storage</td>
-      <td>AUTHORIZATION</td>
+      <td>Authorization</td>
       <td>✅</td>
       <td>❎</td>
       <td>✅</td>
@@ -327,7 +330,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     <tr>
       <td>#3</td>
       <td>reentrancy</td>
-      <td>REENTRANCY</td>
+      <td>Reentrancy</td>
       <td>✅</td>
       <td>❎</td>
       <td></td>
@@ -340,7 +343,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     <tr>
       <td>#4</td>
       <td>panic-error</td>
-      <td>VALIDATIONS AND ERROR HANDLING</td>
+      <td>Validations and error handling</td>
       <td>✅</td>
       <td>❎</td>
       <td></td>
@@ -353,7 +356,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     <tr>
       <td>#5</td>
       <td>unused-return-enum</td>
-      <td>VALIDATIONS AND ERROR HANDLING</td>
+      <td>Validations and error handling</td>
       <td>✅</td>
       <td>❎</td>
       <td></td>
@@ -366,9 +369,10 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     <tr>
       <td>#6</td>
       <td>dos-unbounded-operation</td>
-      <td>DOS</td>
+      <td>DoS</td>
       <td>✅</td>
       <td>❎</td>
+      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -378,7 +382,7 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
     <tr>
       <td>#7</td>
       <td>dos-unexpected-revert-with-vector</td>
-      <td>DOS</td>
+      <td>DoS</td>
       <td>✅</td>
       <td>❎</td>
       <td></td>
@@ -386,8 +390,8 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td></td>
       <td></td>
       <td></td>
+      <td></td>
     </tr>
-
 
 ## Further Work
 
