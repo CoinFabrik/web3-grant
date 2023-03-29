@@ -1,4 +1,4 @@
-# Set contract storage
+# Set Contract Storage
 
 ## Configuration
 
