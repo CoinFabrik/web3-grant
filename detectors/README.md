@@ -8,7 +8,6 @@ We selected a set of tools which implement techniques that are widely used
 for detecting vulnerabilities in source code (not necessarily smart contracts).
 Furthermore, the tools selected are open source, well maintained and can be
 easily configured/adapted to detect `ink!` vulnerabilities.
-
 ## Analysis Techniques and Tools
 Being Ink! A Rust-based language, we looked at static analysis tools that 
 can analyze Rust code, first aiming at linters and then more precise static
@@ -32,24 +31,26 @@ classes and examples we prepared, and then briefly discuss the reasoning
 backing our picking these tools.
 
 
-# Implementation
+## Implementation
 For each vulnerability in our list, we explain what tools and techniques were 
 applied for their detection, mentioning implementation caveats.
 
-## 1. Integer Overflow and Integer Underflow
+### 1. Integer Overflow and Integer Underflow
 We based our analysis for overflow or underflow detection on the 
-[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/integer-overflow-or-underflow).
+[vulnerability example associated to this issue](../vulnerabilities/examples/integer-overflow-or-underflow/).
 
 For this vulnerability, we were able to produce successful detectors using 
-[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/integer-overflow-or-underflow) and [Cargo-fuzz](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/cargo-fuzz/integer-overflow-or-underflow), we detail their implementation below.
+[Dylint](./dylint/smart-contract-linters/integer-overflow-or-underflow/) and 
+[Cargo-fuzz](./cargo-fuzz/integer-overflow-or-underflow/), we detail their 
+implementation below.
 
-### Dylint
+#### Dylint
 Our detector checks for integer arithmetic operations which could overflow or
 panic. Specifically, it checks for any operators (+, -, &ast, <<, etc) which 
 are capable of overflowing according to the Rust Reference, or which can panic 
 (/, %). No bounds analysis or other more sophisticated reasoning is attempted.
 
-#### Implementation 
+__Implementation__:
 In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
@@ -63,22 +64,22 @@ analyzed code, and to determine whether it contains one the operations that
 generate overflows/underflows. We also validate that the types being handled
 are integers. 
 
-#### Caveats
+__Caveats__:
 Even though this detector works as intended, the fact that Rust prevents 
 natively overflows makes it useful for error handling and detection rather 
 than vulnerability prevention.
 
 ### Cargo-Fuzz
-#### Description
+__Description__:
 This detector uses fuzzing to find valid inputs that generate overflow or 
 underlfow when fed into the smart contract.
 
-#### Implementation
+__Implementation__:
 Using `ink::env test module`, we implemented a `fuzz_target` to execute the 
 different tests of the contract using input values generated with 
 `libfuzzer_sys`.
 
-#### Caveats
+__Caveats__:
 The fuzzer built for this example was written from the tests of the vulnerability 
 example and therefore is bound to be imprecise against other instances of this
 vulnerability class. More work is needed against a wider set of examples to 
@@ -86,18 +87,18 @@ improve precision.
 
 ## 2. Set contract storage
 We based our analysis for set-contract-storage detection on the 
-[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/set-contract-storage).
+[vulnerability example associated to this issue](../vulnerabilities/examples/set-contract-storage/).
 
 For this vulnerability, we were able to produce successful detectors using 
-[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/set-contract-storge)
-and [Cargo-fuzz](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/cargo-fuzz/set-contract-storage), 
-we detail their implementation below.
+[Dylint](./dylint/smart-contract-linters/set-contract-storage/) and 
+[Cargo-fuzz](./cargo-fuzz/set-contract-storage/), we detail their 
+implementation below.
 
 ### Dylint
-#### Description
+__Description__:
 This detector checks for calls to `env::set_contract_storage()` from arbitrary users.
 
-#### Implementation 
+__Implementation__: 
 In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
@@ -109,21 +110,21 @@ analyzed code, and to determine whether it calls the function
 is performed within an `if` statement that determines whether the caller is the 
 contract owner, in which case no warning is raised.
 
-#### Caveats
+__Caveats__:
 If owner validation is performed with an auxiliary function, this detector will 
 not recognize the vulnerability.
 
 ### Cargo-Fuzz
-#### Description
+__Description__:
 This detector uses fuzzing to find the storage key for 
 `env::set_contract_storage()` and user accounts used in this exploit.
 
-#### Implementation
+__Implementation__:
 Using `ink::env` test module, we implemented a `fuzz_target` to execute the 
 different tests of the contract using input values generated with 
 `libfuzzer_sys`.
 
-#### Caveats
+__Caveats__:
 The fuzzer built for this vulnerability was written using the tests of the 
 vulnerability example that we worked with. Therefore it only works for this 
 contract. Furthermore, the bytesize of the arguments makes it very hard to 
@@ -131,19 +132,18 @@ find them using this technique.
 
 ## 3. Reentrancy
 We based our analysis for set-contract-storage detection on the 
-[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/reentrancy).
+[vulnerability example associated to this issue](../vulnerabilities/examples/reentrancy/).
 
 For this vulnerability, we were able to produce successfull detectors using 
-[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/reentrancy)
-we detail the implementation below.
+[Dylint](./dylint/smart-contract-linters/reentrancy/) we detail the implementation below.
 
 ### Dylint
-#### Description
+__Description__:
 This detector checks the usage of the flag `set_allow_reentry(true)`, followed
 by an `invoke_contract_call()` and changes in contract state performed by 
 assignments or inserts in mappings.
 
-#### Implementation 
+__Implementation__: 
 In order to implement this detector we developed the following functions of the 
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - `check_fn`
@@ -153,23 +153,22 @@ analyzed code, and to determine whether it calls the `flag set_allow_reentry(tru
 and the function `invoke_contract_call()`. The `check_fn` function is also used to
  detect for assignments (`=`, `+=`, `-=`, etc) and calls to the `insert()` function.
 
-#### Caveats
+__Caveats__:
 If the usage of `set_allow_reentry(true)` or later state changes are performed in 
 an auxiliary function, this detector will not detect the reentrancy.
 
 ## 4. Panic error
 We based our analysis for set-contract-storage detection on the 
-[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/panic-error).
+[vulnerability example associated to this issue](../vulnerabilities/examples/panic-error/).
 
 For this vulnerability, we were able to produce successful detectors using 
-[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/panic-error)
-we detail the implementation below.
+[Dylint](./dylint/smart-contract-linters/panic-error/) we detail the implementation below.
 
 ### Dylint
-#### Description
+__Description__:
 This detector checks the usage of the `panic!` macro.
 
-#### Implementation 
+__Implementation__: 
 In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
@@ -178,24 +177,23 @@ trait:
 In particular, we used this function to check for every expression in the analyzed code, and 
 to determine whether it uses the `panic!` macro.
 
-#### Caveats
+__Caveats__:
 None.
 
 ## 5. Unused return enum
 We based our analysis for set-contract-storage detection on the 
-[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/unused-return-enum).
+[vulnerability example associated to this issue](../vulnerabilities/examples/unused-return-enum/).
 
 For this vulnerability, we were able to produce successful detectors using 
-[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/unused-return-enum) 
-we detail the implementation below.
+[Dylint](./dylint/smart-contract-linters/unused-return-enum/). 
 
 ### Dylint
-#### Description
+__Description__:
 This detector checks that if the function return value is of type `Result` then
 there exists at least one return value that uses `Err` and another return value
 that uses `Ok`.
 
-#### Implementation 
+__Implementation__: 
 In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
@@ -206,45 +204,44 @@ In particular, we used this function together with a visitor to check for every
 expression of a function with return type `Result` whether its returns values
 are at least an `Err` and an `Ok`.
 
-#### Caveats
+__Caveats__:
 None.
 
 
 ## 6. DoS Unbounded Operation With Vector
 We based our analysis for set-contract-storage detection on the 
-[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation-with-vector).
+[vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
 For this vulnerability, we were able to produce successful detectors using 
-[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unbounded-operation-with-vector),
-we detail the implementation below.
+[Dylint](./dylint/smart-contract-linters/dos-unbounded-operation/).
 
 ### Dylint
-#### Description
+__Description__:
 [Completar UBA]
 
-#### Implementation 
+__Implementation__: 
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 - [Completar uba]
 
 In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the [Completar Uba].
 
-#### Caveats
+__Caveats__:
 [Completar UBA]
 
 
-## 7. DoS Unexpected revert
+## 7. DoS Unexpected Revert With Vector
 We based our analysis for set-contract-storage detection on the 
-[vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert).
+[vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
 For this vulnerability, we were able to produce successful detectors using 
-[Dylint](https://github.com/CoinFabrik/web3-grant/tree/main/detectors/dylint/smart_contracts_linters/dos-unexpected-revert), 
+[Dylint](./dylint/smart_contracts_linters/dos-unexpected-revert), 
 we detail the implementation below.
 
 ### Dylint
-#### Description
+__Description__:
 This detector checks that only the owner can manipulate vectors' content.
 
-#### Implementation 
+__Implementation__: 
 In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
@@ -254,7 +251,7 @@ In particular, we used this function to check for every expression in the
 analyzed code, and to determine whether it allows users to modify vectors 
 without being the contract owners.
 
-#### Caveats
+__Caveats__:
 If the owner validation is performed in an auxiliary function, this detector
 will not detect the unexpected revert.
 
@@ -396,11 +393,6 @@ have been built.
       <td></td>
       <td></td>
     </tr>
-
-
-
-
-
 
 
 

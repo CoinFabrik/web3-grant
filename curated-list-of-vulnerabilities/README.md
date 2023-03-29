@@ -148,7 +148,7 @@ with a Low Severity.
 In our example, we see how lack of revision on the usage of both types (`Ok`
 and `Err`) leads to code where its intended functionality is not realized.
 
-### 6 - DoS Unbounded Operation With Vector
+### 6 - DoS Unbounded Operation
 Each block in a Substrate Blockchain has an upper bound on the amount of gas
 that can be spent, and thus the amount of computation that can be done. This 
 is the Block Gas Limit. If the gas spent by a function call on an `ink!` smart
@@ -170,7 +170,7 @@ Needless to say, there are many different ways to cause a DOS vulnerability.
 This case is relevant and introduced repeteadly by the developer untrained in
 web3 environments. 
 
-### 7 - DoS Unexpected Revert
+### 7 - DoS Unexpected Revert With Vector
 Another type of Denial of Service attack is called unexpected revert. It occurs
 by preventing transactions by other users from being successfully executed 
 forcing the blockchain state to revert to its original state.
