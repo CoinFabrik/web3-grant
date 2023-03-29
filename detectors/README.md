@@ -60,7 +60,7 @@ For this Proof of Concept, we decided to use the most mature tool, Cargo-fuzz, i
 
 For each vulnerability in our list, we explain what tools and techniques were applied for their detection, mentioning implementation caveats.
 
-## 1. Integer overflow or underflow
+## 1. Integer Overflow or Underflow
 
 We based our analysis for overflow or underflow detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/integer-overflow-or-underflow).
 
@@ -101,7 +101,7 @@ Using ink::env test module, we implemented a fuzz_target to execute the differen
 The fuzzer built for this vulnerability was written using the tests of the vulnerability example that we worked with. Therefore it only works for this contract.
 
 
-## 2. Set contract storage
+## 2. Set Contract Storage
 
 We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/set-contract-storage).
 
@@ -164,7 +164,7 @@ In particular, we used this function to check for every expression in the analyz
 If called method does not perform a malicious reentrancy (i.e. known method from known contract) false positives will arise.
 If the usage of set_allow_reentry(true) or later state changes are performed in an auxiliary function, this detector will not detect the reentrancy. To detect these cases, it is necessary to perform interprocedural dataflow analysis
 
-## 4. Panic error
+## 4. Panic Error
 
 We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/panic-error).
 
@@ -187,7 +187,7 @@ In particular, we used this function to check for every expression in the analyz
 
 While this linter detects explicit calls to panic!, there may be some ways to raise a panic such as unwrap() or expect().
 
-## 5. Unused return enum
+## 5. Unused Return Enum
 
 We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/unused-return-enum).
 
@@ -211,7 +211,7 @@ In particular, we used this function together with a visitor to check for every 
 
 If definitions of Err() and/or Ok() are in the code but do not flow to the return value due to the definition of a variable or because they are defined in a dead code block, the warning will not be shown. If the definitions are made in an auxiliary method, the warning will be shown, resulting in a false positive.
 
-## 6. DoS Unbounded operation
+## 6. DoS Unbounded Operation
 
 We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation).
 
@@ -235,7 +235,7 @@ In particular, we have used this function to search for every for or while loop 
 False positives are to be expected when using variables that can only be set using controlled flows that limit the values within acceptable ranges. These cases can be detected by using tainting techniques and/or interprocedural dataflow analysis.
 
 
-## 7. DoS Unexpected revert with vector
+## 7. DoS Unexpected Revert with Vector
 
 We based our analysis for set-contract-storage detection on the [vulnerability example associated to this issue](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert-with-vector).
 
