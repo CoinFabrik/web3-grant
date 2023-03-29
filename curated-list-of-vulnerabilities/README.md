@@ -1,191 +1,198 @@
 # Curated List of Vulnerabilities
 
-In this section we describe our effort to discover relevant security-related 
-issues introduced during the development of smart contracts in Substrate Ink!. 
-Many do generalize to substate-based networks, but that need not be the rule. 
-There follows a list containing some security issues that we identified. 
-The list is, of course, not exhaustive but all of these are very relevant. 
+In this section we describe our effort to discover relevant security-related
+issues introduced during the development of smart contracts in Substrate Ink!.
+Many do generalize to substate-based networks, but that need not be the rule.
+There follows a list containing some security issues that we identified.
+The list is, of course, not exhaustive but all of these are very relevant.
 In each case we assign a severity label according to the following taxonomy:
 
-* __Critical__: These issues compromise the system seriously. They must be 
-fixed immediately.
-* __Medium__: These are potentially exploitable issues which might represent 
-a security risk in the near future. We suggest fixing them as soon as possible.
-* __Minor__: These issues represent problems that are relatively small or 
-difficult to take advantage of, but might be exploited in combination with 
-other issues. These kinds of issues do not block deployments in production 
-environments. They should be taken into account and be fixed when possible.
-* __Enhcancemet__: This class relates to issues related to deviations from 
-best practices or stylistic which could become higher-priority issues with 
-other changes, e.g., may lead to development errors in an future update.
+- **Critical**: These issues compromise the system seriously. They must be
+  fixed immediately.
+- **Medium**: These are potentially exploitable issues which might represent
+  a security risk in the near future. We suggest fixing them as soon as possible.
+- **Minor**: These issues represent problems that are relatively small or
+  difficult to take advantage of, but might be exploited in combination with
+  other issues. These kinds of issues do not block deployments in production
+  environments. They should be taken into account and be fixed when possible.
+- **Enhcancemet**: This class relates to issues related to deviations from
+  best practices or stylistic which could become higher-priority issues with
+  other changes, e.g., may lead to development errors in an future update.
 
 ## The List
-As a result of our analysis, we were able to produce seven examples of 
-vulnerabilities under the following analysis categories: Arithmetic, 
-Authorization, DoS (Denial of Service), Reentrancy, and Validations and 
-error handling. Full documentation of each vulnerability, as well as 
-associated smart contract files can be found at our repository at 
+
+As a result of our analysis, we were able to produce seven examples of
+vulnerabilities under the following analysis categories: Arithmetic,
+Authorization, DoS (Denial of Service), Reentrancy, and Validations and
+error handling. Full documentation of each vulnerability, as well as
+associated smart contract files can be found at our repository at
 vulnerabilities/examples.
 
 ### 1 - Integer Overflow and Integer Underflow
-This type of vulnerability occurs when an arithmetic operation attempts to 
-create a numeric value that is outside the valid range in substrate, e.g, 
-a `u8` unsigned integer can be at most M:=2**8-1=255, hence the sum *M+1* 
-may create an overflow. 
 
-An overflow/underflow is typically caught and generates an error. When it 
-is not caught, the operation will result in an inexact result which could 
-lead to serious problems. We classified this type of vulnerability under 
-the ID _integer-overflow-or-underflow_ in the 
+This type of vulnerability occurs when an arithmetic operation attempts to
+create a numeric value that is outside the valid range in substrate, e.g,
+a `u8` unsigned integer can be at most M:=2\**8-1=255, hence the sum *M+1\*
+may create an overflow.
+
+An overflow/underflow is typically caught and generates an error. When it
+is not caught, the operation will result in an inexact result which could
+lead to serious problems. We classified this type of vulnerability under
+the ID _integer-overflow-or-underflow_ in the
 [category](#analysis-categories) _Arithmetic_ type, with a High Severity.
 
-In the context of Substrate, we found that this vulnerability could only be 
-realized if overflow and underflow checks are disabled during compilation. 
-Notwithstanding, there are contexts where developers do turn off checks for 
-valid reasons and hence the reason for including this vulnerability in the 
-list. Check the following code snippet and 
-[documentation](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/integer-overflow-or-underflow).
+In the context of Substrate, we found that this vulnerability could only be
+realized if overflow and underflow checks are disabled during compilation.
+Notwithstanding, there are contexts where developers do turn off checks for
+valid reasons and hence the reason for including this vulnerability in the
+list. Check the following code snippet and
+[documentation](/vulnerabilities/examples/integer-overflow-or-underflow).
 
 ### 2 - Unauthotized Set Contract Storage
-Smart contract can store important information in memory which changes 
-through the contract's lifecycle. Changes happen via user interaction with 
-the smart contract. An _unauthorized set contract storage_ vulnerability 
-happens when a smart contract call allows a user to set or modify contract 
+
+Smart contract can store important information in memory which changes
+through the contract's lifecycle. Changes happen via user interaction with
+the smart contract. An _unauthorized set contract storage_ vulnerability
+happens when a smart contract call allows a user to set or modify contract
 memory when he was not supposed to be authorized.
 
-Common practice is to have functions with the ability to change 
-security-relevant values in memory to be only accessible to specific roles, 
+Common practice is to have functions with the ability to change
+security-relevant values in memory to be only accessible to specific roles,
 e.g, only an admin can call the function `reset()` which resets auction values.
-When this does not happen, arbitrary users may alter memory which may impose 
-great damage to the smart contract users. We classified this vulnerability 
-under the ID _set-contract-storage_ in the [category](#analysis-categories) 
+When this does not happen, arbitrary users may alter memory which may impose
+great damage to the smart contract users. We classified this vulnerability
+under the ID _set-contract-storage_ in the [category](#analysis-categories)
 _Authorization_, with a High Severity.
 
-In `ink!` the function `set_contract_storage(key: &K, value: &V)` can be used 
-to modify the contract storage under a given key. When a smart contract uses 
-this function, the contract needs to check if the caller should be able to 
-alter this storage. If this does not happen, an arbitary caller may modify 
+In `ink!` the function `set_contract_storage(key: &K, value: &V)` can be used
+to modify the contract storage under a given key. When a smart contract uses
+this function, the contract needs to check if the caller should be able to
+alter this storage. If this does not happen, an arbitary caller may modify
 balances and other relevant
 
 ### 3 - Reentrancy
-An `ink!` smart contract can interact with other smart contracts. These 
-operations imply (external) calls where control flow is passed to the called 
-contract until the execution of the called code is over, then the control is 
-delivered back to the caller. A _reentrancy_ vulnerability may happen when a 
-user calls a function, this function calls a malicious contract which again 
-calls this same function, and this 'reentrancy' has unexpected reprecussions 
-to the contract. 
+
+An `ink!` smart contract can interact with other smart contracts. These
+operations imply (external) calls where control flow is passed to the called
+contract until the execution of the called code is over, then the control is
+delivered back to the caller. A _reentrancy_ vulnerability may happen when a
+user calls a function, this function calls a malicious contract which again
+calls this same function, and this 'reentrancy' has unexpected reprecussions
+to the contract.
 This kind of attack was used in Ethereum for
 [the infamous DAO Hack](https://www.economist.com/finance-and-economics/2016/05/19/the-dao-of-accrue).
 
 This vulnerability may be prevented with the use of the Check-Effect-Interaction
 pattern that dictates that we first evaluate (check) if the necessary conditions
-are granted, next we record the effects of the interaction and finally we 
-execute the interaction (e.g., check if the user has funds, substract the funds 
-from the records, then transfer the funds). There's also so-called 
-_reentrancy guards_ which prevent the marked piece of code to be called twice 
-from the same contract call. When the vulnerability may be exercised, the 
+are granted, next we record the effects of the interaction and finally we
+execute the interaction (e.g., check if the user has funds, substract the funds
+from the records, then transfer the funds). There's also so-called
+_reentrancy guards_ which prevent the marked piece of code to be called twice
+from the same contract call. When the vulnerability may be exercised, the
 successive calls to the contract may allow the malicious contract to execute a
-function partially many times, e.g., transfering funds many times but 
-substracting the funds only once. 
+function partially many times, e.g., transfering funds many times but
+substracting the funds only once.
 We use the ID _reentrancy_ for this vulnerability, the category
 _Reentrancy_ and assign it a High Severity.
 
-In the context of `ink!` Substrate smart contracts there are controls 
+In the context of `ink!` Substrate smart contracts there are controls
 preventing reentrancy which could be turned off (validly) using the flag
 `set_allow_reentry(true)`.
 
 ### 4 - Panic error
-The use of the `panic!` macro to stop execution when a condition is not met is 
-useful for testing and prototyping but should be avoided in production code. 
+
+The use of the `panic!` macro to stop execution when a condition is not met is
+useful for testing and prototyping but should be avoided in production code.
 Using `Result` as the return type for functions that can fail is the idiomatic
 way to handle errors in Rust.
 
-We classified this issue, a deviation for best practices, which could have 
-security implications under the ID _panic-error_ and under the category 
-_Validations and Error Handling_,  with an Enhancement Severity.
+We classified this issue, a deviation for best practices, which could have
+security implications under the ID _panic-error_ and under the category
+_Validations and Error Handling_, with an Enhancement Severity.
 
 ### 5 - Unused return enum
+
 Ink! messages can return a Result enum with a custom error type. This is useful
-for the caller to know what went wrong when the message fails. The definition 
-of the Result type enum consists of two variants: Ok and Err. If any of the 
+for the caller to know what went wrong when the message fails. The definition
+of the Result type enum consists of two variants: Ok and Err. If any of the
 variants is not used, the code could be simplified or it could imply a bug.
 
-We classified this type of vulnerability under the ID unused-return-enum. It 
-is categorized as a vulnerability of Validations and error handling type, 
+We classified this type of vulnerability under the ID unused-return-enum. It
+is categorized as a vulnerability of Validations and error handling type,
 with an Low severity.
 
 In our example, we see how lack of revision on the usage of both types (`Ok`
 and `Err`) leads to code where its intended functionality is not realized.
 
-### 6 - DoS Unbounded operation with vector
+### 6 - DoS Unbounded operation
+
 Each block in a Substrate Blockchain has an upper bound on the amount of gas
-that can be spent, and thus the amount of computation that can be done. This 
+that can be spent, and thus the amount of computation that can be done. This
 is the Block Gas Limit. If the gas spent by a function call on an `ink!` smart
 contract exceeds this limit, the transaction will fail. Sometimes it is the
 case that the contract logic allows a malicious user to modify conditions
 so that other users are forced to exahust gas on standard function calls.
 
-In order to prevent a single transaction from consuming all the gas in a block, 
-unbounded operations must be avoided. This includes loops that do not have a 
-bounded number of iterations, and recursive calls. We assigned the ID 
-_dos-unbounded-operation-with-vector_ to this vulnerability and put it under
+In order to prevent a single transaction from consuming all the gas in a block,
+unbounded operations must be avoided. This includes loops that do not have a
+bounded number of iterations, and recursive calls. We assigned the ID
+_dos-unbounded-operation_ to this vulnerability and put it under
 the _Denial of Service_ category with and Medium Severity.
-A denial of service vulnerability allows the exploiter to hamper the 
-availability of a service rendered by the smart contract. In the context 
+A denial of service vulnerability allows the exploiter to hamper the
+availability of a service rendered by the smart contract. In the context
 of `ink!` smart contracts, it can be caused by the exhaustion of gas,
 starage space, or other failures in the contract's logic.
 
 Needless to say, there are many different ways to cause a DOS vulnerability.
 This case is relevant and introduced repeteadly by the developer untrained in
-web3 environments. 
+web3 environments.
 
-### 7 - DoS Unexpected revert
+### 7 - DoS Unexpected Revert with vector
+
 Another type of Denial of Service attack is called unexpected revert. It occurs
-by preventing transactions by other users from being successfully executed 
+by preventing transactions by other users from being successfully executed
 forcing the blockchain state to revert to its original state.
 
-We classified this type of vulnerability under the ID dos-unexpected-revert.
+We classified this type of vulnerability under the ID dos-unexpected-revert-with-vector.
 It is categorized as a vulnerability of DoS type, with and High severity.
 
-In this particular example, a Denial of Service through unexpected revert is 
-accomplished by exploiting a smart contract that does not manage storage size 
+In this particular example, a Denial of Service through unexpected revert is
+accomplished by exploiting a smart contract that does not manage storage size
 errors correctly. It can be prevented by using Mapping instead of Vec to avoid
 storage limit problems.
 
-
-<!-- 
+<!--
 ## Discussion
 ### Methodology and Analysis
 Today, smart contracts in Substrate Ink! have a short history when compared to
-longer-lived peers like Ethereum. Therefore, the job of listing and 
+longer-lived peers like Ethereum. Therefore, the job of listing and
 prioritizing Substrate issues cannot be made by a straight-forward sampling of
 the issues found in some Ink! smart contracts.
 
-Moreover, variations in pallet configuration across different parachains adds 
-another layer of analysis on the runtime. We analyzed the different pallet 
+Moreover, variations in pallet configuration across different parachains adds
+another layer of analysis on the runtime. We analyzed the different pallet
 configurations on existing projects, but determined that vulnerabilities native
 to the runtime were beyond the scope of the tools and techniques studied for
-this PoC. Therefore, our search for vulnerabilities was focused on Substrate 
+this PoC. Therefore, our search for vulnerabilities was focused on Substrate
 Ink! smart contracts.
 
-We based our work on three sources in order to produce a list of vulnerable 
-examples. First, we searched for audit reports on Substrate in order to list 
-common vulnerabilities, analysis tools and analysis techniques. Second, we 
-used our previous auditing experience and categorization of issues present 
-in other blockchains in order to consider possible vulnerabilities that 
-could be easily mapped to Substrate. Finally, we performed a manual review 
-of a few deployed Substrate Ink! smart contracts, looking for issues 
+We based our work on three sources in order to produce a list of vulnerable
+examples. First, we searched for audit reports on Substrate in order to list
+common vulnerabilities, analysis tools and analysis techniques. Second, we
+used our previous auditing experience and categorization of issues present
+in other blockchains in order to consider possible vulnerabilities that
+could be easily mapped to Substrate. Finally, we performed a manual review
+of a few deployed Substrate Ink! smart contracts, looking for issues
 particular to Substrate as well as issues common to other networks.
 
 ## Analysis of Audited Projects
-When analyzing public audit reports on Substrate projects, we focused on 
+When analyzing public audit reports on Substrate projects, we focused on
 identifying found vulnerabilities; we also classified theand tools used for
 security automatic analysis.
 
 Out of a list of 10 initial public audit reports on projects developed with
 Substrate, we found no audits dedicated specifically to Ink! smart contracts.
-All reports were focused on pallet configuration, runtime logic or parachain 
+All reports were focused on pallet configuration, runtime logic or parachain
 interactions.
 
 Nevertheless, we did find some recurring types of vulnerabilities and tool
@@ -215,8 +222,8 @@ usage across the analyzed audits. We list our findings below:
 
 ## Analysis Categories
 
-During our smart contract audits at Coinfabrik, our auditors perform a manual 
-review of the analyzed code, including security analyses that can be grouped 
+During our smart contract audits at Coinfabrik, our auditors perform a manual
+review of the analyzed code, including security analyses that can be grouped
 into the following [categories](https://blog.coinfabrik.com/analysis-categories/):
 
 | Category                  | Description                                                                                                      |
@@ -248,7 +255,7 @@ From this list of deployed projects, we analyzed the Panorama Swap smart contrac
 
 This review consisted of:
 - An initial definition of the analysis scope,
-- A first walkthrough of the selected contracts looking for potential vulnerabilities and taking as a reference the analysis categories used in our smart contract audits, 
+- A first walkthrough of the selected contracts looking for potential vulnerabilities and taking as a reference the analysis categories used in our smart contract audits,
 - A final revision, where these potential vulnerabilities were discarded or confirmed.
 
 ### Panorama Swap
