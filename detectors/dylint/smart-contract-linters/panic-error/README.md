@@ -8,7 +8,7 @@ This is useful for testing and prototyping, but should be avoided in production 
 The usage of panic! is not recommended because it will stop the execution of the caller contract.
 
 ### Known problems
-TODO.
+While this linter detects explicit calls to panic!, there are some ways to raise a panic such as unwrap() or expect().
 
 ### Example
 ```rust

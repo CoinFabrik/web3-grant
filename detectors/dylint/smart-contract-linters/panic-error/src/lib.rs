@@ -23,7 +23,7 @@ dylint_linting::impl_pre_expansion_lint! {
     /// The usage of panic! is not recommended because it will stop the execution of the caller contract.
     ///
     /// ### Known problems
-    /// TODO.
+    /// While this linter detects explicit calls to panic!, there are some ways to raise a panic such as unwrap() or expect().
     ///
     /// ### Example
     /// ```rust

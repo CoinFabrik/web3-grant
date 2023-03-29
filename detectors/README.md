@@ -187,7 +187,7 @@ In particular, we used this function to check for every expression in the analyz
 
 #### Caveats
 
-While this linter detects explicit calls to panic!, there may be some ways to raise a panic such as unwrap() or expect().
+While this linter detects explicit calls to panic!, there are some ways to raise a panic such as unwrap() or expect().
 
 ## 5. Unused Return Enum
 
@@ -260,7 +260,7 @@ In particular, we used this function to check for every expression in the analyz
 
 #### Caveats
 
-If the owner validation is performed in an auxiliary function, this detector will not detect the unexpected revert.
+If the owner validation is performed in an auxiliary function, the warning will be shown, resulting in a false positive.
 
 # Results
 

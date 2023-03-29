@@ -15,19 +15,31 @@ use rustc_span::Span;
 
 dylint_linting::declare_late_lint! {
     /// ### What it does
-    ///
+    /// Checks for array pushes without access control.
     /// ### Why is this bad?
-    ///
+    /// Arrays have a maximum size according to the storage cell. If the array is full, the push will revert. This can be used to prevent the execution of a function.
     /// ### Known problems
-    /// Remove if none.
-    ///
+    /// If the owner validation is performed in an auxiliary function, the warning will be shown, resulting in a false positive.
     /// ### Example
     /// ```rust
-    /// // example code where left warning is issued
+    /// if self.votes.contains(candidate) {
+    ///     Err(Errors::CandidateAlreadyAdded)
+    /// } else {
+    ///     self.candidates.push(candidate);
+    ///     self.votes.insert(candidate, &0);
+    ///     Ok(())
+    /// }
     /// ```
     /// Use instead:
     /// ```rust
-    /// // example code that does not raise left warning
+    /// if self.votes.contains(candidate) {
+    ///     Err(Errors::CandidateAlreadyAdded)
+    /// } else {
+    ///     self.candidates.insert(self.total_candidates, &candidate);
+    ///     self.total_candidates += 1;
+    ///     self.votes.insert(candidate, &0);
+    ///     Ok(())
+    /// }
     /// ```
     pub UNEXPECTED_REVERT_WARN,
     Warn,
