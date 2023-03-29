@@ -131,7 +131,7 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 #### Description
 
-This detector checks for calls to env::set_contract_storage().
+This detector checks for calls to `env::set_contract_storage()`.
 
 #### Implementation
 
@@ -139,7 +139,7 @@ In order to implement this detector we developed the following functions of the 
 
 - `check_fn`
 
-In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function env::set_contract_storage(). We also check if the function call is performed within an `if` statement that determines whether the caller is the contract owner, in the latter case no warning is shown.
+In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function `env::set_contract_storage()`. We also check if the function call is performed within an `if` statement that determines whether the caller is the contract owner, in the latter case no warning is shown.
 
 #### Caveats
 
@@ -175,7 +175,7 @@ The rule starts with a source pattern (pattern-sources), which matches a functio
 
 The next pattern (pattern-sinks) matches a call to the env::set_contract_storage function, passing the variable $IK as the first argument. This is also similar to the fourth pattern in the previous rule.
 
-However, instead of using exclusion patterns to identify authorized use of set_contract_storage, this rule uses sanitizers (pattern-sanitizers) to remove taint from the variable $IK under certain conditions. Specifically, the sanitizers check whether there is an if statement inside the function body that compares the caller of the contract (self.env().caller()) with the contract owner (self.owner) using either == or != operators. If such a condition is found, the variable $IK is considered to be sanitized, meaning that it is no longer considered a potential security issue.
+However, instead of using exclusion patterns to identify authorized use of `set_contract_storage()`, this rule uses sanitizers (pattern-sanitizers) to remove taint from the variable $IK under certain conditions. Specifically, the sanitizers check whether there is an if statement inside the function body that compares the caller of the contract (`self.env().caller()`) with the contract owner (`self.owner`) using either == or != operators. If such a condition is found, the variable $IK is considered to be sanitized, meaning that it is no longer considered a potential security issue.
 
 Finally, if the `env::set_contract_storage` function is called with an unsanitized $IK variable, a warning message is issued (message), explaining that the parameter $IK is user-controlled and can potentially corrupt the contract storage. The message advises that only the contract owner should be allowed to perform this operation.
 
@@ -183,7 +183,7 @@ Finally, if the `env::set_contract_storage` function is called with an unsanitiz
 
 #### Description
 
-This detector uses fuzzing to find the storage key for env::set_contract_storage() and user accounts used in this exploit.
+This detector uses fuzzing to find the storage key for `env::set_contract_storage()` and user accounts used in this exploit.
 
 #### Implementation
 
@@ -211,7 +211,7 @@ In order to implement this detector we developed the following functions of the 
 
 - `check_fn`
 
-In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function set_allow_reentry(true) and the function invoke_contract_call() then we check for subsequent state changes like assignments (=, +=, -=, etc) or calls to the insert() function of mappings.
+In particular, we used this function to check for every expression in the analyzed code, and to determine whether it calls the function `set_allow_reentry(true)` and the function `invoke_contract_call()` then we check for subsequent state changes like assignments (=, +=, -=, etc) or calls to the `insert()` function of mappings.
 
 #### Caveats
 
@@ -228,7 +228,7 @@ For this vulnerability, we were able to produce successfull detectors using [Dyl
 
 #### Description
 
-This detector checks the usage of the panic! macro.
+This detector checks the usage of the `panic!` macro.
 
 #### Implementation
 
@@ -236,11 +236,11 @@ In order to implement this detector we developed the following functions of the 
 
 - `check_expr`
 
-In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the panic! macro.
+In particular, we used this function to check for every expression in the analyzed code, and to determine whether it uses the `panic!` macro.
 
 #### Caveats
 
-While this linter detects explicit calls to panic!, there are some ways to raise a panic such as unwrap() or expect().
+While this linter detects explicit calls to `panic!`, there are some ways to raise a panic such as `unwrap()` or `expect()`.
 
 ### Semgrep
 
@@ -251,7 +251,7 @@ This semgrep rule checks for instances of the `panic!` macro in `Ink!` contracts
 The rule consists of a single pattern (pattern) that matches the `panic!` macro, which takes an error message as an argument and abruptly terminates the program when executed.
 
 #### Caveats
-There are some ways to raise a panic such as unwrap() or expect() which are not detected by this rule.
+There are some ways to raise a panic such as `unwrap()` or `expect()` which are not detected by this rule.
 
 ## 5. Unused Return Enum
 
@@ -270,7 +270,6 @@ This detector checks that if the function return value is of type Result then th
 In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
 
 - `check_fn`
-- `visitor`
 
 In particular, we used this function together with a visitor to check for every expression of a function with return type Result whether its returns values are at least one Err and one Ok.
 
@@ -413,8 +412,8 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td>Reentrancy</td>
       <td>✅</td>
       <td>❎</td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
       <td></td>
       <td></td>
       <td></td>
@@ -426,12 +425,12 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td>Validations and error handling</td>
       <td>✅</td>
       <td>❎</td>
+      <td>✅</td>
+      <td>❎</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
     </tr>
     <tr>
       <td>#5</td>
@@ -439,8 +438,8 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td>Validations and error handling</td>
       <td>✅</td>
       <td>❎</td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
       <td></td>
       <td></td>
       <td></td>
@@ -452,12 +451,12 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td>DoS</td>
       <td>✅</td>
       <td>❎</td>
+      <td>✅</td>
+      <td>❎</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
     </tr>
     <tr>
       <td>#7</td>
@@ -465,8 +464,8 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable exa
       <td>DoS</td>
       <td>✅</td>
       <td>❎</td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
       <td></td>
       <td></td>
       <td></td>
