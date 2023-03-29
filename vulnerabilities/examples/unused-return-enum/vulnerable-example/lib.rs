@@ -9,15 +9,18 @@ mod unused_return_enum {
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum Error {
+        /// An overflow was produced.
         Overflow,
     }
 
     impl UnusedReturnEnum {
+        /// Creates a new instance of the contract.
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {}
         }
 
+        /// Returns the percentage difference between two values.
         #[ink(message)]
         pub fn get_percentage_difference(
             &mut self,

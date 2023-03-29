@@ -8,22 +8,30 @@ mod vault {
         env::call::{build_call, Selector},
         storage::Mapping,
     };
+
     #[ink(storage)]
     pub struct Vault {
+        /// Balances of accounts.
         balances: Mapping<AccountId, Balance>,
     }
 
     #[derive(Debug, PartialEq, Eq, Clone, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Error {
+        /// External contract call failed.
         ContractInvokeFailed,
+        /// Insufficient balance to perform operation.
         InsufficientBalance,
+        /// An overflow was produced.
         Overflow,
+        /// Transfer failed.
         TransferFailed,
+        /// An underflow was produced.
         Underflow,
     }
 
     impl Vault {
+        /// Creates a new instance of the contract.
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
@@ -31,6 +39,7 @@ mod vault {
             }
         }
 
+        /// Deposits the sent amount into the vault.
         #[ink(message, payable)]
         pub fn deposit(&mut self) -> Result<Balance, Error> {
             let caller_addr = self.env().caller();
@@ -42,11 +51,13 @@ mod vault {
             Ok(updated_balance)
         }
 
+        /// Returns the current balance of the given account.
         #[ink(message)]
         pub fn balance(&mut self, account: AccountId) -> Balance {
             self.balances.get(account).unwrap_or(0)
         }
 
+        /// Withdraws the given amount from the vault.
         #[ink(message)]
         pub fn withdraw(&mut self, amount: Balance) -> Result<Balance, Error> {
             let caller_addr = self.env().caller();
@@ -63,6 +74,7 @@ mod vault {
             Ok(updated_balance)
         }
 
+        /// Calls the given address with the given amount and selector.
         #[ink(message)]
         pub fn call_with_value(
             &mut self,

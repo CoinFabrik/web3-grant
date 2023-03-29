@@ -5,25 +5,30 @@ pub mod integer_overflow_underflow {
 
     #[ink(storage)]
     pub struct IntegerOverflowUnderflow {
+        /// Stored value.
         value: u8,
     }
 
     impl IntegerOverflowUnderflow {
+        /// Creates a new instance of the contract.
         #[ink(constructor)]
         pub fn new(value: u8) -> Self {
             Self { value }
         }
 
+        /// Increments the stored value by the given amount.
         #[ink(message)]
         pub fn add(&mut self, value: u8) {
             self.value += value;
         }
 
+        /// Decrements the stored value by the given amount.
         #[ink(message)]
         pub fn sub(&mut self, value: u8) {
             self.value -= value;
         }
 
+        /// Returns the stored value.
         #[ink(message)]
         pub fn get(&self) -> u8 {
             self.value
@@ -78,14 +83,7 @@ pub mod integer_overflow_underflow {
 
         #[ink::test]
         fn constructor_works() {
-            // Arrange
-            let value = 42;
-
-            // Act
-            let contract = IntegerOverflowUnderflow::new(value);
-
-            // Assert
-            assert_eq!(contract.get(), value);
+            test_utils::constructor_works(42);
         }
 
         #[ink::test]
@@ -95,14 +93,7 @@ pub mod integer_overflow_underflow {
 
         #[ink::test]
         fn sub_underflows() {
-            // Arrange
-            let mut contract = IntegerOverflowUnderflow::new(u8::MIN);
-
-            // Act
-            contract.sub(1);
-
-            // Assert
-            assert_eq!(contract.get(), u8::MAX);
+            test_utils::sub_underflows(u8::MIN, 1);
         }
     }
 }
