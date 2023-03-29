@@ -1,22 +1,25 @@
 # Reentrancy
-
-## Configuration
-
+## Description
 * Detector ID: `reentrancy`
 * Analysis Category: `Reentrancy`
 * Severity: `High`
 
-## Description
+Smart contracts can call other contracts and send tokens to them. These 
+operations imply external calls where control flow is passed to the called
+contract until the execution of the called code is over. Then the control 
+is delivered back to the caller.
 
-Smart contracts can call other contracts and send tokens to them. These operations imply external calls where control flow is passed to the called contract until the execution of the called code is over. Then the control is delivered back to the caller.
-
-External calls, therefore, could open the opportunity for a malicious contract to execute any arbitrary code. This includes calling back the caller contract, an attack known as reentrancy. This kind of attack was used in Ethereum for the infamous [DAO Hack](https://blog.chain.link/reentrancy-attacks-and-the-dao-hack/).
+External calls, therefore, could open the opportunity for a malicious contract
+to execute any arbitrary code. This includes calling back the caller contract,
+an attack known as reentrancy. This kind of attack was used in Ethereum for 
+the infamous [DAO Hack](https://blog.chain.link/reentrancy-attacks-and-the-dao-hack/).
 
 ## Exploit Scenario
+In order to exemplify this vulnerability we developed two contracts: 
+a `Vault` contract and an `Exploit` contract.
 
-In order to perform this exploit we work through an example consisting of two contracts: a `Vault` contract and an `Exploit` contract.
-
-The `Vault` contract provides functions to deposit, withdraw, check balance, and call a function on another contract with a specified value.
+The `Vault` contract provides functions to deposit, withdraw, check balance, 
+and call a function on another contract with a specified value.
 
 ```rust
 #![cfg_attr(not(feature = "std"), no_std)]

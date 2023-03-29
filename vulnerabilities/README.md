@@ -1,4 +1,4 @@
-# Code Examples and Snippets
+# Code Snippets and Smart Contract Examples
 ## Examples
 According to the 
 [curated list of vulnerabilities](../curated-list-of-vulnerabilities/README.md)
@@ -17,14 +17,14 @@ Each folder consists of:
 vulnerability may be exercised (Exploit Section) and how it can be prevented
 (Remediation Section). Evenmore, in some cases we included a Deployment 
 subsection and References.
-- A **vulnerable smart** contract file `lib.rs` with its associated 
-    `Cargo.toml`.
+- A **vulnerable smart contract** folder including a `lib.rs` file with the
+smart contract's code and the associated `Cargo.toml`.
     - If necessary, an exploit smart contract that would perform the attack on
     the vulnerable smart contract, also with its `lib.rs` and `Cargo.toml` 
     associated files.
     - Integration and end-to-end tests were provided in order to simplify and
     document the realization of the vulnerability. 
-- A **Remediated Example** folder which includes a version of the vulnerable
+- A **remediated smart contract** folder which includes a version of the vulnerable
 example but fixed. This folder including the same `lib.rs`and `Cargo.toml`
 files.
 

@@ -1,12 +1,8 @@
 # Panic Error
-
-## Configuration
-
+## Description
 - Detector ID: `panic-error`
 - Analysis Category: `Validations and error handling`
 - Severity: `Informational`
-
-## Description
 
 This detector checks for the use of the `panic!` macro in the code. The `panic!` macro is used to stop execution when a condition is not met. This is useful for testing and prototyping, but should be avoided in production code.
 
