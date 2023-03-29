@@ -4,27 +4,39 @@
 mod unexpected_revert {
     use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
-    /// Example of an unexpected revert because of storage size
+
     #[ink(storage)]
     pub struct UnexpectedRevert {
+        /// Total votes performed.
         total_votes: u64,
+        /// List of candidates.
         candidates: Vec<AccountId>,
+        /// Votes for each candidate.
         votes: Mapping<AccountId, u64>,
+        /// Accounts that already voted.
         already_voted: Mapping<AccountId, bool>,
+        /// Account id of the most voted candidate.
         most_voted_candidate: AccountId,
-        //Votes of the most voted candidate
+        /// Votes of the most voted candidate.
         candidate_votes: u64,
+        /// Timestamp when the vote ends.
         vote_timestamp_end: u64,
     }
 
     #[derive(Debug, PartialEq, Eq, Clone, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(::scale_info::TypeInfo))]
     pub enum Errors {
+        /// Account already voted.
         AccountAlreadyVoted,
+        /// Candidate already added.
         CandidateAlreadyAdded,
+        /// Candidate doesn't exist.
         CandidateDoesntExist,
+        /// Overflow was detected.
         Overflow,
+        /// Timestamp before current block.
         TimestampBeforeCurrentBlock,
+        /// Vote ended.
         VoteEnded,
     }
 
@@ -49,7 +61,7 @@ mod unexpected_revert {
             })
         }
 
-        /// Add a candidate to this vote
+        /// Adds a candidate to this vote.
         #[ink(message)]
         pub fn add_candidate(&mut self, candidate: AccountId) -> Result<(), Errors> {
             if self.vote_ended() {
@@ -64,7 +76,7 @@ mod unexpected_revert {
             }
         }
 
-        /// Get votes for a specific candidate
+        /// Returns votes for a given candidate.
         #[ink(message)]
         pub fn get_votes_for_a_candidate(&self, candidate: AccountId) -> Result<u64, Errors> {
             let votes_opt = self.votes.get(candidate);
@@ -75,28 +87,31 @@ mod unexpected_revert {
             }
         }
 
-        /// Get votes of most voted candidate
+        /// Returns votes for the most voted candidate.
         #[ink(message)]
         pub fn most_voted_candidate_votes(&self) -> u64 {
             self.candidate_votes
         }
 
-        /// Get account id of most voted candidate
+        /// Returns account id for the most voted candidate.
         #[ink(message)]
         pub fn most_voted_candidate(&self) -> AccountId {
             self.most_voted_candidate
         }
 
+        /// Returns total votes performed.
         #[ink(message)]
         pub fn get_total_votes(&self) -> u64 {
             self.total_votes
         }
 
+        /// Returns total candidates.
         #[ink(message)]
         pub fn get_total_candidates(&self) -> u64 {
             self.candidates.len() as u64
         }
 
+        /// Returns candidate at index.
         #[ink(message)]
         pub fn get_candidate(&self, index: u64) -> Result<AccountId, Errors> {
             if (index as usize) < self.candidates.len() {
@@ -106,12 +121,13 @@ mod unexpected_revert {
             }
         }
 
+        /// Returns true if the account has already voted.
         #[ink(message)]
         pub fn account_has_voted(&self, account: AccountId) -> bool {
             self.already_voted.get(account).unwrap_or(false)
         }
 
-        /// Vote for one of the candidates
+        /// Vote for one of the candidates.
         #[ink(message)]
         pub fn vote(&mut self, candidate: AccountId) -> Result<(), Errors> {
             if self.vote_ended() {
@@ -138,6 +154,7 @@ mod unexpected_revert {
             }
         }
 
+        /// Returns true if the vote has ended.
         #[ink(message)]
         pub fn vote_ended(&self) -> bool {
             self.vote_timestamp_end <= self.env().block_timestamp()

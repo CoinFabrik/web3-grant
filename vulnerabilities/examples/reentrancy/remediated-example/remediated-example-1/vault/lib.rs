@@ -8,12 +8,15 @@ mod vault {
         env::call::{build_call, Selector},
         storage::Mapping,
     };
+
     #[ink(storage)]
     pub struct Vault {
+        /// Balances of accounts.
         balances: Mapping<AccountId, Balance>,
     }
 
     impl Vault {
+        /// Creates a new instance of the contract.
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
@@ -21,6 +24,7 @@ mod vault {
             }
         }
 
+        /// Deposits the sent amount into the vault.
         #[ink(message, payable)]
         pub fn deposit(&mut self) -> Balance {
             let caller_addr = self.env().caller();
@@ -30,11 +34,13 @@ mod vault {
             return updated_balance;
         }
 
+        /// Returns the current balance of the given account.
         #[ink(message)]
         pub fn balance(&mut self, account: AccountId) -> Balance {
             self.balances.get(account).unwrap_or(0)
         }
 
+        /// Withdraws the given amount from the vault.
         #[ink(message)]
         pub fn withdraw(&mut self, amount: Balance) -> Balance {
             let caller_addr = self.env().caller();
@@ -51,6 +57,7 @@ mod vault {
             }
         }
 
+        /// Calls the given address with the given amount and selector.
         pub fn call_with_value(
             &mut self,
             address: AccountId,

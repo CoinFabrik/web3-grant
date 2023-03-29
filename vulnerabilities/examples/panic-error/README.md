@@ -16,81 +16,54 @@ This way, the caller can decide how to handle the error, although the state of t
 
 ## Exploit Scenario
 
-In the following example, the `panic!` command is being used to handle errors, disallowing the caller to handle the error in a different way, and completely stopping execution of the caller contract.
+In the following snippet, the `panic!` command is being used to handle errors, disallowing the caller to handle the error in a different way, and completely stopping execution of the caller contract.
 
 ```rust
-#![cfg_attr(not(feature = "std"), no_std)]
-
-#[ink::contract]
-mod panic_error {
-
-    #[ink(storage)]
-    pub struct PanicError {
-        value: u32,
-    }
-
-    impl PanicError {
-        #[ink(constructor)]
-        pub fn new(value: u32) -> Self {
-            Self { value }
-        }
-
-        #[ink(message)]
-        pub fn add(&mut self, value: u32)   {
-            match self.value.checked_add(value) {
-                Some(v) => self.value = v,
-                None => panic!("Overflow error"),
-            };
-        }
-    }
+#[ink(message)]
+pub fn add(&mut self, value: u32)   {
+    match self.value.checked_add(value) {
+        Some(v) => self.value = v,
+        None => panic!("Overflow error"),
+    };
 }
 ```
+
 
 Let's take a closer look at the `add` function. This function takes a value as an argument and adds it to the value stored in the contract's storage. The function first checks if the addition will cause an overflow. If the addition will cause an overflow, the function will panic. If the addition will not cause an overflow, the function will add the value to the contract's storage.
 
 The usage of `panic!` in this example, is not recommended because it will stop the execution of the caller contract. If the method was called by the user, then he will receive `ContractTrapped` as the only error message.
 
+The full code can be found [here](vulnerable-example/lib.rs).
+
 ## Remediation
 
-The recommended approach is the following:
+The recommended approach is changing the `add` function to:
 
 ```rust
-#![cfg_attr(not(feature = "std"), no_std)]
+#[ink(message)]
+pub fn add(&mut self, value: u32) -> Result<(), Error>  {
+    match self.value.checked_add(value) {
+        Some(v) => self.value = v,
+        None => return Err(Error::OverflowError),
+    };
+    Ok(())
+}
+```
 
-#[ink::contract]
-mod panic_error {
+And adding the following `Error` enum:
 
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-    pub enum Error {
-        /// An overflow was produced while adding
-        OverflowError,
-    }
-
-    #[ink(storage)]
-    pub struct PanicError {
-        value: u32,
-    }
-
-    impl PanicError {
-        #[ink(constructor)]
-        pub fn new(value: u32) -> Self {
-            Self { value }
-        }
-
-        #[ink(message)]
-        pub fn add(&mut self, value: u32) -> Result<(), Error>  {
-            match self.value.checked_add(value) {
-                Some(v) => self.value = v,
-                None => return Err(Error::OverflowError),
-            };
-            Ok(())
-        }
-    }
+```rust
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+pub enum Error {
+    /// An overflow was produced while adding
+    OverflowError,
 }
 ```
 
 By first defining the `Error` enum and then returning a `Result<(), Error>`, more information is added to the caller and, e.g. the caller contract could decide to revert the transaction or to continue execution.
+
+The full code can be found [here](remediated-example/lib.rs).
 
 ## References
 

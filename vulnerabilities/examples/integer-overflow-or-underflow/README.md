@@ -13,40 +13,17 @@ These types of vulnerabilities are commonly referred to as "integer overflow" an
 
 ## Exploit Scenario
 
-Here's an example of a simple ink! smart contract that could be vulnerable to an integer overflow vulnerability:
+[Here's](vulnerable-example/lib.rs) an example of a simple ink! smart contract that could be vulnerable to an integer overflow vulnerability. The problematic functions are the following ones:
 
 ```rust
-#![cfg_attr(not(feature = "std"), no_std)]
+#[ink(message)]
+pub fn add(&mut self, value: u8) {
+    self.value += value;
+}
 
-#[ink::contract]
-mod integer_overflow_underflow {
-
-    #[ink(storage)]
-    pub struct IntegerOverflowUnderflow {
-        value: u8,
-    }
-
-    impl IntegerOverflowUnderflow {
-        #[ink(constructor)]
-        pub fn new(value: u8) -> Self {
-            Self { value }
-        }
-
-        #[ink(message)]
-        pub fn add(&mut self, value: u8) {
-            self.value += value;
-        }
-
-        #[ink(message)]
-        pub fn sub(&mut self, value: u8) {
-            self.value -= value;
-        }
-
-        #[ink(message)]
-        pub fn get(&self) -> u8 {
-            self.value
-        }
-    }
+#[ink(message)]
+pub fn sub(&mut self, value: u8) {
+    self.value -= value;
 }
 ```
 
@@ -123,60 +100,41 @@ See this [tutorial](https://drive.google.com/file/d/1B9SCFUok8Rxo6enIuz-f83fHPpS
 
 ## Remediation
 
-The code should then be changed to explicitly use checked, overflowing or saturating arithmetics, e.g.:
+The code should then be changed to explicitly use checked, overflowing or saturating arithmetics, as can be seen [here](remediated-example/lib.rs).
+
+Particularly an `Error` enum can be added:
 
 ```rust
-#![cfg_attr(not(feature = "std"), no_std)]
-#![deny(clippy::integer_arithmetic)]
+#[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
+#[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+pub enum Error {
+    /// An overflow was produced while adding
+    OverflowError,
+    /// An underflow was produced while substracting
+    UnderflowError,
+}
+```
 
-#[ink::contract]
-mod integer_overflow_underflow {
+And the problematic functions can be changed to:
 
-    #[ink(storage)]
-    pub struct IntegerOverflowUnderflow {
-        value: u8,
-    }
+```rust
+#[ink(message)]
+pub fn add(&mut self, value: u8) -> Result<(), Error> {
+    match self.value.checked_add(value) {
+        Some(v) => self.value = v,
+        None => return Err(Error::OverflowError),
+    };
+    Ok(())
+}
 
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-    pub enum Error {
-        /// An overflow was produced while adding
-        OverflowError,
-        /// An underflow was produced while substracting
-        UnderflowError,
-    }
-
-    impl IntegerOverflowUnderflow {
-        #[ink(constructor)]
-        pub fn new(value: u8) -> Self {
-            Self { value }
-        }
-
-        #[ink(message)]
-        pub fn add(&mut self, value: u8) -> Result<(), Error> {
-            match self.value.checked_add(value) {
-                Some(v) => self.value = v,
-                None => return Err(Error::OverflowError),
-            };
-            Ok(())
-        }
-
-        #[ink(message)]
-        pub fn sub(&mut self, value: u8) -> Result<(), Error> {
-            match self.value.checked_sub(value) {
-                Some(v) => self.value = v,
-                None => return Err(Error::UnderflowError),
-            };
-            Ok(())
-        }
-
-        #[ink(message)]
-        pub fn get(&self) -> u8 {
-            self.value
-        }
-    }
+#[ink(message)]
+pub fn sub(&mut self, value: u8) -> Result<(), Error> {
+    match self.value.checked_sub(value) {
+        Some(v) => self.value = v,
+        None => return Err(Error::UnderflowError),
+    };
+    Ok(())
 }
 ```
 
 Other rules could be added to improve the checking. The set of rules can be found [here](https://rust-lang.github.io/rust-clippy/master/).
-

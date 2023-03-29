@@ -1,7 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-//use ink::primitives::AccountId;
-
 #[ink::contract]
 mod erc20 {
     use ink::env;
@@ -12,11 +10,11 @@ mod erc20 {
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum Error {
-        /// Returned if not enough balance to fulfill a request is available.
+        /// Account does not have enough ballance to fulfill the request.
         InsufficientBalance,
-        /// Returned if not enough allowance to fulfill a request is available.
+        /// Account does not have enough allowance to fulfill the request.
         InsufficientAllowance,
-
+        /// The account is not the owner of the token.
         UserNotOwner,
     }
 
@@ -25,6 +23,7 @@ mod erc20 {
 
     #[ink::trait_definition]
     pub trait MisusedSetContractStorage {
+        /// Manually set the contract storage.
         #[ink(message)]
         fn misused_set_contract_storage(
             &mut self,
@@ -72,6 +71,7 @@ mod erc20 {
         /// Mapping of the token amount which an account is allowed to withdraw
         /// from another account.
         allowances: Mapping<(AccountId, AccountId), Balance, ManualKey<255>>,
+        /// The contract owner.
         owner: AccountId,
     }
 

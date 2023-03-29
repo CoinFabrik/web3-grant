@@ -10,11 +10,13 @@ pub mod erc20 {
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum Error {
-        /// Returned if not enough balance to fulfill a request is available.
+        /// Account does not have enough ballance to fulfill the request.
         InsufficientBalance,
-        /// Returned if not enough allowance to fulfill a request is available.
+        /// Account does not have enough allowance to fulfill the request.
         InsufficientAllowance,
+        /// An overflow was produced.
         Overflow,
+        /// An underflow was produced.
         Underflow,
     }
 
@@ -23,6 +25,7 @@ pub mod erc20 {
 
     #[ink::trait_definition]
     pub trait MisusedSetContractStorage {
+        /// Manually set the contract storage.
         #[ink(message)]
         fn misused_set_contract_storage(
             &mut self,

@@ -4,23 +4,29 @@
 mod dos_unbounded_operation {
     use ink::storage::Mapping;
 
+    /// A payment to be made to an account.
     #[derive(Debug, scale::Decode, scale::Encode)]
     #[cfg_attr(
         feature = "std",
         derive(scale_info::TypeInfo, ink::storage::traits::StorageLayout)
     )]
     pub struct Payee {
+        /// The account to which the payment is to be made.
         pub address: AccountId,
+        /// The amount to be paid.
         pub value: Balance,
     }
 
     #[ink(storage)]
     pub struct DosUnboundedOperation {
+        /// The payees of the operation.
         payees: Mapping<u128, Payee>,
+        /// The next payee index.
         next_payee_ix: u128,
     }
 
     impl DosUnboundedOperation {
+        /// Creates a new instance of the contract.
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
@@ -29,6 +35,7 @@ mod dos_unbounded_operation {
             }
         }
 
+        /// Adds a new payee to the operation.
         #[ink(message, payable)]
         pub fn add_payee(&mut self) -> u128 {
             let address = self.env().caller();
@@ -42,11 +49,13 @@ mod dos_unbounded_operation {
             self.next_payee_ix.checked_sub(1).unwrap()
         }
 
+        /// Returns the payee at the given index.
         #[ink(message)]
         pub fn get_payee(&self, id: u128) -> Option<Payee> {
             self.payees.get(id)
         }
 
+        /// Pays out all payees.
         #[ink(message)]
         pub fn pay_out(&mut self) {
             for i in 0..self.next_payee_ix {
