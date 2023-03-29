@@ -389,7 +389,7 @@ have been built.
       <td></td>
       <td></td>
     </tr>
-    <td>
+    <tr>
       <td>#7</td>
       <td>dos-unexpected-revert</td>
       <td>DOS</td>

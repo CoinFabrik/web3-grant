@@ -33,5 +33,5 @@ overflow-checks = false
 
 [workspace.metadata.dylint]
 libraries = [
-    { path = "../../../../detectors/dylint/smart-contract-linters/*" },
+    { path = "../../../../detectors/dylint/smart-contract-linters/unused-return-enum" },
 ]
