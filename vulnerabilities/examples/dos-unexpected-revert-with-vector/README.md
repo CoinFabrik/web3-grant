@@ -1,8 +1,8 @@
-# DoS Unexpected Revert
+# DoS Unexpected Revert with Vector
 
 ## Configuration
 
-- Detector ID: `dos-unexpected-revert`
+- Detector ID: `dos-unexpected-revert-with-vector`
 - Analysis Category: `DoS`
 - Severity: `High`
 
