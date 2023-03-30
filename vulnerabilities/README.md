@@ -1,21 +1,21 @@
 # Code Snippets and Smart Contract Examples
 ## Examples
-According to the 
+Starting off from the
 [curated list of vulnerabilities](../curated-list-of-vulnerabilities/README.md)
 we prepared smart contracts where the following vulnerabilities are present:
-- [integer-overflow-or-underflow](./examples/integer-overflow-or-underflow/README.md)
-- [set-contract-storage](./examples/set-contract-storage/README.md)
-- [reentrancy](./examples/reentrancy/README.md)
-- [panic-error](./examples/panic-error/README.md)
-- [unused-return-enum](./examples/unused-return-enum/README.md)
-- [dos-unbounded-operation](./examples/dos-unbounded-operation/README.md)
-- [dos-unexpected-revert-with-vector](./examples/dos-unexpected-revert-with-vector/README.md)
+- [Integer overflow](./examples/integer-overflow-or-underflow/README.md)
+- [Unauthorized set contract storage](./examples/set-contract-storage/README.md)
+- [Reentrancy](./examples/reentrancy/README.md)
+- [Panic error](./examples/panic-error/README.md)
+- [Unused return enum](./examples/unused-return-enum/README.md)
+- [Denial of Service from unbounded operation](./examples/dos-unbounded-operation/README.md)
+- [Denial of Service from unexpected revert with vector](./examples/dos-unexpected-revert-with-vector/README.md)
 
 We created one folder for each of the above vulnerabilities. 
 Each folder consists of: 
 - **Documentation**: A `README.md` file with a detailed description on how the
 vulnerability may be exercised (Exploit Section) and how it can be prevented
-(Remediation Section). Evenmore, in some cases we included a Deployment 
+(Remediation Section). Even more, in some cases we included a Deployment 
 subsection and References.
 - A **vulnerable smart contract** folder including a `lib.rs` file with the
 smart contract's code and the associated `Cargo.toml`.

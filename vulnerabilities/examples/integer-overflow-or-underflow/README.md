@@ -1,5 +1,4 @@
-# Integer overflow or underflow
-
+# Integer overflow and integer underflow
 ## Description
 - Analysis Category: `Arithmetic`
 - Severity: `High`
@@ -7,7 +6,7 @@
 
 This type of vulnerability occurs when an arithmetic operation attempts to 
 create a numeric value that is outside the valid range in substrate, e.g, 
-a `u8` unsigned integer can be at most M:=2**8-1=255, hence the sum *M+1* 
+an `u8` unsigned integer can be at most M:=2**8-1=255, hence the sum *M+1* 
 produces an overflow. 
 
 ## Exploit Scenario
@@ -52,7 +51,7 @@ mod integer_overflow_underflow {
 The above contract stores a single value of type `u8` and provides three 
 functions allowing interaction with the single value. 
 The `add()` function allows users to add a specified amount to the stored value,
-the `sub()` function allows users to substract a specified amount, while the 
+the `sub()` function allows users to subtract a specified amount, while the 
 `get()` function allows users to retrieve the current value.
 
 This contract is vulnerable to an integer overflow attack that may be exercised
@@ -87,54 +86,22 @@ cargo contract build --release
 ```
 
 Following that, the contract can be deployed either by using `cargo-contract`
-or a GUI tool such as the one available on https://contracts-ui.substrate.io/:
+or a GUI tool (e.g., [https://contracts-ui.substrate.io/](https://contracts-ui.substrate.io/)):
 
 ```shell
 cargo contract instantiate --constructor new --args 0 --suri //Alice
 ```
 
-### Possible Prevention Tools
-By leveraging `clippy`, Rust's linting tool, the user can enable a certain set
-of rules that disallows the usage of arithmetic operators (`+`, `-`, `*`, `/`).
-The following lines could be added at the top of the contract file in order to
-enable them:
-
-```rust
-#![deny(clippy::integer_arithmetic)]
-```
-
-which triggers the following error:
-
-```shell
-❯ cargo clippy
-    Checking integer-overflow v0.1.0 (/vulnerabilities/integer-overflow)
-error: integer arithmetic detected
-  --> lib.rs:20:13
-   |
-20 |             self.value += value;
-   |             ^^^^^^^^^^^^^^^^^^^
-   |
-   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#integer_arithmetic
-note: the lint level is defined here
-  --> lib.rs:2:9
-   |
-2  | #![deny(clippy::integer_arithmetic)]
-   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error: integer arithmetic detected
-  --> lib.rs:25:13
-   |
-25 |             self.value -= value;
-   |             ^^^^^^^^^^^^^^^^^^^
-   |
-   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#integer_arithmetic
-
-error: could not compile `integer-overflow` due to 2 previous errors
-```
-
 ## Remediation
+Of course, enabling the overflow/underflow checks would eliminate the 
+vulnerability. 
+```toml
+[profile.release]
+overflow-checks = true
+```
 
-The code should then be changed to explicitly use checked, overflowing or saturating arithmetics, e.g.:
+But sometimes this is not possible. Thence, code should then be changed to 
+explicitly use checked, overflowing or saturating arithmetics, e.g.:
 
 ```rust
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -153,7 +120,7 @@ mod integer_overflow_underflow {
     pub enum Error {
         /// An overflow was produced while adding
         OverflowError,
-        /// An underflow was produced while substracting
+        /// An underflow was produced while subtracting
         UnderflowError,
     }
 
@@ -188,6 +155,4 @@ mod integer_overflow_underflow {
     }
 }
 ```
-
-Other rules could be added to improve the checking. The set of rules can be found [here](https://rust-lang.github.io/rust-clippy/master/).
 

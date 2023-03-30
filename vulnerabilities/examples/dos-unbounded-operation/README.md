@@ -1,10 +1,9 @@
 # DoS Unbounded Operation with Vector
-## Configuration
+## Description
 - Detector ID: `dos-unbounded-operation-with-vector`
 - Analysis Category: `Denial of Service`
 - Severity: `Medium`
 
-## Description
 Each block in a Substrate Blockchain has an upper bound on the amount of gas 
 that can be spent, and thus the amount computation that can be done. This is 
 the Block Gas Limit. If the gas spent exceeds this limit, the transaction 
