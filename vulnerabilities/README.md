@@ -1,19 +1,50 @@
-# Code Examples and Snippets: From Candidates to Vulnerability Examples
+# Code Snippets and Smart Contract Examples
+## Examples
+Starting off from the
+[curated list of vulnerabilities](../curated-list-of-vulnerabilities/README.md)
+we produced smart contracts where the following vulnerabilities are present:
+- [Integer overflow](./examples/integer-overflow-or-underflow/README.md)
+- [Unauthorized set contract storage](./examples/set-contract-storage/README.md)
+- [Reentrancy](./examples/reentrancy/README.md)
+- [Panic error](./examples/panic-error/README.md)
+- [Unused return enum](./examples/unused-return-enum/README.md)
+- [Denial of Service from unbounded operation](./examples/dos-unbounded-operation/README.md)
+- [Denial of Service from unexpected revert with vector](./examples/dos-unexpected-revert-with-vector/README.md)
 
-As we analyzed different audited and deployed projects, we came about with various vulnerability and enhancement ideas. Most of these could not be realized within the reviewed code, but could be present in other projects without the proper checks.
+We created one folder for each of the above vulnerabilities. 
+Each folder consists of: 
+- **Documentation**: A `README.md` file with a detailed description on how the
+vulnerability may be exercised (Exploit Section) and how it can be prevented
+(Remediation Section). Even more, in some cases we included a Deployment 
+subsection and References.
+- A **vulnerable smart contract** folder including a `lib.rs` file with the
+smart contract's code and the associated `Cargo.toml`.
+    - If necessary, an exploit smart contract that would perform the attack on
+    the vulnerable smart contract, also with its `lib.rs` and `Cargo.toml` 
+    associated files.
+    - Integration and end-to-end tests were provided in order to simplify and
+    document the realization of the vulnerability. 
+- A **remediated smart contract** folder which includes a version of the vulnerable
+example but fixed. This folder including the same `lib.rs`and `Cargo.toml`
+files.
 
-After studying Substrate and analyzing the mentioned projects, we started building candidate examples for possible vulnerabilities. These candidates consisted of:
-- A vulnerable smart contract file lib.rs with its associated Cargo.toml
-- If necessary, an exploit smart contract that would perform the attack on the vulnerable smart contract, also with its lib.rs and Cargo.toml associated files.
+## From Nothing to Vulnerability Examples
+A problem we discovered in `ink!` and more generally Substrate-based networks
+security is the lack of public vulnerabilities disclosed, e.g., as part of 
+security audits of deployed smart contracts. Ideally, we would compile a 
+nicely-sized set of smart contracts with documented vulnerabilities, grow a 
+database from there and use this database as a source to extract snippets,
+classify vulnerabilities, and develop and tune our detection tools on this 
+snippets. With this missing, we could not come up with a reasonable-sized 
+list of vulnerabilities in real-life smart contracts. 
 
-If the idea behind the vulnerability was verified upon its implementation and manual deployment into a local substrate node, the candidate was then confirmed as a vulnerability example, adding the following components to the example:
-- Classification: The issue was named and classified according to our analyses categories, establishing as well the severity of the problem. For the scope of this Proof of Concept, the probability of occurrence and detection confidence were not considered.
-- Documentation: A README.md file exposing the classification in the Configuration section, followed by the sections: Description, Exploit Scenario and Remediation. When relevant, subsections about Deployment, video Tutorials and further References where also included.
-- Testing: Together with the lib.rs and Cargo.toml files associated with the vulnerability and exploiting contract, integration and end-to-end tests were provided in order to simplify and document the realization of the vulnerability. Files relevant for the vulnerable examples were kept under the directory vulnerable-example, while those associated with its remediation can be found under the directory remediated-example.
+The second best option we came up with was to recrate this vulnerable smart 
+contracts from other sources. As we analyzed different audited and deployed 
+`ink!`smart contracts, we came upon various pieces of code that were _almost_
+vulnerable. That is, maybe the smart contracts were not vulnerable in their 
+form, but could become vulnerable after some changes, e.g., removing checks 
+that were in place. These modified smart contracts were consistent with some
+vulnerable contracts that we found while auditing smart contracts on other
+blockchains.
 
-Therefore, once a vulnerability example has been completely tested and documented, it is presented in our repository under the structure:
-- REAMDE.md
-- /vulnerable-example
-- /remediated-example
-
-In order to organize our work, candidates were first pushed into our repository under the directory vulnerabilities/candidates, where the missing components were added to the example following the vulnerabilities/candidates/template  as a guideline. Once confirmed and completed, candidates were migrated to vulnerabilities/examples.
+This is how we created the above examples.

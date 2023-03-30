@@ -1,22 +1,28 @@
-# DoS Unbounded Operation
-
-## Configuration
-
-- Detector ID: `dos-unbounded-operation`
-- Analysis Category: `DoS`
-- Severity: `High`
-
+# DoS Unbounded Operation With Vector
 ## Description
+- Vulnerability Category: `Denial of Service`
+- Severity: `Medium`
+- Detector ID: `dos-unbounded-operation-with-vector`
 
-Each block in a Substrate Blockchain has an upper bound on the amount of gas that can be spent, and thus the amount computation that can be done. This is the Block Gas Limit. If the gas spent exceeds this limit, the transaction will fail.
+Each block in a Substrate Blockchain has an upper bound on the amount of gas 
+that can be spent, and thus the amount computation that can be done. This is 
+the Block Gas Limit. If the gas spent exceeds this limit, the transaction 
+will fail.
 
-In order to prevent a single transaction from consuming all the gas in a block, unbounded operations must be avoided. This includes loops that do not have a fixed number of iterations, and recursive calls.
-
+In this smart contract a malicious user may modify the smart contract's
+conditions so that any transaction coming after will fail, thus imposing
+a denial of service for other users.
 ## Exploit Scenario
+In the following example, a contract has a function `add_payee` that allows 
+adding a new element to a vector. The function `pay_out` iterates over the 
+vector and transfers the value to the payee's address. The problem is that 
+the `pay_out()` function does not have a fixed number of iterations, and thus 
+it can consume all the gas in a block.
 
-In the [example provided](vulnerable-example/lib.rs), the contract has a function `add_payee` that allows adding a new element to a vector. The function `pay_out` iterates over the vector and transfers the value to the payee's address. The problem is that the `pay_out` function does not have a fixed number of iterations, and thus it can consume all the gas in a block.
-
-A malicious user could call `add_payee` a large number of times, thus populating the vector with a large number of elements. Then, the function `pay_out` when iterating over all the elements, will consume all the gas in a block, and the transaction will fail, successfully performing a DoS attack.
+A malicious user could call `add_payee` a large number of times, thus 
+populating the vector with a large number of elements. Then, the function 
+`pay_out` when iterating over all the elements, will consume all the gas in 
+a block, and the transaction will fail, successfully performing a DoS attack.
 
 ```rust
 /// Adds a new payee to the operation.
@@ -35,18 +41,22 @@ pub fn add_payee(&mut self) -> u128 {
 ```
 
 ### Deployment
-
-The example can be found under the directory [vulnerable-example](./vulnerable-example). The exploit can be tested by running the end-to-end test called `pay_out_runs_out_of_gas`.
+An example can be found under the directory 
+[vulnerable-example](./vulnerable-example). The exploit can be tested by
+running the end-to-end test called `pay_out_runs_out_of_gas`.
 
 ## Remediation
+The main recommendation is to change the form of payments to favor pull over 
+push. This way, the contract does not need to iterate over a vector of payees,
+and thus it does not need to consume all the gas in a block. The payee could 
+instead call a function that will transfer the value to the payee's address.
 
-The main recommendation is to change the form of payments to favor pull over push. This way, the contract does not need to iterate over a vector of payees, and thus it does not need to consume all the gas in a block. The payee could instead call a function that will transfer the value to the payee's address.
-
-If looping over an array of unknown size is absolutely necessary, then it should be planned to potentially take multiple blocks, and therefore require multiple transactions.
+If looping over an array of unknown size is absolutely necessary, then it 
+should be planned to potentially take multiple blocks, and therefore require
+multiple transactions.
 
 The fixed code can be found [here](remediated-example/lib.rs).
 
 ## References
-
 - https://consensys.github.io/smart-contract-best-practices/attacks/denial-of-service
 - https://consensys.github.io/smart-contract-best-practices/development-recommendations/general/external-calls/

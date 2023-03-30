@@ -1,24 +1,25 @@
 # Reentrancy
-
-## Configuration
-
-* Detector ID: `reentrancy`
-* Analysis Category: `Reentrancy`
-* Severity: `High`
-
 ## Description
+* Vulnerability Category: `Reentrancy`
+* Severity: `High`
+* Detector ID: `reentrancy`
 
-Smart contracts can call other contracts and send tokens to them. These operations imply external calls where control flow is passed to the called contract until the execution of the called code is over. Then the control is delivered back to the caller.
+Smart contracts can call other contracts and send tokens to them. These 
+operations imply external calls where control flow is passed to the called
+contract until the execution of the called code is over. Then the control 
+is delivered back to the caller.
 
-External calls, therefore, could open the opportunity for a malicious contract to execute any arbitrary code. This includes calling back the caller contract, an attack known as reentrancy. This kind of attack was used in Ethereum for the infamous [DAO Hack](https://blog.chain.link/reentrancy-attacks-and-the-dao-hack/).
+External calls, therefore, could open the opportunity for a malicious contract
+to execute any arbitrary code. This includes calling back the caller contract,
+an attack known as reentrancy. This kind of attack was used in Ethereum for 
+the infamous [DAO Hack](https://blog.chain.link/reentrancy-attacks-and-the-dao-hack/).
 
 ## Exploit Scenario
+In order to exemplify this vulnerability we developed two contracts: 
+a `Vault` contract and an `Exploit` contract.
 
-In order to perform this exploit we work through an example consisting of two contracts: a `Vault` contract and an `Exploit` contract.
-
-The `Vault` contract, which can be found [here](vulnerable-example/vault/lib.rs) provides functions to deposit, withdraw, check balance, and call a function on another contract with a specified value.
-
-The following snippet shows the `call_with_value` function:
+The `Vault` contract provides functions to deposit, withdraw, check balance, 
+and call a function on another contract with a specified value.
 
 ```rust
 #[ink(message)]
@@ -51,19 +52,32 @@ pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector:
 }
 ```
 
-This function is an ink! message that allows the contract owner to call other contracts on the blockchain and transfer a specified amount of value in the process. The function takes three arguments:
+Th function `call_with_value function()` allows the contract owner to call 
+other contracts on the blockchain and transfer a specified amount of value in
+the process. The function takes three arguments:
+- *address*: The address of the contract to call.
+- *amount*: The amount of balance to transfer in the call.
+- *selector*: The 32-bit function selector of the function to call on the contract.
 
-    address: The address of the contract to call.
-    amount: The amount of balance to transfer in the call.
-    selector: The 32-bit function selector of the function to call on the contract.
+The function first checks the balance of the caller to make sure that they have
+enough funds to perform the transfer. If the balance is sufficient, a new call
+is constructed using the `build_call()` function provided by the 
+`env::call module`.
 
-The function first checks the balance of the caller to make sure that they have enough funds to perform the transfer. If the balance is sufficient, a new call is constructed using the build_call function provided by the env::call module.
+The `build_call()` function constructs a new contract call with the specified
+arguments. In this case, the call method is used to specify the address of the 
+contract to call, the transferred_value method is used to specify the amount 
+of balance to transfer, and the exec_input method is used to specify the 
+function selector and any arguments to pass to the called function.
 
-The `build_call()` function constructs a new contract call with the specified arguments. In this case, the call method is used to specify the address of the contract to call, the transferred_value method is used to specify the amount of balance to transfer, and the exec_input method is used to specify the function selector and any arguments to pass to the called function.
+The `call_flags()` method is also used to set a flag that allows the called
+contract to re-enter the current contract if necessary. This possibility to
+re-enter the contract, together with an appropriate 32-bit function selector 
+will allow us to repeatedly withdraw balance from the contract, emptying the 
+Vault.
 
-The `call_flags()` method is also used to set a flag that allows the called contract to re-enter the current contract if necessary. This possibility ti re-enter the contract, together with an appropiate 32-bit function selector will allow us to repeatedly withdraw balance from the contract, emptying the Vault.
-
-In order to perform this attack, we will use the `exploit()` function of the `Exploit` contract, which can be found [here](vulnerable-example/exploit/lib.rs). The exploit function can be found below:
+In order to perform this attack, we will use the `exploit()` function of the
+`Exploit` contract that we outline below:
 
 ```rust
 #[ink(message, payable, selector = 0x0)]
@@ -95,18 +109,18 @@ pub fn exploit(&mut self) {
 
 ```
 ### Deployment
-
+Vault and Exploit files can be found under the directories 
+[./vulnerable-example/exploit](./vulnerable-example/exploit/) and 
+[./vulnerable-example/vault](./vulnerable-example/vault/). 
 The whole exploit example can be run automatically using the `deploy.sh` file.
 
-### Tutorial
-
-See this [tutorial](https://drive.google.com/file/d/1ekyXG7Mc9FLk916eHFc2W7xXlfZbpA0_/view?usp=share_link) (in Spanish) showing this exploit in action.
-
-In this preliminary [tutorialV1](https://drive.google.com/file/d/1xdd3sECx0_qwVmwTpqs2zHNdKjghAae3/view?usp=share_link) (in Spanish) we explain a bit more in depth the different functions.
-
 ## Recommendation
+In general, risks associated to reentrancy can be addressed with the 
+Check-Effect-Interaction pattern, a best practice that indicates that external 
+calls should be the last thing to be executed in a function. In this example, 
+this can be done by inserting the balance before transferring the value (see 
+[./remediated-example/remediated-example-1](./remediated-example/remediated-example-1/)).
 
-In general, risks associated to reentrancy can be addressed with the Check-Effect-Interaction pattern, a best practice that indicates that external calls should be the last thing to be executed in a function. In this example, this can be done by inserting the balance before transfering the value (see [here](remediated-example/remediated-example-1/)).
 
 ```rust
 pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector: u32) -> Balance {
@@ -138,7 +152,12 @@ pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector:
 }
 ```
 
-Alternatively, if reentrancy by an external contract is not needed, the `set_allow_reentry(true)` should be removed altogether (see ./remediated-example/remediated-example-2). This is equivalent in Substrate to using a [reentrancy guard](https://github.com/Supercolony-net/openbrush-contracts/tree/main/contracts/src/security/reentrancy_guard) like the one offered by [OpenBrush](https://github.com/Supercolony-net/openbrush-contracts).
+Alternatively, if reentrancy by an external contract is not needed, the 
+`set_allow_reentry(true)` should be removed altogether (see 
+[./remediated-example/remediated-example-2](./remediated-example/remediated-example-2/)). 
+This is equivalent in Substrate to using a 
+[reentrancy guard](https://github.com/Supercolony-net/openbrush-contracts/tree/main/contracts/src/security/reentrancy_guard) 
+like the one offered by [OpenBrush](https://github.com/Supercolony-net/openbrush-contracts).
 
 ```rust
 #[ink(message)]
