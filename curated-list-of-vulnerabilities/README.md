@@ -60,9 +60,10 @@ Authorization,
 Denial of Service, 
 Reentrancy, and 
 Validations and error handling. 
-There follows a description of each vulnerability in the context of ink! smart
-contracts. In each case, we produced a smart contract exposing a vulnerability
-of these types. Check the [vulnerabilities folder](../vulnerabilities/examples/)
+There follows a description of each vulnerability in the context of `ink!` 
+smart contracts. In each case, we produced a smart contract exposing a 
+vulnerability of these types. Check the 
+[vulnerabilities folder](../vulnerabilities/examples/)
 for details on these smart contracts and the vulnerabilities.
 
 ### 1 - Integer Overflow and Integer Underflow
@@ -74,7 +75,7 @@ produces an overflow.
 An overflow/underflow is typically caught and generates an error. When it 
 is not caught, the operation will result in an inexact result which could 
 lead to serious problems. We classified this type of vulnerability under 
-the [Arithmetic Category](#vulnerability-categories) type anhd assinged it a 
+the [Arithmetic Category](#vulnerability-categories) type anhd assinged it a
 High Severity.
 
 In the context of Substrate, we found that this vulnerability could only be 

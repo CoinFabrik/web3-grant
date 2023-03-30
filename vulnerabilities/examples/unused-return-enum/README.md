@@ -39,7 +39,7 @@ pub fn get_percentage_difference(
 }
 ```
 
-This is an ink! message that returns the percentage difference between two values.
+This is an `ink!` message that returns the percentage difference between two values.
 
 The function then returns an error enum variant `TradingPairErrors::Overflow`.
 However, the function never returns a `Result` enum variant `Ok`, thus always 

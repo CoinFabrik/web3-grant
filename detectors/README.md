@@ -28,7 +28,7 @@ where input variation seemed like a possible application of this technique.
 
 
 ## Analysis Techniques and Tools
-Being Ink! A Rust-based language, we looked at static analysis tools that 
+Being `ink!` a rust-based language, we looked at static analysis tools that 
 can analyze Rust code, first aiming at linters and then more precise static
 analysis tools. Finally, we looked to some extent at dynamic analysis tools,
 favouring fuzzers.

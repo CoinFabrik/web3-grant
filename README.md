@@ -67,12 +67,12 @@ and having the detectors detect vulnerabilities effectively while not generating
 false positives. 
 
 This can be attained by different means. As there is not a large size of 
-security audit reports available for public ink! smart contracts, or any other
+security audit reports available for public `ink!` smart contracts, or any other
 means to quickly obtain realistic smart contracts that include vulnerabilities 
 and these vulnerabilities have been identified, there is a need to obtain an 
 annotated base of vulnerable smart contracts. With this in hand, one can 
 determine the quality of a vulnerability detection tool.
-We suggest that spending time in analyzing the ink! smart contracts that are 
+We suggest that spending time in analyzing the `ink!` smart contracts that are 
 being deployed with our toolset and also via a manual/assisted audit process. 
 Hence, we would cerate this annotated database and then find false positives,
 false negatives, true positives (and true negatives) for our toolset and work

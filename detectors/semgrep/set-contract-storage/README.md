@@ -18,7 +18,7 @@ conditions that could authorize the use of `set_contract_storage` by anyone othe
 than the contract owner. 
 
 The fourth pattern (pattern) matches a call to the `env::set_contract_storage` 
-function, passing the variable $IK as the first argument. 
+function, passing the variable `$IK` as the first argument. 
 This function is used to write data to the contract storage, which can be critical
 for the contract's integrity.
 If the pattern matches and no authorization condition is found, a warning message is 
