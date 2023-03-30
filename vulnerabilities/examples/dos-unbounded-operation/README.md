@@ -1,8 +1,8 @@
-# DoS Unbounded Operation With Vector
+# DoS Unbounded Operation
 ## Description
 - Vulnerability Category: `Denial of Service`
 - Severity: `Medium`
-- Detector ID: `dos-unbounded-operation-with-vector`
+- Detector ID: `dos-unbounded-operation`
 
 Each block in a Substrate Blockchain has an upper bound on the amount of gas 
 that can be spent, and thus the amount computation that can be done. This is 

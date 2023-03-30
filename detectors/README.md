@@ -69,7 +69,6 @@ __Implementation__:
 In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
->>>>>>> documentation_branch
 - `check_body`
 - `check_body_post`
 - `check_expr`
@@ -223,7 +222,7 @@ are at least an `Err` and an `Ok`.
 __Caveats__:
 None.
 
-### 6. DoS Unbounded Operation With Vector
+### 6. DoS Unbounded Operation
 We based our analysis for set-contract-storage detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
@@ -232,17 +231,20 @@ For this vulnerability, we were able to produce successful detectors using
 
 #### Dylint
 __Description__:
-[Completar UBA]
+[Completar]
 
 __Implementation__: 
-In order to implement this detector we developed the following functions of the [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) trait:
-
+In order to implement this detector we developed the following functions of the 
+[LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html) 
+trait:
 - `check_expr`
 
-In particular, we have used this function to search for every for or while loop through the code's expressions and determine if their conditions contain variables or function calls.
+In particular, we have used this function to search for every for or while loop 
+through the code's expressions and determine if their conditions contain variables or 
+function calls.
 
 __Caveats__:
-[Completar UBA]
+[Completar]
 
 
 ### 7. DoS Unexpected Revert With Vector

@@ -24,7 +24,7 @@ for the contract's integrity.
 If the pattern matches and no authorization condition is found, a warning message is 
 issued.
 
-<!--TODO: Add limitations-->
+<!--TODO: Add limitations [Completar]-->
 
 # Tainting rule 
 This semgrep rule is similar to the previous one, but it uses taint tracking to 
@@ -53,4 +53,4 @@ Finally, if the `env::set_contract_storage` function is called with an unsanitiz
 message advises that only the contract owner should be allowed to perform this 
 operation.
 
-<!--TODO: Limitations-->
+<!--TODO: Add Limitations [Completar]-->
