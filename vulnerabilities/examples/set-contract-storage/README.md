@@ -16,14 +16,9 @@ user's allowance in an [ERC20](https://ethereum.org/en/developers/docs/standards
 contract.
 
 ## Exploit Scenario
-<<<<<<< HEAD
-
-In this snippet we see insufficient access control for the `set_contract_storage()` function.
-=======
 In this example we see that any user may access the 
 `set_contract_storage()` function, and therefore modify the value for any key
 arbitrarily.
->>>>>>> documentation_branch
 
 ```rust
 #[ink::trait_definition]
@@ -238,15 +233,14 @@ located in position 0 of the storage.
 To prevent this issue, set access control and proper authorization validation 
 for the `set_contract_storage()` function. 
 
-<<<<<<< HEAD
-Abitrary users should not have control over keys because it implies writing any value of a mapping, lazy variable, or the main struct of the contract located in position 0 of the storage.
-Set access control and proper authorization validation for the `set_contract_storage()` function.
+Arbitrary users should not have control over keys because it implies writing
+any value of a mapping, lazy variable, or the main struct of the contract 
+located in position 0 of the storage.
+Set access control and proper authorization validation for the 
+`set_contract_storage()` function.
 
-In this case, ensure only the owner (or desired account) can call `misused_set_contract_storage()`.
-=======
 For example, the code below, ensures only the owner can call 
 `misused_set_contract_storage()`.
->>>>>>> documentation_branch
 
 ```rust
 #[ink(message)]
@@ -260,10 +254,7 @@ fn misused_set_contract_storage(&mut self, user_input_key: [u8; 68], user_input_
 }
 ```
 
-<<<<<<< HEAD
 The full code can be found [here](remediated-example/lib.rs).
-=======
->>>>>>> documentation_branch
 
 ## References
 * https://use.ink/datastructures/storage-layout

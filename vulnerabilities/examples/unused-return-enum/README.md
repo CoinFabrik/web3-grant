@@ -1,15 +1,4 @@
-<<<<<<< HEAD
-# Unused Return Enum
-
-## Configuration
-
-- Detector ID: `unused-return-enum`
-- Analysis Category: `Validations and error handling`
-- Severity: `Low`
-
-=======
 # Unused return enum
->>>>>>> documentation_branch
 ## Description
 - Vulnerability Category: `Validations and error handling`
 - Vulnerability Severity: `Minor`
@@ -30,12 +19,7 @@ If any of the variants is not used, the code could be simplified or it could
 imply a bug.
 
 ## Exploit Scenario
-<<<<<<< HEAD
-
-In order to perform this exploit, we work through the following snippet:
-=======
 In order to perform this exploit we work through the following example:
->>>>>>> documentation_branch
 
 ```rust
 #[ink(message)]
@@ -55,15 +39,7 @@ pub fn get_percentage_difference(
 }
 ```
 
-<<<<<<< HEAD
 This is an ink! message that returns the percentage difference between two values.
-=======
-The function `get_percentage_difference()` is an ink! message that returns the
-percentage difference between two values by first computing the absolute
-difference between the two values and then the sum of the two values. The
-percentage difference is then calculated by multiplying the absolute difference
-by 100 and dividing it by the sum of the two values.
->>>>>>> documentation_branch
 
 The function then returns an error enum variant `TradingPairErrors::Overflow`.
 However, the function never returns a `Result` enum variant `Ok`, thus always 
@@ -87,7 +63,6 @@ pub enum TradingPairErrors {
 }
 ````
 
-<<<<<<< HEAD
 Then we change the function to:
 
 ```rust
@@ -109,7 +84,5 @@ pub fn get_percentage_difference(
 The full code can be found [here](remediated-example/lib.rs).
 
 
-=======
->>>>>>> documentation_branch
 ## References
 - https://github.com/RottenKiwi/Panorama-Swap-INK-SC/blob/main/trading_pair_azero/lib.rs

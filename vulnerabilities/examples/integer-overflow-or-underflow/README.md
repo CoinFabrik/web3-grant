@@ -1,16 +1,4 @@
-<<<<<<< HEAD
-# Integer Overflow or Underflow
-
-## Configuration
-
-* Detector ID: `integer-overflow-or-underflow`
-* Analysis Category: `Arithmetic`
-* Severity: `High`
-
-
-=======
 # Integer overflow and integer underflow
->>>>>>> documentation_branch
 ## Description
 - Vulnerability Category: `Arithmetic`
 - Severity: `Critical`
@@ -22,13 +10,8 @@ an `u8` unsigned integer can be at most *M:=2^8-1=255*, hence the sum *M+1*
 produces an overflow. 
 
 ## Exploit Scenario
-<<<<<<< HEAD
-
-[Here's](vulnerable-example/lib.rs) an example of a simple ink! smart contract that could be vulnerable to an integer overflow vulnerability. The problematic functions are the following ones:
-=======
 There follows a snippet of a simple `ink!` smart contract that is vulnerable to
 an integer overflow vulnerability.
->>>>>>> documentation_branch
 
 ```rust
 #[ink(message)]
@@ -94,14 +77,8 @@ vulnerability.
 overflow-checks = true
 ```
 
-<<<<<<< HEAD
-The code should then be changed to explicitly use checked, overflowing or saturating arithmetics, as can be seen [here](remediated-example/lib.rs).
-
-Particularly an `Error` enum can be added:
-=======
 But sometimes this is not possible. Thence, code should then be changed to 
 explicitly use checked, overflowing or saturating arithmetics, e.g.:
->>>>>>> documentation_branch
 
 ```rust
 #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -126,7 +103,6 @@ pub fn add(&mut self, value: u8) -> Result<(), Error> {
     Ok(())
 }
 
-<<<<<<< HEAD
 #[ink(message)]
 pub fn sub(&mut self, value: u8) -> Result<(), Error> {
     match self.value.checked_sub(value) {
@@ -138,45 +114,3 @@ pub fn sub(&mut self, value: u8) -> Result<(), Error> {
 ```
 
 Other rules could be added to improve the checking. The set of rules can be found [here](https://rust-lang.github.io/rust-clippy/master/).
-=======
-    #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-    pub enum Error {
-        /// An overflow was produced while adding
-        OverflowError,
-        /// An underflow was produced while subtracting
-        UnderflowError,
-    }
-
-    impl IntegerOverflowUnderflow {
-        #[ink(constructor)]
-        pub fn new(value: u8) -> Self {
-            Self { value }
-        }
-
-        #[ink(message)]
-        pub fn add(&mut self, value: u8) -> Result<(), Error> {
-            match self.value.checked_add(value) {
-                Some(v) => self.value = v,
-                None => return Err(Error::OverflowError),
-            };
-            Ok(())
-        }
-
-        #[ink(message)]
-        pub fn sub(&mut self, value: u8) -> Result<(), Error> {
-            match self.value.checked_sub(value) {
-                Some(v) => self.value = v,
-                None => return Err(Error::UnderflowError),
-            };
-            Ok(())
-        }
-
-        #[ink(message)]
-        pub fn get(&self) -> u8 {
-            self.value
-        }
-    }
-}
-```
->>>>>>> documentation_branch

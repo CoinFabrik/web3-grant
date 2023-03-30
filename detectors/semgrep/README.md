@@ -1,6 +1,6 @@
 # Semgrep
-
-Semgrep is a fast, open source static analysis tool for finding bugs, detecting vulnerabilities in third-party dependencies, and enforcing code standards.
+Semgrep is a fast, open source static analysis tool for finding bugs, detecting
+vulnerabilities in third-party dependencies, and enforcing code standards.
 
 ## Installation (macOS)
 
@@ -48,7 +48,5 @@ The following rules are written into yaml files:
 
 
 ## References
-
-
 - [Semgrep](https://semgrep.dev/): Static semantics/syntax checker
 
