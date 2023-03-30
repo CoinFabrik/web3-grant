@@ -1,7 +1,7 @@
 # Set contract storage
 
 ## Description
-- Analysis Category: `Authorization`
+- Vulnerability Category: `Authorization`
 - Severity: `High`
 - Detector ID: `set-contract-storage`
 

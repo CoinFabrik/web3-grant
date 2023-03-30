@@ -1,12 +1,12 @@
 # Integer overflow and integer underflow
 ## Description
-- Analysis Category: `Arithmetic`
-- Severity: `High`
+- Vulnerability Category: `Arithmetic`
+- Severity: `Critical`
 - Detector ID: `integer-overflow-or-underflow`
 
 This type of vulnerability occurs when an arithmetic operation attempts to 
 create a numeric value that is outside the valid range in substrate, e.g, 
-an `u8` unsigned integer can be at most M:=2**8-1=255, hence the sum *M+1* 
+an `u8` unsigned integer can be at most *M:=2^8-1=255*, hence the sum *M+1*
 produces an overflow. 
 
 ## Exploit Scenario
@@ -155,4 +155,3 @@ mod integer_overflow_underflow {
     }
 }
 ```
-

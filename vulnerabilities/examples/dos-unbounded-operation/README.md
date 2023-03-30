@@ -1,17 +1,17 @@
 # DoS Unbounded Operation with Vector
 ## Description
-- Detector ID: `dos-unbounded-operation-with-vector`
-- Analysis Category: `Denial of Service`
+- Vulnerability Category: `Denial of Service`
 - Severity: `Medium`
+- Detector ID: `dos-unbounded-operation-with-vector`
 
 Each block in a Substrate Blockchain has an upper bound on the amount of gas 
 that can be spent, and thus the amount computation that can be done. This is 
 the Block Gas Limit. If the gas spent exceeds this limit, the transaction 
 will fail.
 
-In order to prevent a single transaction from consuming all the gas in a block,
-unbounded operations must be avoided. This includes loops that do not have a 
-fixed number of iterations, and recursive calls.
+In this smart contract a malicious user may modify the smart contract's
+conditions so that any transaction coming after will fail, thus imposing
+a denial of service for other users.
 ## Exploit Scenario
 In the following example, a contract has a function `add_payee` that allows 
 adding a new element to a vector. The function `pay_out` iterates over the 

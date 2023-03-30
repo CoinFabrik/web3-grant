@@ -1,14 +1,12 @@
 # Unused return enum
-
-## Configuration
-
-- Detector ID: `unused-return-enum`
-- Analysis Category: `Validations and error handling`
-- Severity: `Low`
-
 ## Description
+- Vulnerability Category: `Validations and error handling`
+- Vulnerability Severity: `Minor`
+- Detector ID: `unused-return-enum`
 
-Ink messages can return a `Result` enum with a custom error type. This is useful for the caller to know what went wrong when the message fails. The definition in Rust of the `Result` enum is:
+Ink messages can return a `Result` enum with a custom error type. This is 
+useful for the caller to know what went wrong when the message fails. The
+definition in Rust of the `Result` enum is:
 
 ```rust
 enum Result<T, E> {
@@ -17,10 +15,10 @@ enum Result<T, E> {
 }
 ```
 
-If any of the variants is not used, the code could be simplified or it could imply a bug.
+If any of the variants is not used, the code could be simplified or it could 
+imply a bug.
 
 ## Exploit Scenario
-
 In order to perform this exploit we work through the following example:
 
 ```rust
@@ -64,15 +62,21 @@ mod unused_return_enum {
 }
 ```
 
-Let's take a closer look at the function `get_percentage_difference`. This is an ink! message that returns the percentage difference between two values.
+The function `get_percentage_difference()` is an ink! message that returns the
+percentage difference between two values by first computing the absolute
+difference between the two values and then the sum of the two values. The
+percentage difference is then calculated by multiplying the absolute difference
+by 100 and dividing it by the sum of the two values.
 
-The function first calculates the absolute difference between the two values and then calculates the sum of the two values. The percentage difference is then calculated by multiplying the absolute difference by 100 and dividing it by the sum of the two values.
-
-The function then returns an error enum variant `TradingPairErrors::Overflow`. However, the function never returns a `Result` enum variant `Ok`, thus always failing.
+The function then returns an error enum variant `TradingPairErrors::Overflow`.
+However, the function never returns a `Result` enum variant `Ok`, thus always 
+failing.
 
 ## Remediation
-
-This function could be easily fixed by returning a `Result` enum variant `Ok` when the percentage difference is calculated successfully. By providing a check in the linter that ensures that all the variants of the `Result` enum are used, this bug could have been avoided.
+This function could be easily fixed by returning a `Result` enum variant `Ok`
+when the percentage difference is calculated successfully. By providing a check in 
+the linter that ensures that all the variants of the `Result` enum are used, this 
+bug could have been avoided.
 
 ````rust
 #![cfg_attr(not(feature = "std"), no_std)]
@@ -113,7 +117,5 @@ mod unused_return_enum {
 }
 ````
 
-
 ## References
-
 - https://github.com/RottenKiwi/Panorama-Swap-INK-SC/blob/main/trading_pair_azero/lib.rs

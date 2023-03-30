@@ -2,7 +2,7 @@
 ## Examples
 Starting off from the
 [curated list of vulnerabilities](../curated-list-of-vulnerabilities/README.md)
-we prepared smart contracts where the following vulnerabilities are present:
+we produced smart contracts where the following vulnerabilities are present:
 - [Integer overflow](./examples/integer-overflow-or-underflow/README.md)
 - [Unauthorized set contract storage](./examples/set-contract-storage/README.md)
 - [Reentrancy](./examples/reentrancy/README.md)
@@ -29,11 +29,11 @@ example but fixed. This folder including the same `lib.rs`and `Cargo.toml`
 files.
 
 ## From Nothing to Vulnerability Examples
-A problem we discovered in `ink!` and more genreally Substrate-based networks
+A problem we discovered in `ink!` and more generally Substrate-based networks
 security is the lack of public vulnerabilities disclosed, e.g., as part of 
 security audits of deployed smart contracts. Ideally, we would compile a 
 nicely-sized set of smart contracts with documented vulnerabilities, grow a 
-database from there and use this database as a source to extract smippets,
+database from there and use this database as a source to extract snippets,
 classify vulnerabilities, and develop and tune our detection tools on this 
 snippets. With this missing, we could not come up with a reasonable-sized 
 list of vulnerabilities in real-life smart contracts. 
