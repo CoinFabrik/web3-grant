@@ -2,7 +2,7 @@
 We designed a set of detectors for `ink!` smart contracts. We ran these
 detectors on both the vulnerable and the remediated smart contracts we
 prepared. The detectors are good in detecting the vulnerabilities they should
-detect and and have no false positives on the remediated examples.
+detect and have no false positives on the remediated examples.
 
 We selected a set of tools which implement techniques that are widely used
 for detecting vulnerabilities in source code (not necessarily smart contracts).
@@ -55,13 +55,14 @@ We based our analysis for overflow or underflow detection on the
 [vulnerability example associated to this issue](../vulnerabilities/examples/integer-overflow-or-underflow/).
 
 For this vulnerability, we were able to produce successful detectors using 
-[Dylint](./dylint/smart-contract-linters/integer-overflow-or-underflow/) and 
+[Dylint](./dylint/smart-contract-linters/integer-overflow-or-underflow/),
+[semgrep](./semgrep/integer-overflow-or-underflow/) and 
 [Cargo-fuzz](./cargo-fuzz/integer-overflow-or-underflow/), we detail their 
 implementation below.
 
 #### Dylint
 Our detector checks for integer arithmetic operations which could overflow or
-panic. Specifically, it checks for any operators (+, -, &ast, <<, etc) which 
+panic. Specifically, it checks for any operators (+, -, *, <<, etc) which 
 are capable of overflowing according to the Rust Reference, or which can panic 
 (/, %). No bounds analysis or other more sophisticated reasoning is attempted.
 
@@ -146,11 +147,11 @@ contract. Furthermore, the bytesize of the arguments makes it very hard to
 find them using this technique.
 
 ### 3. Reentrancy
-We based our analysis for set-contract-storage detection on the 
+We based our analysis for reentancy detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/reentrancy/).
 
 For this vulnerability, we were able to produce successfull detectors using 
-[Dylint](./dylint/smart-contract-linters/reentrancy/) we detail the implementation below.
+[Dylint](./dylint/smart-contract-linters/reentrancy/), we detail the implementation below.
 
 #### Dylint
 __Description__:
@@ -170,10 +171,12 @@ and the function `invoke_contract_call()`. The `check_fn` function is also used 
 
 __Caveats__:
 If the usage of `set_allow_reentry(true)` or later state changes are performed in 
-an auxiliary function, this detector will not detect the reentrancy.
+an auxiliary function, this detector will not detect the reentrancy. Also, we miss
+to analyze if the `call` variable that is passed to `invoke_contract_call()` is
+associated to `set_allow_reentry(true)`.
 
 ### 4. Panic error
-We based our analysis for set-contract-storage detection on the 
+We based our analysis for panic error detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/panic-error/).
 
 For this vulnerability, we were able to produce successful detectors using 
@@ -196,7 +199,7 @@ __Caveats__:
 None.
 
 ### 5. Unused return enum
-We based our analysis for set-contract-storage detection on the 
+We based our analysis for unused return enum detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/unused-return-enum/).
 
 For this vulnerability, we were able to produce successful detectors using 
@@ -213,7 +216,6 @@ In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
 - `check_fn`
-- `visitor`
 
 In particular, we used this function together with a visitor to check for every
 expression of a function with return type `Result` whether its returns values
@@ -223,7 +225,7 @@ __Caveats__:
 None.
 
 ### 6. DoS Unbounded Operation
-We based our analysis for set-contract-storage detection on the 
+We based our analysis for DoS Unbounded Operation detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
 For this vulnerability, we were able to produce successful detectors using 
@@ -248,7 +250,7 @@ __Caveats__:
 
 
 ### 7. DoS Unexpected Revert With Vector
-We based our analysis for set-contract-storage detection on the 
+We based our analysis for DoS unexpected revert with vector detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
 For this vulnerability, we were able to produce successful detectors using 
@@ -361,8 +363,8 @@ have been built.
       <td></td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
     </tr>
     <tr>
       <td>#5</td>
@@ -387,8 +389,8 @@ have been built.
       <td></td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
     </tr>
     <tr>
       <td>#7</td>

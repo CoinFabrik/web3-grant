@@ -27,7 +27,7 @@ can be found covering Ethereum/Solidity smart contracts. This list below is
 used by the Coinfabrik Audit Team, when source code (security) audits in
 Ethereum/Solidity, Stacks/Clarity, Algorand/PyTEAL /TEAL, Solana/RUST, etc.
 The team discusses the creation of the list in this 
-[blogpost](https://blog.coinfabrik.com/vulnerability-categories/).
+[blogpost](https://blog.coinfabrik.com/analysis-categories/).
 
 | Category                  | Description                                                                                                      |
 | -------------------------| -----------------------------------------------------------------------------------------------------------------|

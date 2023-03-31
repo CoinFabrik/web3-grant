@@ -3,8 +3,8 @@ This semgrep rule checks for potential integer overflows or underflows in Rust
 code by looking for arithmetic operations that could cause such issues. Here's
 how it works:
 
-The rule starts with a pattern-either block, which contains four patterns 
-(pattern), each of which matches a different type of arithmetic operation. 
+The rule starts with a pattern-either block, which contains four patterns, 
+each of which matches a different type of arithmetic operation. 
 In each case, `$VAL1` and `$VAL2` are variables that represent integer values,
 and the arithmetic operation is performed between them.
 

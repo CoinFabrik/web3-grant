@@ -1,4 +1,4 @@
-# DoS Unexpected Revert
+# DoS Unexpected Revert With Vector
 ## Description
 - Vulnerability Category: `DoS`
 - Severity: `High`

@@ -65,9 +65,6 @@ impl<'tcx> LateLintPass<'tcx> for SetStorageWarn {
         _: Span,
         _: HirId,
     ) {
-        // TODO: La razón por la que se usó un visitor de esta forma (para almacenar la info "global" en el scope de un if)
-        // es porque no encontré una forma de poner un struct por fuera al que se pueda acceder desde la implementación
-        // de los métodos de LateLintPass. Cambiar esta forma, o borrar comentario.
         struct SetContractStorage {
             span: Option<Span>,
             unprotected: bool,
@@ -81,8 +78,6 @@ impl<'tcx> LateLintPass<'tcx> for SetStorageWarn {
             fn visit_expr(&mut self, expr: &'tcx Expr<'_>) {
                 if self.in_conditional {
                     if let ExprKind::Binary(_, left, right) = &expr.kind {
-                        // TODO: falta chequear al reves
-                        // TODO: se puede agregar si la operación que se realiza es "Eq"
                         if let ExprKind::Field(_, ident) = right.kind {
                             self.has_owner_in_if = ident.as_str().contains("owner");
                         }
