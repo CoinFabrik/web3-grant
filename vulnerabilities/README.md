@@ -3,13 +3,13 @@
 Starting off from the
 [curated list of vulnerabilities](../curated-list-of-vulnerabilities/README.md)
 we produced smart contracts where the following vulnerabilities are present:
-- [Integer overflow](./examples/integer-overflow-or-underflow/README.md)
+- [Integer overflow and integer underflow](./examples/integer-overflow-or-underflow/README.md)
 - [Unauthorized set contract storage](./examples/set-contract-storage/README.md)
 - [Reentrancy](./examples/reentrancy/README.md)
 - [Panic error](./examples/panic-error/README.md)
 - [Unused return enum](./examples/unused-return-enum/README.md)
-- [Denial of Service from unbounded operation](./examples/dos-unbounded-operation/README.md)
-- [Denial of Service from unexpected revert with vector](./examples/dos-unexpected-revert-with-vector/README.md)
+- [Denial of service from unbounded operation](./examples/dos-unbounded-operation/README.md)
+- [Denial of service from unexpected revert with vector](./examples/dos-unexpected-revert-with-vector/README.md)
 
 We created one folder for each of the above vulnerabilities. 
 Each folder consists of: 

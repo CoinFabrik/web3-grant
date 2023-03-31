@@ -47,13 +47,13 @@ discuss how could we follow up on this work.
 ## Detectors
 | Detector ID                   | Category                       | Description                                                                                                                                                                                        | Severity      | 
 | ----------------------------- | ------------------------------ | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | 
-| integer-overflow-or-underflow | Arithmetic                     | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/integer-overflow-or-underflow) | High          |
-| set-contract-storage          | Authorization                  |  [Insufficient access control on set_contract_storage() function.](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/set-contract-storage)                                          | High          |
-| reentrancy                    | Reentrancy                     | [Consistency of contract state under recursive calls.](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/reentrancy)                                                               | High          |
-| panic-error                   | Validations and error handling |  [Code panics on error instead of using descriptive enum](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/panic-error)                                                            | Informational |
-| unused-return-enum            | Validations and error handling |  [Return enum from a function is not completely used](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/unused-return-enum)                                                         | Low           |
-| dos-unbounded-operation       | Denial of Service               | [Return enum from a function is not completely used](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unbounded-operation)                                                    | High          |
-| dos-unexpected-revert         | Denial of Service              |  [DoS due to improper storage.](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/dos-unexpected-revert)                                                                                | High          |
+| integer-overflow-or-underflow | Arithmetic                     | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](./vulnerabilities/examples/integer-overflow-or-underflow/README.md) | High          |
+| set-contract-storage          | Authorization                  |  [Insufficient access control on set_contract_storage() function.](./vulnerabilities/examples/set-contract-storage/README.md)                                          | High          |
+| reentrancy                    | Reentrancy                     | [Consistency of contract state under recursive calls.](./vulnerabilities/examples/reentrancy/README.md)                                                               | High          |
+| panic-error                   | Validations and error handling |  [Code panics on error instead of using descriptive enum](./vulnerabilities/examples/panic-error/README.md)                                                            | Informational |
+| unused-return-enum            | Validations and error handling |  [Return enum from a function is not completely used](./vulnerabilities/examples/unused-return-enum/README.md)                                                         | Low           |
+| dos-unbounded-operation       | Denial of Service               | [Return enum from a function is not completely used](./vulnerabilities/examples/dos-unbounded-operation/README.md)                                                    | High          |
+| dos-unexpected-revert         | Denial of Service              |  [DoS due to improper storage.](./vulnerabilities/examples/dos-unexpected-revert-with-vector/README.md)                                                                                | High          |
 
 
 ## Future Work
@@ -67,12 +67,12 @@ and having the detectors detect vulnerabilities effectively while not generating
 false positives. 
 
 This can be attained by different means. As there is not a large size of 
-security audit reports available for public ink! smart contracts, or any other
+security audit reports available for public `ink!` smart contracts, or any other
 means to quickly obtain realistic smart contracts that include vulnerabilities 
 and these vulnerabilities have been identified, there is a need to obtain an 
 annotated base of vulnerable smart contracts. With this in hand, one can 
 determine the quality of a vulnerability detection tool.
-We suggest that spending time in analyzing the ink! smart contracts that are 
+We suggest that spending time in analyzing the `ink!` smart contracts that are 
 being deployed with our toolset and also via a manual/assisted audit process. 
 Hence, we would cerate this annotated database and then find false positives,
 false negatives, true positives (and true negatives) for our toolset and work

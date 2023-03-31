@@ -2,7 +2,7 @@
 We designed a set of detectors for `ink!` smart contracts. We ran these
 detectors on both the vulnerable and the remediated smart contracts we
 prepared. The detectors are good in detecting the vulnerabilities they should
-detect and and have no false positives on the remediated examples.
+detect and have no false positives on the remediated examples.
 
 We selected a set of tools which implement techniques that are widely used for detecting vulnerabilities in source code (not necessarily smart contracts). Furthermore, the tools selected are open source, well maintained and can be easily configured/adapted to detect `ink!` vulnerabilities.
 
@@ -57,8 +57,8 @@ implementation below.
 
 #### Dylint
 Our detector checks for integer arithmetic operations which could overflow or
-panic. Specifically, it checks for any operators (+, -, &ast, <<, etc) which
-are capable of overflowing according to the Rust Reference, or which can panic
+panic. Specifically, it checks for any operators (+, -, *, <<, etc) which 
+are capable of overflowing according to the Rust Reference, or which can panic 
 (/, %). No bounds analysis or other more sophisticated reasoning is attempted.
 
 __Implementation__:
@@ -191,11 +191,11 @@ __Caveats__:
 If ownership validation is performed in an auxiliary function, the linter will not be able to identify it, and the warning will be indicated as a false positive.
 
 ### 3. Reentrancy
-We based our analysis for set-contract-storage detection on the
+We based our analysis for reentancy detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/reentrancy/).
 
-For this vulnerability, we were able to produce successfull detectors using
-[Dylint](./dylint/smart-contract-linters/reentrancy/) we detail the implementation below.
+For this vulnerability, we were able to produce successfull detectors using 
+[Dylint](./dylint/smart-contract-linters/reentrancy/), we detail the implementation below.
 
 #### Dylint
 __Description__:
@@ -214,11 +214,13 @@ and the function `invoke_contract_call()`. The `check_fn` function is also used 
  detect for assignments (`=`, `+=`, `-=`, etc) and calls to the `insert()` function.
 
 __Caveats__:
-If the usage of `set_allow_reentry(true)` or later state changes are performed in
-an auxiliary function, this detector will not detect the reentrancy.
+If the usage of `set_allow_reentry(true)` or later state changes are performed in 
+an auxiliary function, this detector will not detect the reentrancy. Also, we miss
+to analyze if the `call` variable that is passed to `invoke_contract_call()` is
+associated to `set_allow_reentry(true)`.
 
 ### 4. Panic error
-We based our analysis for set-contract-storage detection on the
+We based our analysis for panic error detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/panic-error/).
 
 For this vulnerability, we were able to produce successful detectors using
@@ -252,8 +254,8 @@ __Caveats__:
 There are some ways to make the program panic such as unwrap() or expect() which are not handled by this rule.
 
 ### 5. Unused return enum
-We based our analysis for unused-return-enum detection on the
-[vulnerability example associated to this issue](/vulnerabilities/examples/unused-return-enum/).
+We based our analysis for unused return enum detection on the 
+[vulnerability example associated to this issue](../vulnerabilities/examples/unused-return-enum/).
 
 For this vulnerability, we were able to produce successful detectors using
 [Dylint](./dylint/smart-contract-linters/unused-return-enum/).
@@ -278,7 +280,7 @@ __Caveats__:
 If definitions of Err() and/or Ok() are in the code but do not flow to the return value due to the definition of a variable or because they are defined in a dead code block, the warning will not be shown. If the definitions are made in an auxiliary method, the warning will be shown, resulting in a false positive.
 
 ### 6. DoS Unbounded Operation
-We based our analysis for dos-unbounded-operation detection on the
+We based our analysis for DoS Unbounded Operation detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
 For this vulnerability, we were able to produce successful detectors using
@@ -318,7 +320,7 @@ Known false negatives are formal parameter/field data non-trivially flowing into
 Among false positives, it could be mentioned code using contract fields that actually take only known values or any sort of sanitization mechanism of formal parameters.
 
 ### 7. DoS Unexpected Revert With Vector
-We based our analysis for set-contract-storage detection on the
+We based our analysis for DoS unexpected revert with vector detection on the 
 [vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
 For this vulnerability, we were able to produce successful detectors using

@@ -1,5 +1,5 @@
 # panic error
-This semgrep rule checks for instances of the `panic!` macro in Ink! contracts.
+This semgrep rule checks for instances of the `panic!` macro in `ink!` contracts.
 
 The rule consists of a single pattern (pattern) that matches the `panic!` macro, 
 which takes an error message as an argument and abruptly terminates the program 

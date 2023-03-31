@@ -1,19 +1,19 @@
 # Additional Information
 In order to produce realistic smart contracts with documented vulnerabilities
-we searched for public security audit reports for ink! smart contracts. We
+we searched for public security audit reports for `ink!` smart contracts. We
 found some audits on Substrate-based projects that we milked, with some effort,
 to produce examples we could use. This also yielded some interesting information
 laterally related to this project.
 ## Analysis of Audited Projects
 Out of a list of 10 initial public audit reports on projects developed with
-Substrate, we found no audits dedicated specifically to Ink! smart contracts.
+Substrate, we found no audits dedicated specifically to `ink!` smart contracts.
 All reports were focused on pallet configuration, runtime logic or parachain 
 interactions.
 
 ## Analysis of Deployed Projects
 Taking into consideration that a complete audit of a smart contract project
 takes significant time, usually in the order of weeks, we looked for a few 
-Substrate Ink! smart contract projects deployed on Polkadot or Kusama to 
+Substrate `ink!` smart contract projects deployed on Polkadot or Kusama to 
 analyze for vulnerabilities. 
 
 In particular we looked at [Panorama Swap smart contract](https://github.com/RottenKiwi/Panorama-Swap-INK-SC).

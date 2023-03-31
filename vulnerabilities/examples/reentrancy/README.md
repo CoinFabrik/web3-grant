@@ -192,7 +192,7 @@ pub fn call_with_value(&mut self, address: AccountId, amount: Balance, selector:
 * https://dasp.co/#item-1
 * https://blog.sigmaprime.io/solidity-security.html#SP-1
 * https://docs.soliditylang.org/en/develop/security-considerations.html#re-entrancy
-* [Ethernaut: Reentrancy](https://ethernaut.openzeppelin.com/level/0xe6BA07257a9321e755184FB2F995e0600E78c16D)
+* [Ethernaut: Reentrancy](https://stermi.medium.com/the-ethernaut-challenge-9-solution-re-entrancy-635303881a4f)
 * [SWC-107](https://swcregistry.io/docs/SWC-107)
 * [Slither: Reentrancy vulnerabilities (theft of ethers)](https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities)
 * [Slither: Reentrancy vulnerabilities (no theft of ethers)](https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1)

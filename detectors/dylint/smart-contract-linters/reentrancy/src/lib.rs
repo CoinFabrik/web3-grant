@@ -204,7 +204,7 @@ impl<'tcx> LateLintPass<'tcx> for Reentrancy {
                 reentrant_storage.span.unwrap(),
                 "External calls could open the opportunity for a malicious contract to execute any arbitrary code",
                 None,
-                "This statement seems to call another contract after the flag set_allow_reentry was enabled [todo: check state changes after this statement]",
+                "This statement seems to call another contract after the flag set_allow_reentry was enabled",
             );
         }
     }
