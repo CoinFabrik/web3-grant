@@ -50,7 +50,8 @@ We based our analysis for overflow or underflow detection on the
 [vulnerability example associated to this issue](../vulnerabilities/examples/integer-overflow-or-underflow/).
 
 For this vulnerability, we were able to produce successful detectors using
-[Dylint](./dylint/smart-contract-linters/integer-overflow-or-underflow/) and
+[Dylint](./dylint/smart-contract-linters/integer-overflow-or-underflow/),
+[Semgrep](./semgrep/integer-overflow-or-underflow/) and
 [Cargo-fuzz](./cargo-fuzz/integer-overflow-or-underflow/), we detail their
 implementation below.
 
@@ -114,7 +115,8 @@ We based our analysis for set-contract-storage detection on the
 [vulnerability example associated to this issue](../vulnerabilities/examples/set-contract-storage/).
 
 For this vulnerability, we were able to produce successful detectors using
-[Dylint](./dylint/smart-contract-linters/set-contract-storage/) and
+[Dylint](./dylint/smart-contract-linters/set-contract-storage/),
+[Semgrep](./semgrep/set-contract-storage/) and
 [Cargo-fuzz](./cargo-fuzz/set-contract-storage/), we detail their
 implementation below.
 
@@ -220,7 +222,8 @@ We based our analysis for set-contract-storage detection on the
 [vulnerability example associated to this issue](../vulnerabilities/examples/panic-error/).
 
 For this vulnerability, we were able to produce successful detectors using
-[Dylint](./dylint/smart-contract-linters/panic-error/) we detail the implementation below.
+[Dylint](./dylint/smart-contract-linters/panic-error/) and
+[Semgrep](./semgrep/panic-error/), we detail the implementation below.
 
 #### Dylint
 __Description__:
@@ -266,7 +269,6 @@ In order to implement this detector we developed the following functions of the
 [LateLintPass](https://doc.rust-lang.org/stable/nightly-rustc/rustc_lint/trait.LateLintPass.html)
 trait:
 - `check_fn`
-- `visitor`
 
 In particular, we used this function together with a visitor to check for every
 expression of a function with return type `Result` whether its returns values
@@ -280,7 +282,8 @@ We based our analysis for dos-unbounded-operation detection on the
 [vulnerability example associated to this issue](../vulnerabilities/examples/dos-unexpected-revert-with-vector/).
 
 For this vulnerability, we were able to produce successful detectors using
-[Dylint](./dylint/smart-contract-linters/dos-unbounded-operation/).
+[Dylint](./dylint/smart-contract-linters/dos-unbounded-operation/) and
+[Semgrep](./semgrep/dos-unbounded-operation/).
 
 #### Dylint
 __Description__:
@@ -355,21 +358,17 @@ We use ✅ to indicate that the vulnerability was detected in the vulnerable
 example (vuln.), ❎ to indicate that the vulnerability was not detected in
 the remediated example (remed.), and empty cells in cases where no detectors
 have been built.
-
 <table>
   <thead>
     <tr>
       <th rowspan="2">Num.</th>
       <th rowspan="2">ID</th>
       <th rowspan="2">Category</th>
-      <th colspan="2">Detection tool</th>
       <th colspan="2">Dylint</th>
       <th colspan="2">Cargo-fuzz</th>
       <th colspan="2">Semgrep</th>
     </tr>
     <tr>
-      <th>vuln.</th>
-      <th>remed.</th>
       <th>vuln.</th>
       <th>remed.</th>
       <th>vuln.</th>
@@ -389,15 +388,11 @@ have been built.
       <td>❎</td>
       <td>✅</td>
       <td>❎</td>
-      <td>✅</td>
-      <td>❎</td>
     </tr>
     <tr>
       <td>#2</td>
       <td>set-contract-storage</td>
       <td>Authorization</td>
-      <td>✅</td>
-      <td>❎</td>
       <td>✅</td>
       <td>❎</td>
       <td>✅</td>
@@ -415,8 +410,6 @@ have been built.
       <td></td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
     </tr>
     <tr>
       <td>#4</td>
@@ -426,10 +419,8 @@ have been built.
       <td>❎</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
     </tr>
     <tr>
       <td>#5</td>
@@ -437,8 +428,6 @@ have been built.
       <td>Validations and error handling</td>
       <td>✅</td>
       <td>❎</td>
-      <td></td>
-      <td></td>
       <td></td>
       <td></td>
       <td></td>
@@ -452,10 +441,8 @@ have been built.
       <td>❎</td>
       <td></td>
       <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+      <td>✅</td>
+      <td>❎</td>
     </tr>
     <tr>
       <td>#7</td>
@@ -463,8 +450,6 @@ have been built.
       <td>DoS</td>
       <td>✅</td>
       <td>❎</td>
-      <td></td>
-      <td></td>
       <td></td>
       <td></td>
       <td></td>
