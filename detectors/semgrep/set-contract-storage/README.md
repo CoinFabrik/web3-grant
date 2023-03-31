@@ -24,9 +24,13 @@ for the contract's integrity.
 If the pattern matches and no authorization condition is found, a warning message is 
 issued.
 
-## Approach and limitations
-Conceptually, this detector should detect a problem in the information flow: user-provided data being used for the invocation of the set_contract_storage function without prior sanitization. We assume that if the data is entered by the contract owner, it has been sanitized beforehand.
-If ownership validation is performed in an auxiliary function, the linter will not be able to identify it, and the warning will be indicated as a false positive.
+## Caveats
+Conceptually, this detector should detect a problem in the information flow: 
+user-provided data being used for the invocation of the set_contract_storage 
+function without prior sanitization. We assume that if the data is entered by 
+the contract owner, it has been sanitized beforehand. If ownership validation 
+is performed in an auxiliary function, the linter will not be able to identify
+it, and the warning will be indicated as a false positive.
 
 # Tainting rule 
 This semgrep rule is similar to the previous one, but it uses taint tracking to 
@@ -55,5 +59,6 @@ Finally, if the `env::set_contract_storage` function is called with an unsanitiz
 message advises that only the contract owner should be allowed to perform this 
 operation.
 
-## Limitations
-If ownership validation is performed in an auxiliary function, the linter will not be able to identify it, and the warning will be indicated as a false positive.
+## Caveats
+If ownership validation is performed in an auxiliary function, the linter will 
+not be able to identify it, and the warning will be indicated as a false positive.
