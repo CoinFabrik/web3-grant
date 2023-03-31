@@ -75,8 +75,8 @@ produces an overflow.
 An overflow/underflow is typically caught and generates an error. When it 
 is not caught, the operation will result in an inexact result which could 
 lead to serious problems. We classified this type of vulnerability under 
-the [Arithmetic Category](#vulnerability-categories) type anhd assinged it a
-High Severity.
+the [Arithmetic Category](#vulnerability-categories) type and assinged it a
+Critical Severity.
 
 In the context of Substrate, we found that this vulnerability could only be 
 realized if overflow and underflow checks are disabled during compilation. 
@@ -98,7 +98,7 @@ e.g, only an admin can call the function `reset()` which resets auction values.
 When this does not happen, arbitrary users may alter memory which may impose 
 great damage to the smart contract users. We classified this vulnerability 
 under the [Authorization Category](#vulnerability-categories) and assigned it a 
-High Severity.
+Critical Severity.
 
 In `ink!` the function `set_contract_storage(key: &K, value: &V)` can be used
 to modify the contract storage under a given key. When a smart contract uses
@@ -128,7 +128,7 @@ successive calls to the contract may allow the malicious contract to execute a
 function partially many times, e.g., transfering funds many times but 
 substracting the funds only once. 
 This vulnerability is of the [Reentrancy Category](#vulnerability-categories) and 
-assign it a High Severity.
+assign it a Critical Severity.
 
 In the context of `ink!` Substrate smart contracts there are controls
 preventing reentrancy which could be turned off (validly) using the flag
@@ -152,7 +152,7 @@ any of the variants is not used, the code could be simplified or it could imply
 a bug.
 
 We put this vulnerability under the [Validations and Error Handling Category](#vulnerability-categories) 
-with a Low Severity.
+with a Minor Severity.
 
 In our example, we see how lack of revision on the usage of both types (`Ok`
 and `Err`) leads to code where its intended functionality is not realized.
