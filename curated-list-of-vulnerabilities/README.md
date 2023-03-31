@@ -83,7 +83,7 @@ realized if overflow and underflow checks are disabled during compilation.
 Notwithstanding, there are contexts where developers do turn off checks for 
 valid reasons and hence the reason for including this vulnerability in the 
 list. Check the following code snippet and 
-[documentation](https://github.com/CoinFabrik/web3-grant/tree/main/vulnerabilities/examples/integer-overflow-or-underflow). 
+[documentation](../vulnerabilities/examples/integer-overflow-or-underflow/README.md). 
 
 ### 2 - Unauthotized Set Contract Storage
 Smart contract can store important information in memory which changes
