@@ -50,10 +50,10 @@ discuss how could we follow up on this work.
 | integer-overflow-or-underflow | Arithmetic                     | [An arithmetic operation overflows or underflows the available memory allocated to the variable.](./vulnerabilities/examples/integer-overflow-or-underflow/README.md) | Critical          |
 | set-contract-storage          | Authorization                  |  [Insufficient access control on set_contract_storage() function.](./vulnerabilities/examples/set-contract-storage/README.md)                                          | Critical          |
 | reentrancy                    | Reentrancy                     | [Consistency of contract state under recursive calls.](./vulnerabilities/examples/reentrancy/README.md)                                                               | Critical          |
-| panic-error                   | Validations and error handling |  [Code panics on error instead of using descriptive enum](./vulnerabilities/examples/panic-error/README.md)                                                            | Enhancement |
-| unused-return-enum            | Validations and error handling |  [Return enum from a function is not completely used](./vulnerabilities/examples/unused-return-enum/README.md)                                                         | Minor           |
-| dos-unbounded-operation       | Denial of Service               | [Return enum from a function is not completely used](./vulnerabilities/examples/dos-unbounded-operation/README.md)                                                    | Medium          |
-| dos-unexpected-revert         | Denial of Service              |  [DoS due to improper storage.](./vulnerabilities/examples/dos-unexpected-revert-with-vector/README.md)                                                                                | Medium          |
+| panic-error                   | Validations and error handling |  [Code panics on error instead of using descriptive enum.](./vulnerabilities/examples/panic-error/README.md)                                                            | Enhancement |
+| unused-return-enum            | Validations and error handling |  [Return enum from a function is not completely used.](./vulnerabilities/examples/unused-return-enum/README.md)                                                         | Minor           |
+| dos-unbounded-operation       | Denial of Service               | [DoS due to unbounded operation.](./vulnerabilities/examples/dos-unbounded-operation/README.md)                                                    | Medium          |
+| dos-unexpected-revert-with-vector         | Denial of Service              |  [DoS due to improper storage.](./vulnerabilities/examples/dos-unexpected-revert-with-vector/README.md)                                                                                | Medium          |
 
 
 ## Future Work
