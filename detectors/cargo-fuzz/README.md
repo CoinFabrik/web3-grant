@@ -33,7 +33,7 @@ $ cd integer-overflow-or-underflow
 3. Run one of the fuzz targets, for example:
 
 ```sh
-$ cargo fuzz run fuzz_add_overflows
+$ cargo fuzz run fuzz-add-overflows
 ```
 
 ## References
